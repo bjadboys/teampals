@@ -5,7 +5,7 @@ module.exports = {
   entry: './client/index.js',
   output: {
     path: __dirname,
-    filename: './public/part1.js'
+    filename: './public/index.js'
   },
   devtool: 'source-map',
   module: {
