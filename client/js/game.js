@@ -42,7 +42,6 @@ Game.update = function () {
         previousPosition = Object.assign({},currentPlayer.position);
     }
     if (cursors.left.isDown) {
-        console.log(currentPlayer.position);
         currentPlayer.body.velocity.x = -150;
     }
     if (cursors.right.isDown) {
@@ -79,7 +78,7 @@ Game.getCoordinates = function (layer, pointer) {
 Game.movePlayer = function (id, x, y) {
     var player = Game.playerMap[id];
     var distance = Phaser.Math.distance(player.x, player.y, x, y);
-    var duration = distance * 5;
+    var duration = distance * 1;
     var tween = game.add.tween(player);
     tween.to({ x: x, y: y }, duration);
     tween.start();

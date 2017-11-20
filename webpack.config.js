@@ -1,11 +1,25 @@
 const LiveReloadPlugin = require('webpack-livereload-plugin')
 const isDev = process.env.NODE_ENV === 'development'
 
+var path = require('path')
+var webpack = require('webpack')
+var HtmlWebpackPlugin = require('html-webpack-plugin')
+var BrowserSyncPlugin = require('browser-sync-webpack-plugin')
+
+var phaserModule = path.join(__dirname, '/node_modules/phaser-ce/')
+var phaser = path.join(phaserModule, 'build/custom/phaser-split.js')
+var pixi = path.join(phaserModule, 'build/custom/pixi.js')
+var p2 = path.join(phaserModule, 'build/custom/p2.js')
+
+var definePlugin = new webpack.DefinePlugin({
+  __DEV__: JSON.stringify(JSON.parse(process.env.BUILD_DEV || 'true'))
+})
+
 module.exports = {
-  entry: './client/index.js',
+  entry: './client/js/game.js',
   output: {
     path: __dirname,
-    filename: './public/index.js'
+    filename: './public/bundle.js'
   },
   devtool: 'source-map',
   module: {
@@ -26,11 +40,48 @@ module.exports = {
       {
         test: /\.svg$|\.ttf?|\.woff$|\.woff2|\.eof|\.eot/,
         loader: 'file-loader'
-      }
+      }, 
+      { test: /pixi\.js/, use: ['expose-loader?PIXI'] },
+      { test: /phaser-split\.js$/, use: ['expose-loader?Phaser'] },
+      { test: /p2\.js/, use: ['expose-loader?p2'] }
     ]
   },
   // When we're in development, we can use this handy live-reload plugin
   // to refresh the page for us every time we make a change to our client-side
   // files. It's like `nodemon` for the front end!
-  plugins: isDev ? [new LiveReloadPlugin({appendScriptTag: true})] : []
+  plugins: isDev ? [
+    definePlugin,
+    new LiveReloadPlugin({ appendScriptTag: true }),
+    new webpack.optimize.CommonsChunkPlugin({ name: 'vendor'/* chunkName= */, filename: 'vendor.bundle.js'/* filename= */ }),
+    new HtmlWebpackPlugin({
+      filename: '../index.html',
+      template: './src/index.html',
+      chunks: ['vendor', 'app'],
+      chunksSortMode: 'manual',
+      minify: {
+        removeAttributeQuotes: false,
+        collapseWhitespace: false,
+        html5: false,
+        minifyCSS: false,
+        minifyJS: false,
+        minifyURLs: false,
+        removeComments: false,
+        removeEmptyAttributes: false
+      },
+      hash: false
+    }),
+    new BrowserSyncPlugin({
+      host: process.env.IP || 'localhost',
+      port: process.env.PORT || 8080,
+      server: {
+        baseDir: ['./', './build']
+      }
+    })] : [],
+    resolve: {
+      alias: {
+      'phaser': phaser,
+      'pixi': pixi,
+      'p2': p2
+    }
+  }
 }
