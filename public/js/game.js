@@ -12,6 +12,8 @@ Game.preload = function () {
 
 var cursors;
 var currentPlayer;
+var previousPosition;
+
 
 Game.create = function () {
     game.physics.startSystem(Phaser.Physics.ARCADE);
@@ -36,8 +38,11 @@ Game.update = function () {
     if (currentPlayer) {
         currentPlayer.body.velocity.x = 0;
         currentPlayer.body.velocity.y = 0;
+        Client.updatePosition(previousPosition, currentPlayer.position);
+        previousPosition = Object.assign({},currentPlayer.position);
     }
     if (cursors.left.isDown) {
+        console.log(currentPlayer.position);
         currentPlayer.body.velocity.x = -150;
     }
     if (cursors.right.isDown) {
@@ -51,11 +56,16 @@ Game.update = function () {
     }
 }
 
+
 Game.addNewPlayer = function (id, x, y) {
     Game.playerMap[id] = game.add.sprite(x, y, 'sprite');
+};
+
+Game.setCurrentPlayer = function(id){
     currentPlayer = Game.playerMap[id];
     game.physics.arcade.enable(currentPlayer);
-};
+    previousPosition = Object.assign({},currentPlayer.position);
+}
 
 Game.removePlayer = function (id) {
     Game.playerMap[id].destroy();
@@ -69,7 +79,7 @@ Game.getCoordinates = function (layer, pointer) {
 Game.movePlayer = function (id, x, y) {
     var player = Game.playerMap[id];
     var distance = Phaser.Math.distance(player.x, player.y, x, y);
-    var duration = distance * 10;
+    var duration = distance * 5;
     var tween = game.add.tween(player);
     tween.to({ x: x, y: y }, duration);
     tween.start();
