@@ -21,6 +21,7 @@ var currentPlayer;
 var previousPosition;
 var weapon;
 var fireButton;
+let bullet_array = [];
 var layerCollision
 Game.create = function () {
     game.world.setBounds(0, 0, 48 * 32, 48 * 32)
@@ -44,13 +45,7 @@ Game.create = function () {
 
     cursors = game.input.keyboard.createCursorKeys();
 
-    weapon = game.add.weapon(1, 'sprite');
-    weapon.enableBody = true;
-    game.physics.arcade.enable(weapon);
-    weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
-    weapon.bulletAngleOffset = 90;
-    weapon.bulletSpeed = 150;
-    fireButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
+    fireButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR);
 };
 
 Game.update = function () {
@@ -88,12 +83,9 @@ Game.update = function () {
             currentPlayer.animations.stop()
         }
         if (fireButton.isDown) {
-
-            weapon.fire();
+            Client.SEND_fire(currentPlayer.position);
         }
     }
-    game.physics.arcade.overlap(weapon.bullets, currentPlayer, Game.hitEnemy);
-
 }
 
 
@@ -104,10 +96,6 @@ Game.addNewPlayer = function (id, x, y) {
     newPlayer.anchor.y = .5
     game.physics.arcade.enable(newPlayer)
     newPlayer.body.collideWorldBounds = true
-
-
-
-    console.log(newPlayer)
     newPlayer.frame = 0
     newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], 10, true)
     newPlayer.animations.add('up', [18, 19, 20, 21, 22], 10, true)
@@ -121,7 +109,6 @@ Game.setCurrentPlayer = function(id){
     game.physics.arcade.enable(currentPlayer);
     game.camera.follow(currentPlayer)
     previousPosition = Object.assign({},currentPlayer.position);
-    weapon.trackSprite(currentPlayer, 12, -50);
 }
 
 Game.removePlayer = function (id) {
@@ -142,10 +129,6 @@ Game.movePlayer = function (id, x, y) {
     tween.start();
 };
 
-Game.hitEnemy = function () {
-  weapon.bullets.kill();
-  //TODO: currentPlayer.kill();
-}
 
 var game = new Phaser.Game(480, 320, Phaser.AUTO, document.getElementById('game'));
 game.state.add('Game', Game);
@@ -188,6 +171,29 @@ Client.updatePosition = function (previous, current) {
     if (previous.x !== current.x || previous.y !== current.y) {
         Client.socket.emit('click', { x: current.x, y: current.y })
     }
-}
+};
+
+Client.SEND_fire = function(position){
+    Client.socket.emit('fire',{x: position.x, y: position.y})
+};
+
+Client.socket.on("bullets-update",function(RCV_bullet_array){
+    // If there's not enough bullets on the client, create them
+    for(var i=0;i<RCV_bullet_array.length;i++){
+        if(bullet_array[i] == undefined){
+            bullet_array[i] = game.add.sprite(RCV_bullet_array[i].x,RCV_bullet_array[i].y,'sprite');
+        } else {
+            //Otherwise, just update it! 
+            bullet_array[i].x = RCV_bullet_array[i].x; 
+            bullet_array[i].y = RCV_bullet_array[i].y;
+        }
+    }
+    // Otherwise if there's too many, delete the extra 
+    for(var i=RCV_bullet_array.length;i<bullet_array.length;i++){
+         bullet_array[i].destroy();
+         bullet_array.splice(i,1);
+         i--;
+     }
+});
 
 
