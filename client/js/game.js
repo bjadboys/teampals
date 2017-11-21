@@ -44,11 +44,13 @@ Game.update = function () {
     if (currentPlayer) {
         currentPlayer.body.velocity.x = 0;
         currentPlayer.body.velocity.y = 0;
+        currentPlayer.anchor.setTo(.5, .5)
         Client.updatePosition(previousPosition, currentPlayer.position);
         previousPosition = Object.assign({},currentPlayer.position);
         if (cursors.left.isDown) {
             currentPlayer.body.velocity.x = -150;
-
+            currentPlayer.scale.setTo(-4, 4)
+            currentPlayer.animations.play('right')
         }
         else if (cursors.right.isDown) {
             currentPlayer.body.velocity.x = 150;
@@ -60,16 +62,19 @@ Game.update = function () {
         }
         else if (cursors.down.isDown) {
             currentPlayer.body.velocity.y = 150;
-        // } else {
-        //     currentPlayer.animations.stop()
-        // }
+        } else {
+            currentPlayer.scale.setTo(4, 4)
+            currentPlayer.animations.stop()
+        }
     }
 }
-}
+
 
 
 Game.addNewPlayer = function (id, x, y) {
     const newPlayer = game.add.sprite(x, y, 'characters')
+    newPlayer.scale.setTo(4, 4)
+
     console.log(newPlayer)
     newPlayer.frame = 0
     newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], 10, true)
@@ -96,6 +101,9 @@ Game.getCoordinates = function (layer, pointer) {
 
 Game.movePlayer = function (id, x, y) {
     var player = Game.playerMap[id];
+
+    player.animations.add('breathe', [3, 5], 2, true)
+    player.animations.play('breathe')
     var distance = Phaser.Math.distance(player.x, player.y, x, y);
     var duration = distance * 1;
     var tween = game.add.tween(player);
