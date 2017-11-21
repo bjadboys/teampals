@@ -1,5 +1,5 @@
 import Phaser from 'phaser'
-let map, cursors, weapon, fireButton, currentPlayer, previousPosition 
+let map, cursors, weapon, fireButton, currentPlayer, previousPosition, playerMapBJAD 
 
 export default class MainGame extends Phaser.State {
   constructor(){
@@ -21,7 +21,6 @@ export default class MainGame extends Phaser.State {
     this.playerMapBJAD = {}
     this.map = this.game.add.tilemap('map')
     this.map.addTilesetImage('tilesheet', 'tileset')
-    console.log(this.map, 'the map')
     let layer;
     for (let i = 0; i < this.map.layers.length; i++) {
       this.layer = this.map.createLayer(i)
@@ -30,7 +29,6 @@ export default class MainGame extends Phaser.State {
     Client.askNewPlayer()
     //set up the keyboard for movement
     this.cursors = this.game.input.keyboard.createCursorKeys()
-    console.log(this.game, 'game in create')
     //create the weapon, create bullets, give them properties.
     this.weapon = this.game.add.weapon(1, 'sprite')
     this.weapon.enableBody = true
@@ -75,21 +73,22 @@ export default class MainGame extends Phaser.State {
   }
   
   addNewPlayer(id, x, y) {
-    const newPlayer = this.game.add.sprite(x, y, 'characters')
-    newPlayer.scale.setTo(4, 4)
-    newPlayer.frame = 0
-    newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], 10, true)
-    newPlayer.animations.add('up', [18, 19, 20, 21, 22], 10, true)
+    this.newPlayer = this.game.add.sprite(x, y, 'characters')
+    this.newPlayer.scale.setTo(4, 4)
+    this.newPlayer.frame = 0
+    this.newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], 10, true)
+    this.newPlayer.animations.add('up', [18, 19, 20, 21, 22], 10, true)
     
     this.playerMapBJAD[id] = this.newPlayer
   }
   
   setCurrentPlayer(id) {
-    currentPlayer = this.playerMapBJAD[id]
-    currentPlayer.enableBody = true
-    this.game.physics.arcade.enable(this.currentPlayer)
-    this.previousPosition = Object.assign({}, this.currentPlayer.position)
-    this.weapon.trackSprite(this.currentPlayer, 12, -50)
+    console.log(this.playerMapBJAD, 'this is the map')
+    this.currentPlayer = this.playerMapBJAD[id]
+      this.currentPlayer.enableBody = true
+      this.game.physics.arcade.enable(this.currentPlayer)
+      this.previousPosition = Object.assign({}, this.currentPlayer.position)
+      this.weapon.trackSprite(this.currentPlayer, 12, -50)
   }
   
   removePlayer(id) {
@@ -116,12 +115,6 @@ export default class MainGame extends Phaser.State {
   
   
 }
-
-export const hitEnemy = MainGame.prototype.hitEnemy
-export const movePlayer = MainGame.prototype.movePlayer
-export const removePlayer = MainGame.prototype.removePlayer
-export const addNewPlayer = MainGame.prototype.addNewPlayer
-export const setCurrentPlayer = MainGame.prototype.setCurrentPlayer
 import Client from '../js/client'
 
 
