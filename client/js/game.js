@@ -193,11 +193,3 @@ Client.socket.on("bullets-update",function(RCV_bullet_array){
 //     Client.socket.emit('click', { x: x, y: y });
 // };
 
-<<<<<<< HEAD
-// Client.updatePosition = function (previous, current) {
-//     if (previous.x !== current.x || previous.y !== current.y) {
-//         Client.socket.emit('click', { x: current.x, y: current.y })
-//     }
-// }
-=======
->>>>>>> master

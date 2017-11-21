@@ -8,10 +8,12 @@ import Preload from '../states/Preload'
 import MainGame from '../states/MainGame'
 import Lobby from '../states/Lobby'
 import GameOver from '../states/GameOver'
+const HEIGHT = 480
+const WIDTH = 320
 
 export default class Game extends Phaser.Game {
   constructor(){
-    super('100%', '100%', Phaser.AUTO, 'app')
+    super(HEIGHT, WIDTH, Phaser.AUTO, 'app')
     console.log('Game is running')
     this.state.add('Boot', Boot)
     this.state.add('Preload', Preload)
