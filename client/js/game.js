@@ -156,7 +156,7 @@ Game.hitEnemy = function () {
   // currentPlayer.kill();
 }
 
-var game = new Phaser.Game(1280, 720, Phaser.AUTO, document.getElementById('game'));
+var game = new Phaser.Game(480, 320, Phaser.AUTO, document.getElementById('game'));
 game.state.add('Game', Game);
 game.state.start('Game');
 
