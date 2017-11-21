@@ -115,9 +115,9 @@ export default class MainGame extends Phaser.State {
 
     this.player.animations.add('breathe', [3, 5], 2, true)
     this.player.animations.play('breathe')
-    var distance = Phaser.Math.distance(player.x, player.y, x, y)
+    var distance = Phaser.Math.distance(this.player.x, this.player.y, x, y)
     var duration = distance * 1
-    var tween = this.game.add.tween(player)
+    var tween = this.game.add.tween(this.player)
     tween.to({ x: x, y: y }, duration)
     tween.start()
   }
