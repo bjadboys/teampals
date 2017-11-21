@@ -1,7 +1,7 @@
 import 'pixi'
 import 'p2'
 import Phaser from 'phaser'
-import io from 'socket.io-client'
+import Client from './client'
 
 var Game = {};
 
@@ -34,8 +34,6 @@ Game.create = function () {
         layer = map.createLayer(i);
     }
     layer.inputEnabled = true; // Allows clicking on the map ; it's enough to do it on the last layer
-    console.log(layer.events)
-    layer.events.onInputUp.add(Game.getCoordinates, this);
     Client.askNewPlayer();
 
     cursors = game.input.keyboard.createCursorKeys();
@@ -88,7 +86,6 @@ Game.update = function () {
 }
 
 
-
 Game.addNewPlayer = function (id, x, y) {
     const newPlayer = game.add.sprite(x, y, 'characters')
     newPlayer.scale.setTo(4, 4)
@@ -115,9 +112,6 @@ Game.removePlayer = function (id) {
     delete Game.playerMap[id];
 };
 
-Game.getCoordinates = function (layer, pointer) {
-    Client.sendClick(pointer.worldX, pointer.worldY);
-};
 
 Game.movePlayer = function (id, x, y) {
     var player = Game.playerMap[id];
@@ -140,41 +134,43 @@ var game = new Phaser.Game(24 * 32, 17 * 32, Phaser.AUTO, document.getElementByI
 game.state.add('Game', Game);
 game.state.start('Game');
 
-var Client = {};
-Client.socket = io.connect();
+export default Game
 
-Client.askNewPlayer = function () {
-    Client.socket.emit('newplayer');
-};
+// var Client = {};
+// Client.socket = io.connect();
 
-Client.socket.on('yourID', function (data) {
-    Game.setCurrentPlayer(data);
-});
+// Client.askNewPlayer = function () {
+//     Client.socket.emit('newplayer');
+// };
 
-Client.socket.on('newplayer', function (data) {
-    Game.addNewPlayer(data.id, data.x, data.y);
-});
+// Client.socket.on('yourID', function (data) {
+//     Game.setCurrentPlayer(data);
+// });
 
-Client.socket.on('allplayers', function (data) {
-    for (var i = 0; i < data.length; i++) {
-        Game.addNewPlayer(data[i].id, data[i].x, data[i].y);
-    }
-});
+// Client.socket.on('newplayer', function (data) {
+//     Game.addNewPlayer(data.id, data.x, data.y);
+// });
 
-Client.socket.on('remove', function (id) {
-    Game.removePlayer(id);
-});
+// Client.socket.on('allplayers', function (data) {
+//     for (var i = 0; i < data.length; i++) {
+//         Game.addNewPlayer(data[i].id, data[i].x, data[i].y);
+//     }
+// });
 
-Client.socket.on('move', function (data) {
-    Game.movePlayer(data.id, data.x, data.y);
-});
+// Client.socket.on('remove', function (id) {
+//     Game.removePlayer(id);
+// });
 
-Client.sendClick = function (x, y) {
-    Client.socket.emit('click', { x: x, y: y });
-};
+// Client.socket.on('move', function (data) {
+//     Game.movePlayer(data.id, data.x, data.y);
+// });
 
-Client.updatePosition = function (previous, current) {
-    if (previous.x !== current.x || previous.y !== current.y) {
-        Client.socket.emit('click', { x: current.x, y: current.y })
-    }
-}
+// Client.sendClick = function (x, y) {
+//     Client.socket.emit('click', { x: x, y: y });
+// };
+
+// Client.updatePosition = function (previous, current) {
+//     if (previous.x !== current.x || previous.y !== current.y) {
+//         Client.socket.emit('click', { x: current.x, y: current.y })
+//     }
+// }
