@@ -21,6 +21,12 @@ export default class MainGame extends Phaser.State {
     this.playerMapBJAD = {}
     this.map = this.game.add.tilemap('map')
     this.map.addTilesetImage('tilesheet', 'tileset')
+
+    this.layerGrass = this.map.createLayer('grass')
+    this.layerCollision = this.map.createLayer('collision')
+    this.game.physics.arcade.enable(this.layerCollision)
+    this.map.setCollisionBetween(0, 48 * 32, true, this.layerCollision)
+
     let layer;
     for (let i = 0; i < this.map.layers.length; i++) {
       this.layer = this.map.createLayer(i)
@@ -41,35 +47,42 @@ export default class MainGame extends Phaser.State {
   
   update() {
     if (this.currentPlayer) {
+      this.game.physics.arcade.collide(this.currentPlayer, this.layerCollision)
+
       this.currentPlayer.body.velocity.x = 0;
       this.currentPlayer.body.velocity.y = 0;
+
+      Client.updatePosition(this.previousPosition, this.currentPlayer.position);
       this.previousPosition = Object.assign({}, this.currentPlayer.position);
+      
+      let moving = false
+      
       if (this.cursors.left.isDown) {
+        moving = true
         this.currentPlayer.body.velocity.x = -150;
-        this.currentPlayer.scale.setTo(-4, 4)
         this.currentPlayer.animations.play('right')
       }
-      else if (this.cursors.right.isDown) {
+      if (this.cursors.right.isDown) {
+        moving = true
         this.currentPlayer.body.velocity.x = 150;
         this.currentPlayer.animations.play('right')
       }
-      else if (this.cursors.up.isDown) {
+      if (this.cursors.up.isDown) {
+        moving = true
         this.currentPlayer.body.velocity.y = -150;
         this.currentPlayer.animations.play('up')
       }
-      else if (this.cursors.down.isDown) {
+      if (this.cursors.down.isDown) {
+        moving = true
         this.currentPlayer.body.velocity.y = 150;
-      } else {
-        this.currentPlayer.scale.setTo(4, 4)
+      } 
+      if (!moving){
         this.currentPlayer.animations.stop()
       }
       if (this.fireButton.isDown) {
-        console.log('check')
-        console.log(this.weapon)
-        this.weapon.fire();
+        Client.SEND_fire(this.currentPlayer.position);
       }
     }
-    this.game.physics.arcade.overlap(this.weapon.bullets, currentPlayer, this.hitEnemy)
   }
   
   addNewPlayer(id, x, y) {
