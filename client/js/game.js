@@ -1,7 +1,7 @@
 import 'pixi'
 import 'p2'
 import Phaser from 'phaser'
-import io from 'socket.io-client'
+import Client from './client'
 
 var Game = {};
 
@@ -27,6 +27,7 @@ Game.create = function () {
     game.world.setBounds(0, 0, 48 * 32, 48 * 32)
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
     game.physics.startSystem(Phaser.Physics.ARCADE);
+    
     var map = game.add.tilemap('map');
     map.addTilesetImage('terrain', 'tileset');
     var layerGrass = map.createLayer('grass')
@@ -57,7 +58,9 @@ Game.update = function () {
 
         Client.updatePosition(previousPosition, currentPlayer.position);
         previousPosition = Object.assign({},currentPlayer.position);
+        
         let moving = false
+
         if (cursors.left.isDown) {
             currentPlayer.body.velocity.x = -150;
 
@@ -89,7 +92,6 @@ Game.update = function () {
 }
 
 
-
 Game.addNewPlayer = function (id, x, y) {
     const newPlayer = game.add.sprite(x, y, 'characters')
     newPlayer.anchor.x = .5
@@ -116,9 +118,6 @@ Game.removePlayer = function (id) {
     delete Game.playerMap[id];
 };
 
-Game.getCoordinates = function (layer, pointer) {
-    Client.sendClick(pointer.worldX, pointer.worldY);
-};
 
 Game.movePlayer = function (id, x, y) {
     var player = Game.playerMap[id];
@@ -134,38 +133,32 @@ var game = new Phaser.Game(480, 320, Phaser.AUTO, document.getElementById('game'
 game.state.add('Game', Game);
 game.state.start('Game');
 
-var Client = {};
-Client.socket = io.connect();
+export default Game
 
-Client.askNewPlayer = function () {
-    Client.socket.emit('newplayer');
-};
+// var Client = {};
+// Client.socket = io.connect();
 
-Client.socket.on('yourID', function (data) {
-    Game.setCurrentPlayer(data);
-});
+// Client.askNewPlayer = function () {
+//     Client.socket.emit('newplayer');
+// };
 
-Client.socket.on('newplayer', function (data) {
-    Game.addNewPlayer(data.id, data.x, data.y);
-});
+// Client.socket.on('yourID', function (data) {
+//     Game.setCurrentPlayer(data);
+// });
 
-Client.socket.on('allplayers', function (data) {
-    for (var i = 0; i < data.length; i++) {
-        Game.addNewPlayer(data[i].id, data[i].x, data[i].y);
-    }
-});
+// Client.socket.on('newplayer', function (data) {
+//     Game.addNewPlayer(data.id, data.x, data.y);
+// });
 
-Client.socket.on('remove', function (id) {
-    Game.removePlayer(id);
-});
+// Client.socket.on('allplayers', function (data) {
+//     for (var i = 0; i < data.length; i++) {
+//         Game.addNewPlayer(data[i].id, data[i].x, data[i].y);
+//     }
+// });
 
-Client.socket.on('move', function (data) {
-    Game.movePlayer(data.id, data.x, data.y);
-});
-
-Client.sendClick = function (x, y) {
-    Client.socket.emit('click', { x: x, y: y });
-};
+// Client.socket.on('remove', function (id) {
+//     Game.removePlayer(id);
+// });
 
 Client.updatePosition = function (previous, current) {
     if (previous.x !== current.x || previous.y !== current.y) {
@@ -196,4 +189,7 @@ Client.socket.on("bullets-update",function(RCV_bullet_array){
      }
 });
 
+// Client.sendClick = function (x, y) {
+//     Client.socket.emit('click', { x: x, y: y });
+// };
 
