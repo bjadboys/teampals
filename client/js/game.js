@@ -10,8 +10,8 @@ Game.init = function () {
 };
 
 Game.preload = function () {
-    game.load.tilemap('map', '../../assets/map/example_map.json', null, Phaser.Tilemap.TILED_JSON);
-    game.load.spritesheet('tileset', '../../assets/map/tilesheet.png', 32, 32);
+    game.load.tilemap('map', '../../assets/map/teamPals.json', null, Phaser.Tilemap.TILED_JSON);
+    game.load.spritesheet('tileset', '../../assets/map/terrain.png', 32, 32);
     game.load.image('sprite', '../../assets/sprites/sprite.png');
     game.load.spritesheet('characters', '../../assets/sprites/characters.png', 32, 32)
 };
@@ -21,14 +21,20 @@ var currentPlayer;
 var previousPosition;
 var weapon;
 var fireButton;
-
+var layerCollision
 Game.create = function () {
+    game.world.setBounds(0, 0, 48 * 32, 48 * 32)
+    game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
     game.physics.startSystem(Phaser.Physics.ARCADE);
+    var map = game.add.tilemap('map');
+    map.addTilesetImage('terrain', 'tileset'); // tilesheet is the key of the tileset in map's JSON file
+    var layerGrass = map.createLayer('grass')
+    layerCollision = map.createLayer('collision')
+    game.physics.arcade.enable(layerCollision)
+    map.setCollisionBetween(0, 48 * 32, true, layerCollision)
     Game.playerMap = {};
     // var testKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
     // testKey.onDown.add(Client.sendTest, this);
-    var map = game.add.tilemap('map');
-    map.addTilesetImage('tilesheet', 'tileset'); // tilesheet is the key of the tileset in map's JSON file
     var layer;
     for (var i = 0; i < map.layers.length; i++) {
         layer = map.createLayer(i);
@@ -51,28 +57,36 @@ Game.create = function () {
 
 Game.update = function () {
     if (currentPlayer) {
+        game.physics.arcade.collide(currentPlayer, layerCollision)
+
         currentPlayer.body.velocity.x = 0;
         currentPlayer.body.velocity.y = 0;
         // currentPlayer.anchor.setTo(.5, .5)
         Client.updatePosition(previousPosition, currentPlayer.position);
         previousPosition = Object.assign({},currentPlayer.position);
+        let moving = false
         if (cursors.left.isDown) {
-            currentPlayer.body.velocity.x = -150;
-            currentPlayer.scale.setTo(-4, 4)
+            currentPlayer.body.velocity.x = -75;
+            // currentPlayer.scale.setTo(-4, 4)
             currentPlayer.animations.play('right')
+            moving = true
         }
-        else if (cursors.right.isDown) {
-            currentPlayer.body.velocity.x = 150;
+        if (cursors.right.isDown) {
+            currentPlayer.body.velocity.x = 75;
             currentPlayer.animations.play('right')
+            moving = true
+
         }
-        else if (cursors.up.isDown) {
-            currentPlayer.body.velocity.y = -150;
+        if (cursors.up.isDown) {
+            currentPlayer.body.velocity.y = -75;
             currentPlayer.animations.play('up')
+            moving = true
         }
-        else if (cursors.down.isDown) {
-            currentPlayer.body.velocity.y = 150;
-        } else {
-            currentPlayer.scale.setTo(4, 4)
+        if (cursors.down.isDown) {
+            currentPlayer.body.velocity.y = 75;
+            moving = true
+        }
+        if (!moving){
             currentPlayer.animations.stop()
         }
         if (fireButton.isDown) {
@@ -82,13 +96,20 @@ Game.update = function () {
         }
     }
     game.physics.arcade.overlap(weapon.bullets, currentPlayer, Game.hitEnemy);
+
 }
 
 
 
 Game.addNewPlayer = function (id, x, y) {
     const newPlayer = game.add.sprite(x, y, 'characters')
-    newPlayer.scale.setTo(4, 4)
+
+    newPlayer.anchor.x = .5
+    newPlayer.anchor.y = .5
+    game.physics.arcade.enable(newPlayer)
+    newPlayer.body.collideWorldBounds = true
+
+    // newPlayer.scale.setTo(4, 4)
 
     console.log(newPlayer)
     newPlayer.frame = 0
@@ -103,6 +124,8 @@ Game.setCurrentPlayer = function(id){
     currentPlayer = Game.playerMap[id];
     currentPlayer.enableBody = true;
     game.physics.arcade.enable(currentPlayer);
+    game.camera.follow(currentPlayer)
+    // game.camera.deadzone = new Phaser.Rectangle(400, 400, 400, 400)
     previousPosition = Object.assign({},currentPlayer.position);
     weapon.trackSprite(currentPlayer, 12, -50);
 }
@@ -119,8 +142,8 @@ Game.getCoordinates = function (layer, pointer) {
 Game.movePlayer = function (id, x, y) {
     var player = Game.playerMap[id];
 
-    player.animations.add('breathe', [3, 5], 2, true)
-    player.animations.play('breathe')
+    // player.animations.add('breathe', [3, 5], 2, true)
+    // player.animations.play('breathe')
     var distance = Phaser.Math.distance(player.x, player.y, x, y);
     var duration = distance * 1;
     var tween = game.add.tween(player);
@@ -133,7 +156,7 @@ Game.hitEnemy = function () {
   // currentPlayer.kill();
 }
 
-var game = new Phaser.Game(24 * 32, 17 * 32, Phaser.AUTO, document.getElementById('game'));
+var game = new Phaser.Game(1280, 720, Phaser.AUTO, document.getElementById('game'));
 game.state.add('Game', Game);
 game.state.start('Game');
 
