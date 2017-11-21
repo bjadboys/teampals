@@ -53,7 +53,7 @@ Game.update = function () {
     if (currentPlayer) {
         currentPlayer.body.velocity.x = 0;
         currentPlayer.body.velocity.y = 0;
-        currentPlayer.anchor.setTo(.5, .5)
+        // currentPlayer.anchor.setTo(.5, .5)
         Client.updatePosition(previousPosition, currentPlayer.position);
         previousPosition = Object.assign({},currentPlayer.position);
         if (cursors.left.isDown) {
@@ -75,9 +75,11 @@ Game.update = function () {
             currentPlayer.scale.setTo(4, 4)
             currentPlayer.animations.stop()
         }
-    }
-    if (fireButton.isDown) {
-      weapon.fire();
+        if (fireButton.isDown) {
+            console.log('check')
+            console.log(weapon)
+            weapon.fire();
+        }
     }
     game.physics.arcade.overlap(weapon.bullets, currentPlayer, Game.hitEnemy);
 }
