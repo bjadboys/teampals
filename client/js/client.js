@@ -27,6 +27,25 @@ Client.socket.on('move',function(data){
     Game.movePlayer(data.id,data.x,data.y);
 });
 
+Client.socket.on("bullets-update",function(RCV_bullet_array){
+    // If there's not enough bullets on the client, create them
+    for(var i=0;i<server_bullet_array.length;i++){
+        if(bullet_array[i] == undefined){
+            bullet_array[i] = game.add.sprite(server_bullet_array[i].x,server_bullet_array[i].y,'bullet');
+        } else {
+            //Otherwise, just update it! 
+            bullet_array[i].x = server_bullet_array[i].x; 
+            bullet_array[i].y = server_bullet_array[i].y;
+        }
+    }
+    // Otherwise if there's too many, delete the extra 
+    for(var i=server_bullet_array.length;i<bullet_array.length;i++){
+         bullet_array[i].destroy();
+         bullet_array.splice(i,1);
+         i--;
+     }
+});
+
 Client.sendClick = function(x,y){
     Client.socket.emit('click',{x:x,y:y});
 };
