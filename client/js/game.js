@@ -13,6 +13,7 @@ Game.preload = function () {
     game.load.tilemap('map', '../../assets/map/example_map.json', null, Phaser.Tilemap.TILED_JSON);
     game.load.spritesheet('tileset', '../../assets/map/tilesheet.png', 32, 32);
     game.load.image('sprite', '../../assets/sprites/sprite.png');
+    game.load.spritesheet('characters', '../../assets/sprites/characters.png', 32, 32)
 };
 
 var cursors;
@@ -54,6 +55,23 @@ Game.update = function () {
         currentPlayer.body.velocity.y = 0;
         Client.updatePosition(previousPosition, currentPlayer.position);
         previousPosition = Object.assign({},currentPlayer.position);
+        if (cursors.left.isDown) {
+            currentPlayer.body.velocity.x = -150;
+
+        }
+        else if (cursors.right.isDown) {
+            currentPlayer.body.velocity.x = 150;
+            currentPlayer.animations.play('right')
+        }
+        else if (cursors.up.isDown) {
+            currentPlayer.body.velocity.y = -150;
+            currentPlayer.animations.play('up')
+        }
+        else if (cursors.down.isDown) {
+            currentPlayer.body.velocity.y = 150;
+        // } else {
+        //     currentPlayer.animations.stop()
+        // }
     }
     if (cursors.left.isDown) {
         currentPlayer.body.velocity.x = -150;
@@ -75,7 +93,14 @@ Game.update = function () {
 
 
 Game.addNewPlayer = function (id, x, y) {
-    Game.playerMap[id] = game.add.sprite(x, y, 'sprite');
+    const newPlayer = game.add.sprite(x, y, 'characters')
+    console.log(newPlayer)
+    newPlayer.frame = 0
+    newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], 10, true)
+    newPlayer.animations.add('up', [18, 19, 20, 21, 22], 10, true)
+
+    Game.playerMap[id] = newPlayer
+
 };
 
 Game.setCurrentPlayer = function(id){
@@ -150,8 +175,5 @@ Client.updatePosition = function (previous, current) {
     if (previous.x !== current.x || previous.y !== current.y) {
         Client.socket.emit('click', { x: current.x, y: current.y })
     }
-};
-
-// Client.sendPlayerLocation = function(currentPlayer){
-//     Client.socket.emit('click',{x:x,y:y});
-// }
+}
+}
