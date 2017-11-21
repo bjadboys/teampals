@@ -11,6 +11,12 @@ import Lobby from '../states/Lobby'
 import Preload from '../states/Preload'
 import GameOver from '../states/GameOver'
 
+class Game extends Phaser.Game {
+  constructor(){
+    
+  }
+}
+
 Game.init = function () {
   game.stage.disableVisibilityChange = true;
 };
