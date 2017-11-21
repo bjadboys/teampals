@@ -27,19 +27,18 @@ Game.create = function () {
     game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
     game.physics.startSystem(Phaser.Physics.ARCADE);
     var map = game.add.tilemap('map');
-    map.addTilesetImage('terrain', 'tileset'); // tilesheet is the key of the tileset in map's JSON file
+    map.addTilesetImage('terrain', 'tileset');
     var layerGrass = map.createLayer('grass')
     layerCollision = map.createLayer('collision')
     game.physics.arcade.enable(layerCollision)
     map.setCollisionBetween(0, 48 * 32, true, layerCollision)
     Game.playerMap = {};
-    // var testKey = game.input.keyboard.addKey(Phaser.Keyboard.ENTER);
-    // testKey.onDown.add(Client.sendTest, this);
+
     var layer;
     for (var i = 0; i < map.layers.length; i++) {
         layer = map.createLayer(i);
     }
-    layer.inputEnabled = true; // Allows clicking on the map ; it's enough to do it on the last layer
+    layer.inputEnabled = true;
     console.log(layer.events)
     layer.events.onInputUp.add(Game.getCoordinates, this);
     Client.askNewPlayer();
@@ -61,13 +60,13 @@ Game.update = function () {
 
         currentPlayer.body.velocity.x = 0;
         currentPlayer.body.velocity.y = 0;
-        // currentPlayer.anchor.setTo(.5, .5)
+
         Client.updatePosition(previousPosition, currentPlayer.position);
         previousPosition = Object.assign({},currentPlayer.position);
         let moving = false
         if (cursors.left.isDown) {
             currentPlayer.body.velocity.x = -150;
-            // currentPlayer.scale.setTo(-4, 4)
+
             currentPlayer.animations.play('right')
             moving = true
         }
@@ -103,19 +102,17 @@ Game.update = function () {
 
 Game.addNewPlayer = function (id, x, y) {
     const newPlayer = game.add.sprite(x, y, 'characters')
-
     newPlayer.anchor.x = .5
     newPlayer.anchor.y = .5
     game.physics.arcade.enable(newPlayer)
     newPlayer.body.collideWorldBounds = true
 
-    // newPlayer.scale.setTo(4, 4)
+
 
     console.log(newPlayer)
     newPlayer.frame = 0
     newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], 10, true)
     newPlayer.animations.add('up', [18, 19, 20, 21, 22], 10, true)
-
     Game.playerMap[id] = newPlayer
 
 };
@@ -125,7 +122,6 @@ Game.setCurrentPlayer = function(id){
     currentPlayer.enableBody = true;
     game.physics.arcade.enable(currentPlayer);
     game.camera.follow(currentPlayer)
-    // game.camera.deadzone = new Phaser.Rectangle(400, 400, 400, 400)
     previousPosition = Object.assign({},currentPlayer.position);
     weapon.trackSprite(currentPlayer, 12, -50);
 }
@@ -141,9 +137,6 @@ Game.getCoordinates = function (layer, pointer) {
 
 Game.movePlayer = function (id, x, y) {
     var player = Game.playerMap[id];
-
-    // player.animations.add('breathe', [3, 5], 2, true)
-    // player.animations.play('breathe')
     var distance = Phaser.Math.distance(player.x, player.y, x, y);
     var duration = distance * 1;
     var tween = game.add.tween(player);
@@ -153,7 +146,7 @@ Game.movePlayer = function (id, x, y) {
 
 Game.hitEnemy = function () {
   weapon.bullets.kill();
-  // currentPlayer.kill();
+  //TODO: currentPlayer.kill();
 }
 
 var game = new Phaser.Game(480, 320, Phaser.AUTO, document.getElementById('game'));
