@@ -51,7 +51,7 @@ Game.create = function () {
     game.physics.arcade.enable(weapon);
     weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS;
     weapon.bulletAngleOffset = 90;
-    weapon.bulletSpeed = 75;
+    weapon.bulletSpeed = 150;
     fireButton = game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
 };
 
@@ -66,24 +66,24 @@ Game.update = function () {
         previousPosition = Object.assign({},currentPlayer.position);
         let moving = false
         if (cursors.left.isDown) {
-            currentPlayer.body.velocity.x = -75;
+            currentPlayer.body.velocity.x = -150;
             // currentPlayer.scale.setTo(-4, 4)
             currentPlayer.animations.play('right')
             moving = true
         }
         if (cursors.right.isDown) {
-            currentPlayer.body.velocity.x = 75;
+            currentPlayer.body.velocity.x = 150;
             currentPlayer.animations.play('right')
             moving = true
 
         }
         if (cursors.up.isDown) {
-            currentPlayer.body.velocity.y = -75;
+            currentPlayer.body.velocity.y = -150;
             currentPlayer.animations.play('up')
             moving = true
         }
         if (cursors.down.isDown) {
-            currentPlayer.body.velocity.y = 75;
+            currentPlayer.body.velocity.y = 150;
             moving = true
         }
         if (!moving){
