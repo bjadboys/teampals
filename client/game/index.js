@@ -9,9 +9,9 @@ import MainGame from '../states/MainGame'
 import Lobby from '../states/Lobby'
 import GameOver from '../states/GameOver'
 
-class Game extends Phaser.Game {
+export default class Game extends Phaser.Game {
   constructor(){
-    super('100%', '100%', Phaser.AUTO, 'game')
+    super('100%', '100%', Phaser.AUTO, 'app')
     console.log('Game is running')
     this.state.add('Boot', Boot)
     this.state.add('Preload', Preload)
@@ -24,4 +24,4 @@ class Game extends Phaser.Game {
 
 }
 console.log('running')
-var game = new Game()
+export const game = new Game()
