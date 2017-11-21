@@ -56,8 +56,8 @@ const createApp = () => {
   app.use('/api', require('./api'))
 
   // static file-serving middleware
+  console.log(path.join(__dirname,'..', 'public'))
   app.use(express.static(path.join(__dirname, '..', 'public')))
-
   // any remaining requests with an extension (.js, .css, etc.) send 404
   .use((req, res, next) => {
     if (path.extname(req.path).length) {
@@ -88,7 +88,7 @@ const startListening = () => {
 
   // set up our socket control center
   const io = socketio(server)
-  require('./socket')(io)
+  require('./socket')(io, server)
 }
 
 const syncDb = () => db.sync()

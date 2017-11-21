@@ -12,5 +12,5 @@ ReactDOM.render(
   <Provider store={store}>
     <Routes />
   </Provider>,
-  document.getElementById('app')
+  document.getElementById('game')
 )
