@@ -39,7 +39,6 @@ Game.create = function () {
         layer = map.createLayer(i);
     }
     layer.inputEnabled = true;
-    console.log(layer.events)
     layer.events.onInputUp.add(Game.getCoordinates, this);
     Client.askNewPlayer();
 
@@ -89,8 +88,7 @@ Game.update = function () {
             currentPlayer.animations.stop()
         }
         if (fireButton.isDown) {
-            console.log('check')
-            console.log(weapon)
+
             weapon.fire();
         }
     }
