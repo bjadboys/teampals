@@ -3,7 +3,6 @@ import 'p2'
 import Phaser from 'phaser'
 import io from 'socket.io-client'
 
-var Game = {};
 
 import Boot from '../states/Boot'
 import MainGame from '../states/MainGame'
@@ -13,9 +12,20 @@ import GameOver from '../states/GameOver'
 
 class Game extends Phaser.Game {
   constructor(){
-    
+    super('100%', '100%', Phaser.AUTO, 'gameArea')
+
+    this.state.add('Boot', Boot, false)
+    this.state.add('Preload', Preload, false)
+    this.state.add('Lobby', Lobby, false)
+    this.state.add('MainGame', MainGame, false)
+    this.state.add('GameOver', GameOver, false)
+
+    this.state.start('Boot')
   }
+
 }
+
+new Game()
 
 Game.init = function () {
   game.stage.disableVisibilityChange = true;
@@ -25,6 +35,7 @@ Game.preload = function () {
   game.load.tilemap('map', '../../assets/map/example_map.json', null, Phaser.Tilemap.TILED_JSON);
   game.load.spritesheet('tileset', '../../assets/map/tilesheet.png', 32, 32);
   game.load.image('sprite', '../../assets/sprites/sprite.png');
+  
 };
 
 var cursors;
