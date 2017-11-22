@@ -90,6 +90,10 @@ export default class MainGame extends Phaser.State {
   addNewPlayer(id, x, y) {
     this.newPlayer = this.game.add.sprite(x, y, 'characters')
     this.newPlayer.frame = 0
+    this.newPlayer.anchor.x = .5
+    this.newPlayer.anchor.y = .5
+    this.game.physics.arcade.enable(this.newPlayer)
+    this.newPlayer.body.collideWorldBounds = true
     this.newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], 10, true)
     this.newPlayer.animations.add('up', [18, 19, 20, 21, 22], 10, true)
 
