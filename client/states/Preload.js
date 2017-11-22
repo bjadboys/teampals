@@ -8,11 +8,10 @@ export default class Preload extends Phaser.State {
   }
 
   preload() {
-    console.log("preload ran!!!")
     //this is loading all the graphics the game need
     this.load.tilemap('map', '../../assets/map/teamPals.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.spritesheet('tileset', '../../assets/map/terrain.png', 32, 32);
-    this.load.image('sprite', '../../assets/sprites/sprite.png');
+    this.load.image('bullet', '../../assets/sprites/bullet.png')
     this.load.spritesheet('characters', '../../assets/sprites/characters.png', 32, 32)
     //lobby assets go here too.
     //Once the above have run, we run assets loaded
@@ -24,7 +23,6 @@ export default class Preload extends Phaser.State {
   //we can proceed to the lobby, as run in this.state.start('Lobby')
   render() {
     if (this.assetsReadyBJAD) {
-      console.log('preload started Main Game')
       this.state.start('MainGame')
     }
   }

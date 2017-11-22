@@ -79,7 +79,7 @@ export default class MainGame extends Phaser.State {
   }
 
   addNewPlayer(id, x, y) {
-    this.newPlayer = this.game.add.sprite(x, y, 'sprite')
+    this.newPlayer = this.game.add.sprite(x, y, 'characters')
     this.newPlayer.frame = 0
     this.newPlayer.anchor.x = .5
     this.newPlayer.anchor.y = .5
@@ -102,6 +102,10 @@ export default class MainGame extends Phaser.State {
   removePlayer(id) {
     this.playerMapBJAD[id].destroy()
     delete this.playerMapBJAD[id]
+  }
+
+  killPlayer(id) {
+    this.playerMapBJAD[id].kill();
   }
 
   movePlayer(id, x, y) {
