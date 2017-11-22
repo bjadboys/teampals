@@ -3,26 +3,22 @@ import {game} from '../game/index'
 // import {movePlayer, setCurrentPlayer, removePlayer, addNewPlayer, hitEnemy} from '../states/MainGame'
 let bullet_array = [];
 const Client = {};
-
+let offsetX = 0;
+let offsetY = 0;
 Client.socket = io.connect();
 
 Client.askNewPlayer = function(){
-  console.log("NEWPLAYER", game)
   Client.socket.emit('newplayer');
 };
 
 Client.SEND_fire = function (position) {
-  Client.socket.emit('fire', { x: position.x, y: position.y })
+  Client.socket.emit('fire', { x: position.x+offsetX, y: position.y+offsetY })
 };
 
 Client.updatePosition = function (previous, current) {
     if (previous.x !== current.x || previous.y !== current.y) {
-        Client.socket.emit('click', { x: current.x, y: current.y })
+        Client.socket.emit('update-position', { x: current.x, y: current.y })
     }
-};
-
-Client.sendClick = function(x,y){
-    Client.socket.emit('click',{x:x,y:y});
 };
 
 Client.socket.on('yourID',function(data){
@@ -43,12 +39,19 @@ Client.socket.on('remove',function(id){
     game.state.states.MainGame.removePlayer(id);
 });
 
+Client.socket.on('player-hit',function(id){
+    game.state.states.MainGame.killPlayer(id);
+});
+
 
 Client.socket.on("bullets-update", function (RCV_bullet_array) {
     // If there's not enough bullets on the client, create them
     for (var i = 0; i < RCV_bullet_array.length; i++) {
-        if (bullet_array[i] == undefined) {
-            bullet_array[i] = game.add.sprite(RCV_bullet_array[i].x, RCV_bullet_array[i].y, 'sprite');
+        if (bullet_array[i] === undefined) {
+            let bullet = game.add.sprite(RCV_bullet_array[i].x, RCV_bullet_array[i].y, 'bullet');
+            bullet.scale.setTo(0.5);
+            bullet.anchor.setTo(0.5,0.5);
+            bullet_array[i] = bullet;
         } else {
             //Otherwise, just update it!
             bullet_array[i].x = RCV_bullet_array[i].x;
