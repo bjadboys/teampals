@@ -1,5 +1,4 @@
 import Phaser from 'phaser'
-let map, cursors, weapon, fireButton, currentPlayer, previousPosition, playerMapBJAD
 
 export default class MainGame extends Phaser.State {
   constructor() {
@@ -12,7 +11,6 @@ export default class MainGame extends Phaser.State {
     this.setCurrentPlayer = this.setCurrentPlayer.bind(this)
     this.removePlayer = this.removePlayer.bind(this)
     this.movePlayer = this.movePlayer.bind(this)
-    this.hitEnemy = this.hitEnemy.bind(this)
   }
 
   //here we create everything we need for the game.
@@ -37,13 +35,6 @@ export default class MainGame extends Phaser.State {
     Client.askNewPlayer()
     //set up the keyboard for movement
     this.cursors = this.game.input.keyboard.createCursorKeys()
-    //create the weapon, create bullets, give them properties.
-    this.weapon = this.game.add.weapon(1, 'sprite')
-    this.weapon.enableBody = true
-    this.game.physics.arcade.enable(this.weapon)
-    this.weapon.bulletKillType = Phaser.Weapon.KILL_WORLD_BOUNDS
-    this.weapon.bulletAngleOffset = 90
-    this.weapon.bulletSpeed = 75
     this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
   }
 
@@ -88,7 +79,7 @@ export default class MainGame extends Phaser.State {
   }
 
   addNewPlayer(id, x, y) {
-    this.newPlayer = this.game.add.sprite(x, y, 'characters')
+    this.newPlayer = this.game.add.sprite(x, y, 'sprite')
     this.newPlayer.frame = 0
     this.newPlayer.anchor.x = .5
     this.newPlayer.anchor.y = .5
@@ -106,7 +97,6 @@ export default class MainGame extends Phaser.State {
     this.currentPlayer.enableBody = true
     this.game.physics.arcade.enable(this.currentPlayer)
     this.previousPosition = Object.assign({}, this.currentPlayer.position)
-    this.weapon.trackSprite(this.currentPlayer, 12, -50)
   }
 
   removePlayer(id) {
@@ -126,10 +116,6 @@ export default class MainGame extends Phaser.State {
     tween.start()
   }
 
-  hitEnemy = function () {
-    this.weapon.bullets.kill()
-    // currentPlayer.kill();
-  }
 
 
 }

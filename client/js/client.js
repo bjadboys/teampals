@@ -17,12 +17,8 @@ Client.SEND_fire = function (position) {
 
 Client.updatePosition = function (previous, current) {
     if (previous.x !== current.x || previous.y !== current.y) {
-        Client.socket.emit('click', { x: current.x, y: current.y })
+        Client.socket.emit('update-position', { x: current.x, y: current.y })
     }
-};
-
-Client.sendClick = function(x,y){
-    Client.socket.emit('click',{x:x,y:y});
 };
 
 Client.socket.on('yourID',function(data){

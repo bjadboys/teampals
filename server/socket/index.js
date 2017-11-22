@@ -13,19 +13,21 @@ module.exports = (io, server) => {
       socket.emit('yourID', socket.player.id)
       socket.broadcast.emit('newplayer', socket.player);
       
-      socket.on('click', function (data) {
+      socket.on('update-position', function (data) {
+        console.log(data);
         socket.player.x = data.x;
         socket.player.y = data.y;
         socket.broadcast.emit('move', socket.player);
       });
       
       socket.on('fire', function (data) {
+        console.log("bullet-position", data)
         let new_bullet = {};
         new_bullet.x = data.x;
         new_bullet.y = data.y;
         new_bullet.xv = 0;
         new_bullet.yv = -3;
-        new_bullet.id = socket.id;
+        new_bullet.id = socket.player.id;
         bullet_array.push(new_bullet);
       });
       
@@ -44,6 +46,13 @@ module.exports = (io, server) => {
           bullet_array.splice(i,1);
           i--;
         } 
+        // let playerArr = getAllPlayers();
+        // for(let j=0;j<playerArr.length;j++){
+        //   if(bullet_array[i].id !== playerArr[j].id){
+
+        //   }
+        // }
+
       }
       // Send updated bullets
       io.emit("bullets-update", bullet_array)
@@ -59,6 +68,7 @@ module.exports = (io, server) => {
       var player = io.sockets.connected[socketID].player;
       if (player) players.push(player);
     });
+    console.log(players);
     return players;
   }
   
