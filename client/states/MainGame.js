@@ -1,4 +1,9 @@
 import Phaser from 'phaser'
+<<<<<<< Updated upstream
+=======
+import Blocks from '../items/blocks'
+let map, cursors, weapon, fireButton, currentPlayer, previousPosition, playerMapBJAD
+>>>>>>> Stashed changes
 
 export default class MainGame extends Phaser.State {
   constructor() {
