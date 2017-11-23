@@ -45,21 +45,27 @@ export default class MainGame extends Phaser.State {
 
     //right now a moveable block appears at 100/100 for testing.
     //Block has its own sprite class which I will integrate later.
+    //Right now I make the block below:
     //next iteration: server will create the blocks and broadcast to each player/client.
     this.blocks = this.add.group()
     this.blocks.enableBody = true
     this.block = this.blocks.create(100, 100, 'block')
     this.block.body.gravity = 1
+    this.block.anchor.x = 0.5
+    this.block.anchor.y = 0.5
     this.block.enableBody = true
-    this.collideWorldBounds = true
+    this.block.body.collideWorldBounds = true
     
   }
 
+  //adds the block as a child of the current user sprite, if player is holding Shift and Left(just for test)
   collectBlock(currentPlayer, block){
-    block.x = currentPlayer.x
-    block.y = currentPlayer.y
     currentPlayer.addChild(block)
 
+  }
+
+  pickUpBlockPhysics(){
+    this.game.physics.arcade.overlap(this.currentPlayer, this.blocks, this.collectBlock, null, this)
   }
 
   update() {
@@ -70,9 +76,9 @@ export default class MainGame extends Phaser.State {
 
     if (this.currentPlayer) {
       this.game.physics.arcade.collide(this.currentPlayer, this.layerCollision)
-      //collision added for blocks
+      //collision added for blocks below. With this on player pushes the block around. Uncomment for pushing physics
       // this.game.physics.arcade.collide(this.currentPlayer, this.blocks)
-      this.game.physics.arcade.overlap(this.currentPlayer, this.blocks, this.collectBlock, null, this)
+      //collection added for blocks below. With this on block is added as child sprite to player.
       this.currentPlayer.body.velocity.x = 0;
       this.currentPlayer.body.velocity.y = 0;
 
@@ -85,6 +91,10 @@ export default class MainGame extends Phaser.State {
         moving = true
         this.currentPlayer.body.velocity.x = -150;
         this.currentPlayer.animations.play('right')
+        if (this.cursors.left.shiftKey) {
+          this.pickUpBlockPhysics()
+          this.game.physics.arcade.collide(this.currentPlayer, this.blocks)
+        } 
       }
       if (this.cursors.right.isDown) {
         moving = true
