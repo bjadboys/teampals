@@ -1,13 +1,13 @@
 import Phaser from 'phaser'
-<<<<<<< Updated upstream
-=======
-import Blocks from '../items/blocks'
+import BlocksBJAD from '../items/blocks'
+
 let map, cursors, weapon, fireButton, currentPlayer, previousPosition, playerMapBJAD
->>>>>>> Stashed changes
+
 
 export default class MainGame extends Phaser.State {
   constructor() {
     super()
+    Phaser.Component.Core.skipTypeChecks = true
   }
 
   init() {
@@ -16,6 +16,7 @@ export default class MainGame extends Phaser.State {
     this.setCurrentPlayer = this.setCurrentPlayer.bind(this)
     this.removePlayer = this.removePlayer.bind(this)
     this.movePlayer = this.movePlayer.bind(this)
+    // this.createBlockBJAD = this.createBlockBJAD.bind(this)
   }
 
   //here we create everything we need for the game.
@@ -41,12 +42,37 @@ export default class MainGame extends Phaser.State {
     //set up the keyboard for movement
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
+
+    //right now a moveable block appears at 100/100 for testing.
+    //Block has its own sprite class which I will integrate later.
+    //next iteration: server will create the blocks and broadcast to each player/client.
+    this.blocks = this.add.group()
+    this.blocks.enableBody = true
+    this.block = this.blocks.create(100, 100, 'block')
+    this.block.body.gravity = 1
+    this.block.enableBody = true
+    this.collideWorldBounds = true
+    
+  }
+
+  collectBlock(currentPlayer, block){
+    block.x = currentPlayer.x
+    block.y = currentPlayer.y
+    currentPlayer.addChild(block)
+
   }
 
   update() {
+    //physics added for blocks
+    this.game.physics.arcade.collide(this.blocks, this.layerCollision)
+    this.block.body.velocity.x = 0
+    this.block.body.velocity.y = 0
+
     if (this.currentPlayer) {
       this.game.physics.arcade.collide(this.currentPlayer, this.layerCollision)
-
+      //collision added for blocks
+      // this.game.physics.arcade.collide(this.currentPlayer, this.blocks)
+      this.game.physics.arcade.overlap(this.currentPlayer, this.blocks, this.collectBlock, null, this)
       this.currentPlayer.body.velocity.x = 0;
       this.currentPlayer.body.velocity.y = 0;
 
@@ -82,6 +108,8 @@ export default class MainGame extends Phaser.State {
       }
     }
   }
+
+
 
   addNewPlayer(id, x, y) {
     this.newPlayer = this.game.add.sprite(x, y, 'characters')
@@ -130,3 +158,4 @@ export default class MainGame extends Phaser.State {
 }
 
 import Client from '../js/client'
+
