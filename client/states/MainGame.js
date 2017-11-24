@@ -49,8 +49,6 @@ export default class MainGame extends Phaser.State {
     //next iteration: server will create the blocks and broadcast to each player/client.
     this.blocksBJAD = this.add.group()
     this.blocksBJAD.enableBody = true
-    this.blockBJAD = this.blocksBJAD.create(100, 100, 'block')
-    this.blockBJAD.body.collideWorldBounds = true
     // this.blockBJAD.anchor.x = 0.5
     // this.blockBJAD.anchor.y = 0.5
   }
@@ -58,23 +56,29 @@ export default class MainGame extends Phaser.State {
   //adds the block as a child of the current user sprite, if player is holding Shift and Left or Right (just for test)
   //updates the x y of the block so it is 0 0 on the parent element which is now the current player.
   collectBlockBJAD(currentPlayer, block){
-    block.x = 0;
-    block.y = 0;
-    currentPlayer.addChild(block)
+    this.currentBlock = block
+    this.currentBlock.x = 3;
+    this.currentBlock.y = 3;
+    currentPlayer.addChild(this.currentBlock)
   }
 
-  pickUpBlockPhysicsBJAD(){
+  pickUpBlockPhysicsBJAD() {
     //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
     //that they touch.
     this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, this.collectBlockBJAD, null, this)
   }
 
+  useBlockBJAD(block){
+    Client.blockUsedBJAD(block.id)
+  }
+
   update() {
     //physics added for blocks
-    this.blockBJAD.body.velocity.x = 0
-    this.blockBJAD.body.velocity.y = 0
+    if(this.blocksBJAD.children.length){
+      this.blockBJAD.body.velocity.x = 0
+      this.blockBJAD.body.velocity.y = 0
+    }
     //this collision only matters if we're push blocks. We may want to delete.
-    this.game.physics.arcade.collide(this.blocksBJAD, this.layerCollision)
 
     if (this.currentPlayer) {
       this.game.physics.arcade.collide(this.currentPlayer, this.layerCollision)
@@ -129,10 +133,15 @@ export default class MainGame extends Phaser.State {
         //the block is removed from current player's children and added back to blocks group.
         //the block's x y is updated with the players x y.
         if (this.currentPlayer.children.length) {
-          const droppedBlock = this.currentPlayer.removeChildAt(0)
+          const droppedBlock = this.currentPlayer.removeChild(this.currentBlock)
           droppedBlock.x = this.currentPlayer.x
           droppedBlock.y = this.currentPlayer.y
-          this.blocksBJAD.addChild(droppedBlock)
+          this.currentBlock = null;
+          if (this.game.physics.arcade.overlap(droppedBlock, this.blocksBJAD)) {
+            this.useBlockBJAD(droppedBlock)
+          } else {
+            this.blocksBJAD.addChild(droppedBlock)
+          }
         }
       }
     }
@@ -180,6 +189,16 @@ export default class MainGame extends Phaser.State {
     var tween = this.game.add.tween(this.player)
     tween.to({ x: x, y: y }, duration)
     tween.start()
+  }
+
+  removeBlockBJAD(usedBlockId) {
+    this.blocksBJAD[usedBlockId].kill()
+  }
+
+  addBlockBJAD(id, x, y) {
+    this.blockBJAD = this.blocksBJAD.create(x, y, 'block')
+    this.blockBJAD.id = id;
+    this.blockBJAD.body.collideWorldBounds = true
   }
 
 

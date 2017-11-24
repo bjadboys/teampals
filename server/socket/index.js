@@ -1,5 +1,6 @@
 module.exports = (io, server) => {
   server.lastPlayderID = 0; // Keep track of the last id assigned to a new player
+  server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
   let bullet_array = [];
   let players = []
 
@@ -13,12 +14,36 @@ module.exports = (io, server) => {
       socket.emit('allplayers', getAllPlayers());
       socket.emit('yourID', socket.player.id)
       socket.broadcast.emit('newplayer', socket.player);
+      
+      for (let i = 0; i < 10; i++) {
+        const initialBlock = {
+          id: server.lastBlockIdBJAD++,
+          x: randomInt(300, 1000),
+          y: randomInt(300, 1000)
+        }
+        console.log('made a block', initialBlock)
+        socket.emit('addBlock', initialBlock)
+      }
 
       socket.on('update-position', function (data) {
         socket.player.x = data.x;
         socket.player.y = data.y;
         socket.broadcast.emit('move', socket.player);
       });
+
+      socket.on('blockUsed', function(usedBlockId){
+        console.log('received blockused')
+        const newBlock = {
+          id: server.lastBlockIdBJAD++,
+          x: randomInt(300, 1000),
+          y: randomInt(300, 1000)
+        }
+        const blockEvent = {
+          newBlock, usedBlockId
+        }
+        socket.emit('replaceBlock', blockEvent)
+        server.lastBlockIdBJAD++;
+      })
 
       socket.on('fire', function (data) {
         let new_bullet = {};

@@ -21,6 +21,21 @@ Client.updatePosition = function (previous, current) {
     }
 };
 
+Client.blockUsedBJAD = function(usedBlockId) {
+    Client.socket.emit('blockUsed', usedBlockId)
+}
+
+//Client add on block at a time to the map.
+Client.socket.on('addBlock', function(data){
+    game.state.states.MainGame.addBlockBJAD(data.id, data.x, data.y)
+})
+
+Client.socket.on('replaceBlock', function(data){
+    console.log(data)
+    game.state.states.MainGame.removeBlockBJAD(data.usedBlockId);
+    game.state.states.MainGame.addBlockBJAD(data.newBlock.id, data.newBlock.x, data.newBlock.y)
+})
+
 Client.socket.on('yourID',function(data){
   game.state.states.MainGame.setCurrentPlayer(data);
 });
