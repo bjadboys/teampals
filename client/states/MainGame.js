@@ -55,13 +55,17 @@ export default class MainGame extends Phaser.State {
     // this.blockBJAD.anchor.y = 0.5
   }
 
-  //adds the block as a child of the current user sprite, if player is holding Shift and Left(just for test)
+  //adds the block as a child of the current user sprite, if player is holding Shift and Left or Right (just for test)
+  //updates the x y of the block so it is 0 0 on the parent element which is now the current player.
   collectBlockBJAD(currentPlayer, block){
+    block.x = 0;
+    block.y = 0;
     currentPlayer.addChild(block)
-    console.log(block)
   }
 
   pickUpBlockPhysicsBJAD(){
+    //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
+    //that they touch.
     this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, this.collectBlockBJAD, null, this)
   }
 
@@ -69,12 +73,14 @@ export default class MainGame extends Phaser.State {
     //physics added for blocks
     this.blockBJAD.body.velocity.x = 0
     this.blockBJAD.body.velocity.y = 0
+    //this collision only matters if we're push blocks. We may want to delete.
     this.game.physics.arcade.collide(this.blocksBJAD, this.layerCollision)
 
     if (this.currentPlayer) {
       this.game.physics.arcade.collide(this.currentPlayer, this.layerCollision)
       //collision added for blocks below. With this on player pushes the block around. Comment in for pushing physics
       // this.game.physics.arcade.collide(this.currentPlayer, this.blocksBJAD)
+      //when the above is on it makes it impossible to push  a block out of a corner.
       this.currentPlayer.body.velocity.x = 0;
       this.currentPlayer.body.velocity.y = 0;
 
@@ -82,7 +88,6 @@ export default class MainGame extends Phaser.State {
       this.previousPosition = Object.assign({}, this.currentPlayer.position);
 
       let moving = false
-
       if (this.cursors.left.isDown) {
         moving = true
         this.currentPlayer.body.velocity.x = -150;
@@ -104,10 +109,16 @@ export default class MainGame extends Phaser.State {
         moving = true
         this.currentPlayer.body.velocity.y = -150;
         this.currentPlayer.animations.play('up')
+        if (this.cursors.up.shiftKey) {
+          this.pickUpBlockPhysicsBJAD()
+        }
       }
       if (this.cursors.down.isDown) {
         moving = true
         this.currentPlayer.body.velocity.y = 150;
+        if (this.cursors.down.shiftKey) {
+          this.pickUpBlockPhysicsBJAD()
+        }
       }
       if (!moving) {
         this.currentPlayer.animations.stop()
@@ -116,8 +127,12 @@ export default class MainGame extends Phaser.State {
         Client.SEND_fire(this.currentPlayer.position);
         //if you shoot the gun, you drop the block.
         //the block is removed from current player's children and added back to blocks group.
+        //the block's x y is updated with the players x y.
         if (this.currentPlayer.children.length) {
-          this.blocksBJAD.addChild(this.currentPlayer.removeChildAt(0))
+          const droppedBlock = this.currentPlayer.removeChildAt(0)
+          droppedBlock.x = this.currentPlayer.x
+          droppedBlock.y = this.currentPlayer.y
+          this.blocksBJAD.addChild(droppedBlock)
         }
       }
     }
@@ -172,4 +187,3 @@ export default class MainGame extends Phaser.State {
 }
 
 import Client from '../js/client'
-
