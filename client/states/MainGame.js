@@ -47,38 +47,34 @@ export default class MainGame extends Phaser.State {
     //Block has its own sprite class which I will integrate later.
     //Right now I make the block below:
     //next iteration: server will create the blocks and broadcast to each player/client.
-    this.blocks = this.add.group()
-    this.blocks.enableBody = true
-    this.block = this.blocks.create(100, 100, 'block')
-    this.block.body.gravity = 1
-    this.block.anchor.x = 0.5
-    this.block.anchor.y = 0.5
-    this.block.enableBody = true
-    this.block.body.collideWorldBounds = true
-    
+    this.blocksBJAD = this.add.group()
+    this.blocksBJAD.enableBody = true
+    this.blockBJAD = this.blocksBJAD.create(100, 100, 'block')
+    this.blockBJAD.body.collideWorldBounds = true
+    // this.blockBJAD.anchor.x = 0.5
+    // this.blockBJAD.anchor.y = 0.5
   }
 
   //adds the block as a child of the current user sprite, if player is holding Shift and Left(just for test)
-  collectBlock(currentPlayer, block){
+  collectBlockBJAD(currentPlayer, block){
     currentPlayer.addChild(block)
-
+    console.log(block)
   }
 
-  pickUpBlockPhysics(){
-    this.game.physics.arcade.overlap(this.currentPlayer, this.blocks, this.collectBlock, null, this)
+  pickUpBlockPhysicsBJAD(){
+    this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, this.collectBlockBJAD, null, this)
   }
 
   update() {
     //physics added for blocks
-    this.game.physics.arcade.collide(this.blocks, this.layerCollision)
-    this.block.body.velocity.x = 0
-    this.block.body.velocity.y = 0
+    this.blockBJAD.body.velocity.x = 0
+    this.blockBJAD.body.velocity.y = 0
+    this.game.physics.arcade.collide(this.blocksBJAD, this.layerCollision)
 
     if (this.currentPlayer) {
       this.game.physics.arcade.collide(this.currentPlayer, this.layerCollision)
-      //collision added for blocks below. With this on player pushes the block around. Uncomment for pushing physics
-      // this.game.physics.arcade.collide(this.currentPlayer, this.blocks)
-      //collection added for blocks below. With this on block is added as child sprite to player.
+      //collision added for blocks below. With this on player pushes the block around. Comment in for pushing physics
+      // this.game.physics.arcade.collide(this.currentPlayer, this.blocksBJAD)
       this.currentPlayer.body.velocity.x = 0;
       this.currentPlayer.body.velocity.y = 0;
 
@@ -92,14 +88,17 @@ export default class MainGame extends Phaser.State {
         this.currentPlayer.body.velocity.x = -150;
         this.currentPlayer.animations.play('right')
         if (this.cursors.left.shiftKey) {
-          this.pickUpBlockPhysics()
-          this.game.physics.arcade.collide(this.currentPlayer, this.blocks)
+          //collection added for blocks below. Comment in for block to be added as child sprite to player.
+          this.pickUpBlockPhysicsBJAD()
         } 
       }
       if (this.cursors.right.isDown) {
         moving = true
         this.currentPlayer.body.velocity.x = 150;
         this.currentPlayer.animations.play('right')
+        if(this.cursors.right.shiftKey){
+          this.pickUpBlockPhysicsBJAD()
+        }
       }
       if (this.cursors.up.isDown) {
         moving = true
@@ -115,6 +114,11 @@ export default class MainGame extends Phaser.State {
       }
       if (this.fireButton.isDown) {
         Client.SEND_fire(this.currentPlayer.position);
+        //if you shoot the gun, you drop the block.
+        //the block is removed from current player's children and added back to blocks group.
+        if (this.currentPlayer.children.length) {
+          this.blocksBJAD.addChild(this.currentPlayer.removeChildAt(0))
+        }
       }
     }
   }
