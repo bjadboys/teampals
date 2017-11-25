@@ -30,6 +30,12 @@ Client.socket.on('addBlock', function(data){
     game.state.states.MainGame.addBlockBJAD(data.id, data.x, data.y)
 })
 
+Client.socket.on('allBlocks', function(data){
+    data.forEach(block => {
+        game.state.states.MainGame.addBlockBJAD(block.id, block.x, block.y)
+    })
+})
+
 Client.socket.on('replaceBlock', function(data){
     console.log(data)
     game.state.states.MainGame.removeBlockBJAD(data.usedBlockId);

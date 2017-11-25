@@ -3,6 +3,7 @@ module.exports = (io, server) => {
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
   let bullet_array = [];
   let players = []
+  let mapBlocks = makeBlocks(10)
 
   io.on('connection', function (socket) {
     socket.on('newplayer', function () {
@@ -14,16 +15,7 @@ module.exports = (io, server) => {
       socket.emit('allplayers', getAllPlayers());
       socket.emit('yourID', socket.player.id)
       socket.broadcast.emit('newplayer', socket.player);
-      
-      for (let i = 0; i < 10; i++) {
-        const initialBlock = {
-          id: server.lastBlockIdBJAD++,
-          x: randomInt(300, 1000),
-          y: randomInt(300, 1000)
-        }
-        console.log('made a block', initialBlock)
-        socket.emit('addBlock', initialBlock)
-      }
+      socket.emit('allBlocks', mapBlocks)
 
       socket.on('update-position', function (data) {
         socket.player.x = data.x;
@@ -92,6 +84,19 @@ module.exports = (io, server) => {
     setInterval(ServerGameLoop, 16);
 
   });
+
+  function makeBlocks(num) {
+    const madeBlocks = []
+    for(let i = 0; i < num; i++){
+      const initializedBlock = {
+        id: server.lastBlockIdBJAD++,
+        x: randomInt(500, 800),
+        y: randomInt(500, 800)
+      }
+      madeBlocks.push(initializedBlock)
+    }
+    return madeBlocks
+  }
 
   function getAllPlayers() {
     players = [];
