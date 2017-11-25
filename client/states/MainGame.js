@@ -11,6 +11,7 @@ export default class MainGame extends Phaser.State {
     this.setCurrentPlayer = this.setCurrentPlayer.bind(this)
     this.removePlayer = this.removePlayer.bind(this)
     this.movePlayer = this.movePlayer.bind(this)
+    this.stopAnimation = this.stopAnimation.bind(this);
   }
 
   //here we create everything we need for the game.
@@ -45,7 +46,7 @@ export default class MainGame extends Phaser.State {
       this.currentPlayer.body.velocity.x = 0;
       this.currentPlayer.body.velocity.y = 0;
 
-      Client.updatePosition(this.previousPosition, this.currentPlayer.position);
+      Client.updatePosition(this.previousPosition, this.currentPlayer.position, this.currentPlayer.direction);
       this.previousPosition = Object.assign({}, this.currentPlayer.position);
 
       let moving = false
@@ -53,21 +54,31 @@ export default class MainGame extends Phaser.State {
       if (this.cursors.left.isDown) {
         moving = true
         this.currentPlayer.body.velocity.x = -150;
+        this.currentPlayer.direction = 'left';
         this.currentPlayer.animations.play('right')
+        console.log(this.currentPlayer.direction)
       }
       if (this.cursors.right.isDown) {
         moving = true
         this.currentPlayer.body.velocity.x = 150;
+        this.currentPlayer.direction = 'right';
         this.currentPlayer.animations.play('right')
+        console.log(this.currentPlayer.direction)
       }
       if (this.cursors.up.isDown) {
+
         moving = true
         this.currentPlayer.body.velocity.y = -150;
+        this.currentPlayer.direction = 'up';
         this.currentPlayer.animations.play('up')
+        console.log(this.currentPlayer.direction)
       }
       if (this.cursors.down.isDown) {
         moving = true
         this.currentPlayer.body.velocity.y = 150;
+        this.currentPlayer.direction = 'down';
+        this.currentPlayer.animations.play('up')
+        console.log(this.currentPlayer.direction)
       }
       if (!moving) {
         this.currentPlayer.animations.stop()
@@ -93,6 +104,7 @@ export default class MainGame extends Phaser.State {
 
   setCurrentPlayer(id) {
     this.currentPlayer = this.playerMapBJAD[id]
+    this.currentPlayer.direction = 'right';
     this.game.camera.follow(this.currentPlayer)
     this.currentPlayer.enableBody = true
     this.game.physics.arcade.enable(this.currentPlayer)
@@ -110,17 +122,18 @@ export default class MainGame extends Phaser.State {
 
   movePlayer(id, x, y) {
     this.player = this.playerMapBJAD[id]
-
-    this.player.animations.add('breathe', [3, 5], 2, true)
-    this.player.animations.play('breathe')
+    //TODO: Add direction parameter to play corresponding animation
+    this.player.animations.play('right')
     var distance = Phaser.Math.distance(this.player.x, this.player.y, x, y)
     var duration = distance * 1
     var tween = this.game.add.tween(this.player)
-    tween.to({ x: x, y: y }, duration)
-    tween.start()
+    tween.to({ x: x, y: y }, duration, Phaser.Easing.Default, true, 0, 0)
   }
 
-
+  stopAnimation(id) {
+    this.player = this.playerMapBJAD[id]
+    this.player.animations.stop()
+  }
 
 }
 

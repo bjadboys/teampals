@@ -20,6 +20,11 @@ module.exports = (io, server) => {
         socket.broadcast.emit('move', socket.player);
       });
 
+      socket.on('stopped-moving', function() {
+        console.log('BROADCAST EMIT STOP ANIMATION')
+        socket.broadcast.emit('stop-animation', socket.player.id)
+      })
+
       socket.on('fire', function (data) {
         let new_bullet = {};
         new_bullet.x = data.x;
