@@ -5,6 +5,7 @@ let bullet_array = [];
 const Client = {};
 let offsetX = 0;
 let offsetY = 0;
+let sendStopCalls = false;
 Client.socket = io.connect();
 
 Client.askNewPlayer = function(){
@@ -18,8 +19,17 @@ Client.SEND_fire = function (position) {
 Client.updatePosition = function (previous, current) {
     if (previous.x !== current.x || previous.y !== current.y) {
         Client.socket.emit('update-position', { x: current.x, y: current.y })
+        sendStopCalls = false;
+    }
+    else if (!sendStopCalls) {
+        Client.socket.emit('stopped-moving')
+        sendStopCalls = true;
     }
 };
+
+Client.socket.on('stop-animation', function(data) {
+  game.state.states.MainGame.stopAnimation(data);
+})
 
 Client.socket.on('yourID',function(data){
   game.state.states.MainGame.setCurrentPlayer(data);
@@ -66,9 +76,10 @@ Client.socket.on("bullets-update", function (RCV_bullet_array) {
     }
 });
 
-Client.socket.on('move',function(data){
-    game.state.states.MainGame.movePlayer(data.id,data.x,data.y);
+Client.socket.on('move', function(data){
+    game.state.states.MainGame.movePlayer(data.id, data.x, data.y);
 });
+
 
 
 export default Client
