@@ -21,7 +21,7 @@ Client.updatePosition = function (previous, current) {
         Client.socket.emit('update-position', { x: current.x, y: current.y })
         sendStopCalls = false;
     }
-    else if (sendStopCalls < 1) {
+    else if (!sendStopCalls) {
         Client.socket.emit('stopped-moving')
         sendStopCalls = true;
     }
