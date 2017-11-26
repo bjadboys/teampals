@@ -25,9 +25,20 @@ Client.blockUsedBJAD = function(usedBlockId) {
     Client.socket.emit('blockUsed', usedBlockId)
 }
 
+Client.playerPicksUpBlockBJAD = function(player, block) {
+    const playerId = player.id
+    const blockId = block.id
+    Client.socket.emit('block-picked-up', {playerId, blockId})
+}
+
 //Client add on block at a time to the map.
 Client.socket.on('addBlock', function(data){
     game.state.states.MainGame.addBlockBJAD(data.id, data.x, data.y)
+})
+
+Client.socket.on('player-picked-up-block', function(data){
+    console.log(data)
+    game.state.states.MainGame.collectBlockBJAD(data.playerId, data.blockId)
 })
 
 Client.socket.on('allBlocks', function(data){
@@ -35,6 +46,7 @@ Client.socket.on('allBlocks', function(data){
         game.state.states.MainGame.addBlockBJAD(block.id, block.x, block.y)
     })
 })
+
 
 Client.socket.on('replaceBlock', function(data){
     console.log(data)

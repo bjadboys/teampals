@@ -16,7 +16,7 @@ export default class MainGame extends Phaser.State {
     this.setCurrentPlayer = this.setCurrentPlayer.bind(this)
     this.removePlayer = this.removePlayer.bind(this)
     this.movePlayer = this.movePlayer.bind(this)
-    // this.createBlockBJAD = this.createBlockBJAD.bind(this)
+    //this.createBlockBJAD = this.createBlockBJAD.bind(this)
   }
 
   //here we create everything we need for the game.
@@ -55,17 +55,27 @@ export default class MainGame extends Phaser.State {
 
   //adds the block as a child of the current user sprite, if player is holding Shift and Left or Right (just for test)
   //updates the x y of the block so it is 0 0 on the parent element which is now the current player.
-  collectBlockBJAD(currentPlayer, block){
-    this.currentBlock = block
-    this.currentBlock.x = 3;
-    this.currentBlock.y = 3;
-    currentPlayer.addChild(this.currentBlock)
+  collectBlockBJAD(playerId, blockId){
+    this.player = this.playerMapBJAD[playerId]
+<<<<<<< Updated upstream
+    this.block = this.blocksBJAD.children.find(block => block.id === blockId)
+    this.block.y = 3
+    this.block.x = 3
+    this.player.addChild(this.block)
+=======
+    if (!this.player.children.length){
+      console.log(this.player, 'collectsBlockBJAD thisplayer')
+      this.block = this.blocksBJAD.children.find(block => block.id === blockId)
+      this.player.addChild(this.block)
+      console.log('hit')
+    }
+>>>>>>> Stashed changes
   }
 
   pickUpBlockPhysicsBJAD() {
     //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
     //that they touch.
-    this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, this.collectBlockBJAD, null, this)
+    this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
   }
 
   useBlockBJAD(block){
@@ -140,6 +150,7 @@ export default class MainGame extends Phaser.State {
           if (this.game.physics.arcade.overlap(droppedBlock, this.blocksBJAD)) {
             this.useBlockBJAD(droppedBlock)
           } else {
+            console.log('added back')
             this.blocksBJAD.addChild(droppedBlock)
           }
         }
@@ -164,6 +175,7 @@ export default class MainGame extends Phaser.State {
 
   setCurrentPlayer(id) {
     this.currentPlayer = this.playerMapBJAD[id]
+    this.currentPlayer.id = id
     this.game.camera.follow(this.currentPlayer)
     this.currentPlayer.enableBody = true
     this.game.physics.arcade.enable(this.currentPlayer)

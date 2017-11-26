@@ -23,8 +23,11 @@ module.exports = (io, server) => {
         socket.broadcast.emit('move', socket.player);
       });
 
+      socket.on('block-picked-up', function(data){
+        io.emit('player-picked-up-block', data)
+      })
+
       socket.on('blockUsed', function(usedBlockId){
-        console.log('received blockused')
         const newBlock = {
           id: server.lastBlockIdBJAD++,
           x: randomInt(300, 1000),
@@ -87,7 +90,7 @@ module.exports = (io, server) => {
 
   function makeBlocks(num) {
     const madeBlocks = []
-    for(let i = 0; i < num; i++){
+    for (let i = 0; i < num; i++){
       const initializedBlock = {
         id: server.lastBlockIdBJAD++,
         x: randomInt(500, 800),
