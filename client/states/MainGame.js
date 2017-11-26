@@ -48,7 +48,11 @@ export default class MainGame extends Phaser.State {
 
     this.blocksBJAD = this.add.group()
     this.blocksBJAD.enableBody = true
-    
+    this.healthText = this.game.add.text(5, 5, 'HEALTH: ')
+    this.ammoText = this.game.add.text(250, 5, 'AMMO: ')
+    this.healthText.fixedToCamera = true;
+    this.ammoText.fixedToCamera = true;
+  
   }
 
   //adds the block as a child of the current user sprite, if player is holding Shift and Left or Right (just for test)
@@ -87,6 +91,7 @@ export default class MainGame extends Phaser.State {
   }
 
   update() {
+    
     //physics added for blocks
     if(this.blocksBJAD.children.length){
       this.blockBJAD.body.velocity.x = 0
@@ -95,6 +100,8 @@ export default class MainGame extends Phaser.State {
     //this collision only matters if we're push blocks. We may want to delete.
 
     if (this.currentPlayer) {
+      this.healthText.setText(`HEALTH: ${this.currentPlayer.health}`)
+      this.ammoText.setText(`AMMO: ${this.currentPlayer.ammo}`)
       this.game.physics.arcade.collide(this.currentPlayer, this.layerCollision)
       //collision added for blocks below. With this on player pushes the block around. Comment in for pushing physics
       // this.game.physics.arcade.collide(this.currentPlayer, this.blocksBJAD)
@@ -183,8 +190,10 @@ export default class MainGame extends Phaser.State {
 
   setCurrentPlayer(id) {
     this.currentPlayer = this.playerMapBJAD[id]
-    this.currentPlayer.direction = 'right';
-    this.currentPlayer.id = id;
+    this.currentPlayer.direction = 'right'
+    this.currentPlayer.health = 100
+    this.currentPlayer.ammo = 0
+    this.currentPlayer.id = id
     this.currentPlayer.pointer = null;
     this.game.camera.follow(this.currentPlayer)
     this.currentPlayer.enableBody = true
