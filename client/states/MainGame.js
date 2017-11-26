@@ -20,6 +20,7 @@ export default class MainGame extends Phaser.State {
     //this.createBlockBJAD = this.createBlockBJAD.bind(this)
     this.stopAnimation = this.stopAnimation.bind(this);
     this.dropBlockBJAD = this.dropBlockBJAD.bind(this)
+    this.dropBlockPhysicsBJAD = this.dropBlockPhysicsBJAD.bind(this)
   }
 
   //here we create everything we need for the game.
@@ -28,6 +29,7 @@ export default class MainGame extends Phaser.State {
     this.game.world.setBounds(0, 0, 48 * 32, 48 * 32)
     this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
     this.playerMapBJAD = {}
+    this.playerBaseBJAD = {}
     this.map = this.game.add.tilemap('map')
     this.map.addTilesetImage('terrain', 'tileset')
 
@@ -78,6 +80,7 @@ export default class MainGame extends Phaser.State {
     this.droppedBlock = null;
   }
 
+
   pickUpBlockPhysicsBJAD() {
     //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
     //that they touch.
@@ -86,12 +89,22 @@ export default class MainGame extends Phaser.State {
     }
   }
 
+  dropBlockPhysicsBJAD(){
+    this.base = this.playerBaseBJAD[this.currentPlayer.id]
+    if (this.game.physics.arcade.overlap(this.currentPlayer, this.base)) {
+      const playerId = this.currentPlayer.id
+      const blockId = this.currentPlayer.children[0].id
+      Client.blockUsedBJAD({playerId, blockId})
+    } else {
+      Client.playerDropsBlockBJAD(this.currentPlayer.id)
+    }
+  }
+
   useBlockBJAD(block){
     Client.blockUsedBJAD(block.id)
   }
 
   update() {
-    
     //physics added for blocks
     if(this.blocksBJAD.children.length){
       this.blockBJAD.body.velocity.x = 0
@@ -165,8 +178,8 @@ export default class MainGame extends Phaser.State {
         //if you shoot the gun, you drop the block.
         //the block is removed from current player's children and added back to blocks group.
         //the block's x y is updated with the players x y.
-        if (this.currentPlayer.children.length) {
-          Client.playerDropsBlockBJAD(this.currentPlayer.id)
+        if (this.currentPlayer.children.length) { 
+          this.dropBlockPhysicsBJAD()
         }
       }
     }
@@ -186,6 +199,14 @@ export default class MainGame extends Phaser.State {
 
     this.playerMapBJAD[id] = this.newPlayer
 
+  }
+
+  addNewBase(id, x, y,) {
+    this.newBase = this.game.add.sprite(x, y, 'base')
+    this.game.physics.arcade.enable(this.newBase)
+    this.newBase.body.immovable = true
+    this.newBase.health = 1000
+    this.playerBaseBJAD[id] = this.newBase
   }
 
   setCurrentPlayer(id) {
@@ -224,8 +245,11 @@ export default class MainGame extends Phaser.State {
     tween.to({ x: x, y: y }, duration, Phaser.Easing.Default, true, 0, 0)
   }
 
-  removeBlockBJAD(usedBlockId) {
-    this.blocksBJAD[usedBlockId].kill()
+  removeBlockBJAD(playerId) {
+    this.player = this.playerMapBJAD[playerId]
+    this.usedBlock = this.player.removeChild(this.player.children[0])
+    this.usedBlock.kill()
+    this.player.ammo += 10
   }
 
   addBlockBJAD(id, x, y) {

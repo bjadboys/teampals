@@ -27,16 +27,21 @@ module.exports = (io, server) => {
         io.emit('player-picked-up-block', data)
       })
 
-      socket.on('blockUsed', function(usedBlockId){
+      socket.on('blockUsed', function(data){
         const newBlock = {
           id: server.lastBlockIdBJAD++,
           x: randomInt(300, 1000),
           y: randomInt(300, 1000)
         }
-        const blockEvent = {
-          newBlock, usedBlockId
-        }
-        io.emit('replaceBlock', blockEvent)
+        mapBlocks = mapBlocks.map(block => {
+          if (block.id === data.blockId) {
+            return newBlock
+          } else {
+            return block
+          }
+        })
+        io.emit('allBlocks', [newBlock])
+        io.emit('replaceBlock', data)
         server.lastBlockIdBJAD++;
       })
 
