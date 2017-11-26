@@ -19,6 +19,7 @@ export default class MainGame extends Phaser.State {
     this.movePlayer = this.movePlayer.bind(this)
     //this.createBlockBJAD = this.createBlockBJAD.bind(this)
     this.stopAnimation = this.stopAnimation.bind(this);
+    this.dropBlockBJAD = this.dropBlockBJAD.bind(this)
   }
 
   //here we create everything we need for the game.
@@ -45,14 +46,9 @@ export default class MainGame extends Phaser.State {
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
 
-    //right now a moveable block appears at 100/100 for testing.
-    //Block has its own sprite class which I will integrate later.
-    //Right now I make the block below:
-    //next iteration: server will create the blocks and broadcast to each player/client.
     this.blocksBJAD = this.add.group()
     this.blocksBJAD.enableBody = true
-    // this.blockBJAD.anchor.x = 0.5
-    // this.blockBJAD.anchor.y = 0.5
+    
   }
 
   //adds the block as a child of the current user sprite, if player is holding Shift and Left or Right (just for test)
@@ -202,6 +198,10 @@ export default class MainGame extends Phaser.State {
   }
 
   killPlayer(id) {
+    this.player = this.playerMapBJAD[id]
+    if (this.player.children.length) {
+      this.dropBlockBJAD(id)
+    }
     this.playerMapBJAD[id].kill();
   }
 
