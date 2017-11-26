@@ -27,6 +27,47 @@ Client.updatePosition = function (previous, current) {
     }
 };
 
+Client.blockUsedBJAD = function(usedBlockId) {
+    Client.socket.emit('blockUsed', usedBlockId)
+}
+
+Client.playerPicksUpBlockBJAD = function(player, block) {
+    console.log(block, 'block in client')
+    const playerId = player.id
+    const blockId = block.id
+    Client.socket.emit('block-picked-up', {playerId, blockId})
+}
+
+Client.playerDropsBlockBJAD = function(playerId) {
+    Client.socket.emit('block-dropped', playerId)
+}
+
+Client.socket.on('player-dropped-block', function (playerId) {
+    game.state.states.MainGame.dropBlockBJAD(playerId)
+}) 
+
+//Client add on block at a time to the map.
+Client.socket.on('addBlock', function(data){
+    game.state.states.MainGame.addBlockBJAD(data.id, data.x, data.y)
+})
+
+Client.socket.on('player-picked-up-block', function(data){
+    console.log(data)
+    game.state.states.MainGame.collectBlockBJAD(data.playerId, data.blockId)
+})
+
+Client.socket.on('allBlocks', function(data){
+    data.forEach(block => {
+        game.state.states.MainGame.addBlockBJAD(block.id, block.x, block.y)
+    })
+})
+
+
+Client.socket.on('replaceBlock', function(data){
+    console.log(data)
+    game.state.states.MainGame.removeBlockBJAD(data.usedBlockId);
+    game.state.states.MainGame.addBlockBJAD(data.newBlock.id, data.newBlock.x, data.newBlock.y)
+})
 Client.socket.on('stop-animation', function(data) {
   game.state.states.MainGame.stopAnimation(data);
 })

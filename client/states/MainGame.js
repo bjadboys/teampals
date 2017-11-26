@@ -1,9 +1,14 @@
 import Phaser from 'phaser'
+import BlocksBJAD from '../items/blocks'
+
+let map, cursors, weapon, fireButton, currentPlayer, previousPosition, playerMapBJAD
+
 import Client from '../js/client'
 
 export default class MainGame extends Phaser.State {
   constructor() {
     super()
+    Phaser.Component.Core.skipTypeChecks = true
   }
 
   init() {
@@ -12,7 +17,9 @@ export default class MainGame extends Phaser.State {
     this.setCurrentPlayer = this.setCurrentPlayer.bind(this)
     this.removePlayer = this.removePlayer.bind(this)
     this.movePlayer = this.movePlayer.bind(this)
+    //this.createBlockBJAD = this.createBlockBJAD.bind(this)
     this.stopAnimation = this.stopAnimation.bind(this);
+    this.dropBlockBJAD = this.dropBlockBJAD.bind(this)
   }
 
   //here we create everything we need for the game.
@@ -38,12 +45,60 @@ export default class MainGame extends Phaser.State {
     //set up the keyboard for movement
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
+
+    this.blocksBJAD = this.add.group()
+    this.blocksBJAD.enableBody = true
+    
+  }
+
+  //adds the block as a child of the current user sprite, if player is holding Shift and Left or Right (just for test)
+  //updates the x y of the block so it is 0 0 on the parent element which is now the current player.
+  collectBlockBJAD(playerId, blockId){
+    this.player = this.playerMapBJAD[playerId]
+    if (!this.player.children.length) {//added this second length check in case player is touching two blocks when they do a pick up.
+      this.block = this.blocksBJAD.children.find(block => block.id === blockId)
+      if (this.block) {
+        this.block.y = 3
+        this.block.x = 3
+        this.player.addChild(this.block)
+      }
+    }
+  }
+
+  dropBlockBJAD(playerId){
+    this.player = this.playerMapBJAD[playerId]
+    this.droppedBlock = this.player.removeChild(this.player.children[0])
+    this.droppedBlock.x = this.player.x
+    this.droppedBlock.y = this.player.y
+    this.blocksBJAD.addChild(this.droppedBlock)
+    this.droppedBlock = null;
+  }
+
+  pickUpBlockPhysicsBJAD() {
+    //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
+    //that they touch.
+    if (!this.currentPlayer.children.length) { 
+      this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
+    }
+  }
+
+  useBlockBJAD(block){
+    Client.blockUsedBJAD(block.id)
   }
 
   update() {
+    //physics added for blocks
+    if(this.blocksBJAD.children.length){
+      this.blockBJAD.body.velocity.x = 0
+      this.blockBJAD.body.velocity.y = 0
+    }
+    //this collision only matters if we're push blocks. We may want to delete.
+
     if (this.currentPlayer) {
       this.game.physics.arcade.collide(this.currentPlayer, this.layerCollision)
-
+      //collision added for blocks below. With this on player pushes the block around. Comment in for pushing physics
+      // this.game.physics.arcade.collide(this.currentPlayer, this.blocksBJAD)
+      //when the above is on it makes it impossible to push  a block out of a corner.
       this.currentPlayer.body.velocity.x = 0;
       this.currentPlayer.body.velocity.y = 0;
 
@@ -53,12 +108,15 @@ export default class MainGame extends Phaser.State {
       this.findPossibleTarget();
 
       let moving = false
-
       if (this.cursors.left.isDown) {
         moving = true
         this.currentPlayer.body.velocity.x = -150;
         this.currentPlayer.direction = 'left';
         this.currentPlayer.animations.play('right')
+        if (this.cursors.left.shiftKey) {
+          //collection added for blocks below. Comment in for block to be added as child sprite to player.
+          this.pickUpBlockPhysicsBJAD()
+        } 
         console.log(this.currentPlayer.direction)
       }
       if (this.cursors.right.isDown) {
@@ -66,6 +124,9 @@ export default class MainGame extends Phaser.State {
         this.currentPlayer.body.velocity.x = 150;
         this.currentPlayer.direction = 'right';
         this.currentPlayer.animations.play('right')
+        if(this.cursors.right.shiftKey){
+          this.pickUpBlockPhysicsBJAD()
+        }
         console.log(this.currentPlayer.direction)
       }
       if (this.cursors.up.isDown) {
@@ -74,11 +135,17 @@ export default class MainGame extends Phaser.State {
         this.currentPlayer.body.velocity.y = -150;
         this.currentPlayer.direction = 'up';
         this.currentPlayer.animations.play('up')
+        if (this.cursors.up.shiftKey) {
+          this.pickUpBlockPhysicsBJAD()
+        }
         console.log(this.currentPlayer.direction)
       }
       if (this.cursors.down.isDown) {
         moving = true
         this.currentPlayer.body.velocity.y = 150;
+        if (this.cursors.down.shiftKey) {
+          this.pickUpBlockPhysicsBJAD()
+        }
         this.currentPlayer.direction = 'down';
         this.currentPlayer.animations.play('up')
         console.log(this.currentPlayer.direction)
@@ -88,9 +155,17 @@ export default class MainGame extends Phaser.State {
       }
       if (this.fireButton.isDown) {
         Client.SEND_fire(this.currentPlayer.position);
+        //if you shoot the gun, you drop the block.
+        //the block is removed from current player's children and added back to blocks group.
+        //the block's x y is updated with the players x y.
+        if (this.currentPlayer.children.length) {
+          Client.playerDropsBlockBJAD(this.currentPlayer.id)
+        }
       }
     }
   }
+
+
 
   addNewPlayer(id, x, y) {
     this.newPlayer = this.game.add.sprite(x, y, 'characters')
@@ -123,6 +198,10 @@ export default class MainGame extends Phaser.State {
   }
 
   killPlayer(id) {
+    this.player = this.playerMapBJAD[id]
+    if (this.player.children.length) {
+      this.dropBlockBJAD(id)
+    }
     this.playerMapBJAD[id].kill();
   }
 
@@ -134,6 +213,16 @@ export default class MainGame extends Phaser.State {
     var duration = distance * 1
     var tween = this.game.add.tween(this.player)
     tween.to({ x: x, y: y }, duration, Phaser.Easing.Default, true, 0, 0)
+  }
+
+  removeBlockBJAD(usedBlockId) {
+    this.blocksBJAD[usedBlockId].kill()
+  }
+
+  addBlockBJAD(id, x, y) {
+    this.blockBJAD = this.blocksBJAD.create(x, y, 'block')
+    this.blockBJAD.id = id;
+    this.blockBJAD.body.collideWorldBounds = true
   }
 
   stopAnimation(id) {
