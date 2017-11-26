@@ -39,6 +39,11 @@ module.exports = (io, server) => {
         socket.emit('replaceBlock', blockEvent)
         server.lastBlockIdBJAD++;
       })
+      
+      socket.on('stopped-moving', function() {
+        console.log('BROADCAST EMIT STOP ANIMATION')
+        socket.broadcast.emit('stop-animation', socket.player.id)
+      })
 
       socket.on('fire', function (data) {
         let new_bullet = {};

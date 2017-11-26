@@ -5,6 +5,7 @@ let bullet_array = [];
 const Client = {};
 let offsetX = 0;
 let offsetY = 0;
+let sendStopCalls = false;
 Client.socket = io.connect();
 
 Client.askNewPlayer = function(){
@@ -18,6 +19,11 @@ Client.SEND_fire = function (position) {
 Client.updatePosition = function (previous, current) {
     if (previous.x !== current.x || previous.y !== current.y) {
         Client.socket.emit('update-position', { x: current.x, y: current.y })
+        sendStopCalls = false;
+    }
+    else if (!sendStopCalls) {
+        Client.socket.emit('stopped-moving')
+        sendStopCalls = true;
     }
 };
 
@@ -30,6 +36,10 @@ Client.playerPicksUpBlockBJAD = function(player, block) {
     const blockId = block.id
     Client.socket.emit('block-picked-up', {playerId, blockId})
 }
+
+Client.socket.on('player-dropped-block', function (playerId) {
+    game.state.states.MainGame.dropBlockBJAD(playerId)
+}) 
 
 //Client add on block at a time to the map.
 Client.socket.on('addBlock', function(data){
@@ -52,6 +62,9 @@ Client.socket.on('replaceBlock', function(data){
     console.log(data)
     game.state.states.MainGame.removeBlockBJAD(data.usedBlockId);
     game.state.states.MainGame.addBlockBJAD(data.newBlock.id, data.newBlock.x, data.newBlock.y)
+})
+Client.socket.on('stop-animation', function(data) {
+  game.state.states.MainGame.stopAnimation(data);
 })
 
 Client.socket.on('yourID',function(data){
@@ -99,9 +112,10 @@ Client.socket.on("bullets-update", function (RCV_bullet_array) {
     }
 });
 
-Client.socket.on('move',function(data){
-    game.state.states.MainGame.movePlayer(data.id,data.x,data.y);
+Client.socket.on('move', function(data){
+    game.state.states.MainGame.movePlayer(data.id, data.x, data.y);
 });
+
 
 
 export default Client

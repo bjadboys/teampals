@@ -3,6 +3,7 @@ import BlocksBJAD from '../items/blocks'
 
 let map, cursors, weapon, fireButton, currentPlayer, previousPosition, playerMapBJAD
 
+import Client from '../js/client'
 
 export default class MainGame extends Phaser.State {
   constructor() {
@@ -17,6 +18,7 @@ export default class MainGame extends Phaser.State {
     this.removePlayer = this.removePlayer.bind(this)
     this.movePlayer = this.movePlayer.bind(this)
     //this.createBlockBJAD = this.createBlockBJAD.bind(this)
+    this.stopAnimation = this.stopAnimation.bind(this);
   }
 
   //here we create everything we need for the game.
@@ -101,34 +103,43 @@ export default class MainGame extends Phaser.State {
       this.currentPlayer.body.velocity.x = 0;
       this.currentPlayer.body.velocity.y = 0;
 
-      Client.updatePosition(this.previousPosition, this.currentPlayer.position);
+      Client.updatePosition(this.previousPosition, this.currentPlayer.position, this.currentPlayer.direction);
       this.previousPosition = Object.assign({}, this.currentPlayer.position);
+
+      this.findPossibleTarget();
 
       let moving = false
       if (this.cursors.left.isDown) {
         moving = true
         this.currentPlayer.body.velocity.x = -150;
+        this.currentPlayer.direction = 'left';
         this.currentPlayer.animations.play('right')
         if (this.cursors.left.shiftKey) {
           //collection added for blocks below. Comment in for block to be added as child sprite to player.
           this.pickUpBlockPhysicsBJAD()
         } 
+        console.log(this.currentPlayer.direction)
       }
       if (this.cursors.right.isDown) {
         moving = true
         this.currentPlayer.body.velocity.x = 150;
+        this.currentPlayer.direction = 'right';
         this.currentPlayer.animations.play('right')
         if(this.cursors.right.shiftKey){
           this.pickUpBlockPhysicsBJAD()
         }
+        console.log(this.currentPlayer.direction)
       }
       if (this.cursors.up.isDown) {
+
         moving = true
         this.currentPlayer.body.velocity.y = -150;
+        this.currentPlayer.direction = 'up';
         this.currentPlayer.animations.play('up')
         if (this.cursors.up.shiftKey) {
           this.pickUpBlockPhysicsBJAD()
         }
+        console.log(this.currentPlayer.direction)
       }
       if (this.cursors.down.isDown) {
         moving = true
@@ -136,6 +147,9 @@ export default class MainGame extends Phaser.State {
         if (this.cursors.down.shiftKey) {
           this.pickUpBlockPhysicsBJAD()
         }
+        this.currentPlayer.direction = 'down';
+        this.currentPlayer.animations.play('up')
+        console.log(this.currentPlayer.direction)
       }
       if (!moving) {
         this.currentPlayer.animations.stop()
@@ -174,11 +188,14 @@ export default class MainGame extends Phaser.State {
     this.newPlayer.animations.add('up', [18, 19, 20, 21, 22], 10, true)
 
     this.playerMapBJAD[id] = this.newPlayer
+
   }
 
   setCurrentPlayer(id) {
     this.currentPlayer = this.playerMapBJAD[id]
-    this.currentPlayer.id = id
+    this.currentPlayer.direction = 'right';
+    this.currentPlayer.id = id;
+    this.currentPlayer.pointer = null;
     this.game.camera.follow(this.currentPlayer)
     this.currentPlayer.enableBody = true
     this.game.physics.arcade.enable(this.currentPlayer)
@@ -196,14 +213,12 @@ export default class MainGame extends Phaser.State {
 
   movePlayer(id, x, y) {
     this.player = this.playerMapBJAD[id]
-
-    this.player.animations.add('breathe', [3, 5], 2, true)
-    this.player.animations.play('breathe')
+    //TODO: Add direction parameter to play corresponding animation
+    this.player.animations.play('right')
     var distance = Phaser.Math.distance(this.player.x, this.player.y, x, y)
     var duration = distance * 1
     var tween = this.game.add.tween(this.player)
-    tween.to({ x: x, y: y }, duration)
-    tween.start()
+    tween.to({ x: x, y: y }, duration, Phaser.Easing.Default, true, 0, 0)
   }
 
   removeBlockBJAD(usedBlockId) {
@@ -216,8 +231,39 @@ export default class MainGame extends Phaser.State {
     this.blockBJAD.body.collideWorldBounds = true
   }
 
+  stopAnimation(id) {
+    this.player = this.playerMapBJAD[id]
+    this.player.animations.stop()
+  }
 
+  findPossibleTarget() {
+    let allPlayersObj = this.playerMapBJAD
+
+    Object.keys(allPlayersObj).forEach(id => {
+      if (Number(id) !== this.currentPlayer.id) {
+        let dx = allPlayersObj[id].position.x - this.currentPlayer.position.x;
+        let dy = allPlayersObj[id].position.y - this.currentPlayer.position.y;
+        let calcDist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+        if (calcDist < 100) {
+          this.possibleTarget = allPlayersObj[id];
+          if (this.currentPlayer.pointer) {
+            this.currentPlayer.pointer.position.x = allPlayersObj[id].position.x;
+            this.currentPlayer.pointer.position.y = allPlayersObj[id].position.y - 5;
+          } else {
+            let hollowPointer = this.game.add.sprite(allPlayersObj[id].position.x, allPlayersObj[id].position.y - 5, 'hollowPointer')
+            hollowPointer.anchor.x = 0.5;
+            hollowPointer.anchor.y = 1.0;
+            this.currentPlayer.pointer = hollowPointer;
+          }
+        } else {
+          if (this.currentPlayer.pointer) {
+            this.currentPlayer.pointer.destroy();
+          }
+          this.possibleTarget = null;
+          this.currentPlayer.pointer = null;
+        }
+      }
+    })
+  }
 
 }
-
-import Client from '../js/client'
