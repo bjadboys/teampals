@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import Client from '../js/client'
 
 export default class MainGame extends Phaser.State {
   constructor() {
@@ -48,6 +49,8 @@ export default class MainGame extends Phaser.State {
 
       Client.updatePosition(this.previousPosition, this.currentPlayer.position, this.currentPlayer.direction);
       this.previousPosition = Object.assign({}, this.currentPlayer.position);
+
+      this.findPossibleTarget();
 
       let moving = false
 
@@ -100,11 +103,14 @@ export default class MainGame extends Phaser.State {
     this.newPlayer.animations.add('up', [18, 19, 20, 21, 22], 10, true)
 
     this.playerMapBJAD[id] = this.newPlayer
+
   }
 
   setCurrentPlayer(id) {
     this.currentPlayer = this.playerMapBJAD[id]
     this.currentPlayer.direction = 'right';
+    this.currentPlayer.id = id;
+    this.currentPlayer.pointer = null;
     this.game.camera.follow(this.currentPlayer)
     this.currentPlayer.enableBody = true
     this.game.physics.arcade.enable(this.currentPlayer)
@@ -135,6 +141,34 @@ export default class MainGame extends Phaser.State {
     this.player.animations.stop()
   }
 
-}
+  findPossibleTarget() {
+    let allPlayersObj = this.playerMapBJAD
 
-import Client from '../js/client'
+    Object.keys(allPlayersObj).forEach(id => {
+      if (Number(id) !== this.currentPlayer.id) {
+        let dx = allPlayersObj[id].position.x - this.currentPlayer.position.x;
+        let dy = allPlayersObj[id].position.y - this.currentPlayer.position.y;
+        let calcDist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
+        if (calcDist < 100) {
+          this.possibleTarget = allPlayersObj[id];
+          if (this.currentPlayer.pointer) {
+            this.currentPlayer.pointer.position.x = allPlayersObj[id].position.x;
+            this.currentPlayer.pointer.position.y = allPlayersObj[id].position.y - 5;
+          } else {
+            let hollowPointer = this.game.add.sprite(allPlayersObj[id].position.x, allPlayersObj[id].position.y - 5, 'hollowPointer')
+            hollowPointer.anchor.x = 0.5;
+            hollowPointer.anchor.y = 1.0;
+            this.currentPlayer.pointer = hollowPointer;
+          }
+        } else {
+          if (this.currentPlayer.pointer) {
+            this.currentPlayer.pointer.destroy();
+          }
+          this.possibleTarget = null;
+          this.currentPlayer.pointer = null;
+        }
+      }
+    })
+  }
+
+}
