@@ -56,26 +56,21 @@ export default class MainGame extends Phaser.State {
   //adds the block as a child of the current user sprite, if player is holding Shift and Left or Right (just for test)
   //updates the x y of the block so it is 0 0 on the parent element which is now the current player.
   collectBlockBJAD(playerId, blockId){
+    console.log('hit')
     this.player = this.playerMapBJAD[playerId]
-<<<<<<< Updated upstream
     this.block = this.blocksBJAD.children.find(block => block.id === blockId)
     this.block.y = 3
     this.block.x = 3
     this.player.addChild(this.block)
-=======
-    if (!this.player.children.length){
-      console.log(this.player, 'collectsBlockBJAD thisplayer')
-      this.block = this.blocksBJAD.children.find(block => block.id === blockId)
-      this.player.addChild(this.block)
-      console.log('hit')
-    }
->>>>>>> Stashed changes
+  
   }
 
   pickUpBlockPhysicsBJAD() {
     //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
     //that they touch.
-    this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
+    if(!this.currentPlayer.children.length){
+      this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
+    }
   }
 
   useBlockBJAD(block){
@@ -143,7 +138,7 @@ export default class MainGame extends Phaser.State {
         //the block is removed from current player's children and added back to blocks group.
         //the block's x y is updated with the players x y.
         if (this.currentPlayer.children.length) {
-          const droppedBlock = this.currentPlayer.removeChild(this.currentBlock)
+          const droppedBlock = this.currentPlayer.removeChild(this.currentPlayer.children[0])
           droppedBlock.x = this.currentPlayer.x
           droppedBlock.y = this.currentPlayer.y
           this.currentBlock = null;
