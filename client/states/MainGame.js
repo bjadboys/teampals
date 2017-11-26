@@ -59,11 +59,14 @@ export default class MainGame extends Phaser.State {
   //updates the x y of the block so it is 0 0 on the parent element which is now the current player.
   collectBlockBJAD(playerId, blockId){
     this.player = this.playerMapBJAD[playerId]
-    this.block = this.blocksBJAD.children.find(block => block.id === blockId)
-    this.block.y = 3
-    this.block.x = 3
-    this.player.addChild(this.block)
-  
+    if (!this.player.children.length) {//added this second length check in case player is touching two blocks when they do a pick up.
+      this.block = this.blocksBJAD.children.find(block => block.id === blockId)
+      if (this.block) {
+        this.block.y = 3
+        this.block.x = 3
+        this.player.addChild(this.block)
+      }
+    }
   }
 
   dropBlockBJAD(playerId){
@@ -78,7 +81,7 @@ export default class MainGame extends Phaser.State {
   pickUpBlockPhysicsBJAD() {
     //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
     //that they touch.
-    if(!this.currentPlayer.children.length){
+    if (!this.currentPlayer.children.length) { 
       this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
     }
   }
@@ -160,16 +163,7 @@ export default class MainGame extends Phaser.State {
         //the block is removed from current player's children and added back to blocks group.
         //the block's x y is updated with the players x y.
         if (this.currentPlayer.children.length) {
-          const droppedBlock = this.currentPlayer.removeChild(this.currentPlayer.children[0])
-          droppedBlock.x = this.currentPlayer.x
-          droppedBlock.y = this.currentPlayer.y
-          this.currentBlock = null;
-          if (this.game.physics.arcade.overlap(droppedBlock, this.blocksBJAD)) {
-            this.useBlockBJAD(droppedBlock)
-          } else {
-            console.log('added back')
-            this.blocksBJAD.addChild(droppedBlock)
-          }
+          Client.playerDropsBlockBJAD(this.currentPlayer.id)
         }
       }
     }

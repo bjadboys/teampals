@@ -36,10 +36,14 @@ module.exports = (io, server) => {
         const blockEvent = {
           newBlock, usedBlockId
         }
-        socket.emit('replaceBlock', blockEvent)
+        io.emit('replaceBlock', blockEvent)
         server.lastBlockIdBJAD++;
       })
-      
+
+      socket.on('block-dropped', function(playerId){
+        io.emit('player-dropped-block', playerId)
+      })
+
       socket.on('stopped-moving', function() {
         console.log('BROADCAST EMIT STOP ANIMATION')
         socket.broadcast.emit('stop-animation', socket.player.id)

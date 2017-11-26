@@ -32,9 +32,14 @@ Client.blockUsedBJAD = function(usedBlockId) {
 }
 
 Client.playerPicksUpBlockBJAD = function(player, block) {
+    console.log(block, 'block in client')
     const playerId = player.id
     const blockId = block.id
     Client.socket.emit('block-picked-up', {playerId, blockId})
+}
+
+Client.playerDropsBlockBJAD = function(playerId) {
+    Client.socket.emit('block-dropped', playerId)
 }
 
 Client.socket.on('player-dropped-block', function (playerId) {
