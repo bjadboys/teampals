@@ -56,13 +56,21 @@ export default class MainGame extends Phaser.State {
   //adds the block as a child of the current user sprite, if player is holding Shift and Left or Right (just for test)
   //updates the x y of the block so it is 0 0 on the parent element which is now the current player.
   collectBlockBJAD(playerId, blockId){
-    console.log('hit')
     this.player = this.playerMapBJAD[playerId]
     this.block = this.blocksBJAD.children.find(block => block.id === blockId)
     this.block.y = 3
     this.block.x = 3
     this.player.addChild(this.block)
   
+  }
+
+  dropBlockBJAD(playerId){
+    this.player = this.playerMapBJAD[playerId]
+    this.droppedBlock = this.player.removeChild(this.player.children[0])
+    this.droppedBlock.x = this.player.x
+    this.droppedBlock.y = this.player.y
+    this.blocksBJAD.addChild(this.droppedBlock)
+    this.droppedBlock = null;
   }
 
   pickUpBlockPhysicsBJAD() {
