@@ -5,7 +5,7 @@ import Client from '../js/client'
 
 const hudWait = 500
 const wait = 30
-console.log(throttle)
+
 export default class MainGame extends Phaser.State {
   constructor() {
     super()
@@ -19,6 +19,7 @@ export default class MainGame extends Phaser.State {
     this.removePlayer = this.removePlayer.bind(this)
     this.movePlayer = this.movePlayer.bind(this)
     this.stopAnimation = this.stopAnimation.bind(this);
+    this.startAnimation = this.startAnimation.bind(this)
     this.pickUpBlockPhysicsBJAD = throttle(this.pickUpBlockPhysicsBJAD.bind(this), wait)
     this.dropBlockPhysicsBJAD = throttle(this.dropBlockPhysicsBJAD.bind(this), wait)
     this.dropBlockBJAD = this.dropBlockBJAD.bind(this)
@@ -67,8 +68,6 @@ export default class MainGame extends Phaser.State {
   isInDeathBJAD(x, y){
     const xIndex = Math.floor(x / 32)
     const yIndex = Math.floor(y / 32)
-    // console.log('indices', xIndex, yIndex)
-    // console.log('isdead', this.death[yIndex][xIndex].index)
     return this.death[yIndex][xIndex].index
   }
 
@@ -132,7 +131,7 @@ export default class MainGame extends Phaser.State {
 
   update() {
     //physics added for blocks
-    if (this.blocksBJAD.children.length){
+    if(this.blocksBJAD.children.length){
       this.blockBJAD.body.velocity.x = 0
       this.blockBJAD.body.velocity.y = 0
     }
@@ -148,49 +147,70 @@ export default class MainGame extends Phaser.State {
       this.currentPlayer.body.velocity.x = 0;
       this.currentPlayer.body.velocity.y = 0;
       if (this.isInDeathBJAD(this.currentPlayer.position.x, this.currentPlayer.position.y) !== -1){
-        console.log('dead')
-        // this.killPlayer(this.currentPlayer)
+      //TODO: Damage player vs kill.
       }
-      Client.updatePosition(this.previousPosition, this.currentPlayer.position, this.currentPlayer.direction);
-      this.previousPosition = Object.assign({}, this.currentPlayer.position);
 
-
-        this.movementThrottle()
-
-
+      this.movementThrottle()
       this.findPossibleTarget();
 
       let moving = false
-      if (this.cursors.left.isDown) {
-
-        moving = true
-        this.currentPlayer.body.velocity.x = -150;
-        this.currentPlayer.direction = 'left';
-        this.currentPlayer.animations.play('right')
-      }
-      if (this.cursors.right.isDown) {
-        moving = true
-        this.currentPlayer.body.velocity.x = 150;
-        this.currentPlayer.direction = 'right';
-        this.currentPlayer.animations.play('right')
-      }
-      if (this.cursors.up.isDown) {
-
+      if (this.cursors.up.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown) {
         moving = true
         this.currentPlayer.body.velocity.y = -150;
         this.currentPlayer.direction = 'up';
         this.currentPlayer.animations.play('up')
       }
-      if (this.cursors.down.isDown) {
+      if (this.cursors.up.isDown && this.cursors.left.isDown && !this.cursors.right.isDown) {
+        moving = true
+        this.currentPlayer.body.velocity.y = -150;
+        this.currentPlayer.body.velocity.x = -150;
+        this.currentPlayer.direction = 'up-left';
+        this.currentPlayer.animations.play('up')
+      }
+      if (this.cursors.up.isDown && !this.cursors.left.isDown && this.cursors.right.isDown) {
+        moving = true
+        this.currentPlayer.body.velocity.y = -150;
+        this.currentPlayer.body.velocity.x = 150;
+        this.currentPlayer.direction = 'up-right';
+        this.currentPlayer.animations.play('up')
+      }
+      if (this.cursors.down.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown) {
         moving = true
         this.currentPlayer.body.velocity.y = 150;
         this.currentPlayer.direction = 'down';
         this.currentPlayer.animations.play('up')
       }
+      if (this.cursors.down.isDown && this.cursors.left.isDown && !this.cursors.right.isDown) {
+        moving = true
+        this.currentPlayer.body.velocity.y = 150;
+        this.currentPlayer.body.velocity.x = -150;
+        this.currentPlayer.direction = 'down-left';
+        this.currentPlayer.animations.play('up')
+      }
+      if (this.cursors.down.isDown && !this.cursors.left.isDown && this.cursors.right.isDown) {
+        moving = true
+        this.currentPlayer.body.velocity.y = 150;
+        this.currentPlayer.body.velocity.x = 150;
+        this.currentPlayer.direction = 'down-right';
+        this.currentPlayer.animations.play('up')
+      }
+      if (this.cursors.right.isDown && !this.cursors.up.isDown && !this.cursors.down.isDown) {
+        moving = true
+        this.currentPlayer.body.velocity.x = 150;
+        this.currentPlayer.direction = 'right';
+        this.currentPlayer.animations.play('right')
+      }
+      if (this.cursors.left.isDown && !this.cursors.up.isDown && !this.cursors.down.isDown) {
+        moving = true
+        this.currentPlayer.body.velocity.x = -150;
+        this.currentPlayer.direction = 'left';
+        this.currentPlayer.animations.play('right')
+      }
       if (!moving) {
         this.currentPlayer.animations.stop()
       }
-      if (this.fireButton.isDown) {
+      if (this.fireButton.isDown && !this.currentPlayer.firing) {
+        this.currentPlayer.firing = true
         Client.SEND_fire(this.currentPlayer.position);
         //if you shoot the gun, you drop the block.
         //the block is removed from current player's children and added back to blocks group.
@@ -202,12 +222,16 @@ export default class MainGame extends Phaser.State {
       if (this.pickUpButton.isDown) {
         this.pickUpBlockPhysicsBJAD()
       }
+      if (!this.fireButton.isDown){
+        this.currentPlayer.firing = false
+      }
     }
   }
 
-
-  addNewPlayer(id, x, y) {
+  addNewPlayer(id, x, y, serverSideTime) {
     this.newPlayer = this.game.add.sprite(x, y, 'characters')
+    this.newPlayer.moving = false;
+    this.newPlayer.serverSideTime = serverSideTime
     this.newPlayer.frame = 0
     this.newPlayer.anchor.x = 0.5
     this.newPlayer.anchor.y = 0.5
@@ -215,9 +239,7 @@ export default class MainGame extends Phaser.State {
     this.newPlayer.body.collideWorldBounds = true
     this.newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], 10, true)
     this.newPlayer.animations.add('up', [18, 19, 20, 21, 22], 10, true)
-
     this.playerMapBJAD[id] = this.newPlayer
-
   }
 
   addNewBase(base) {
@@ -239,6 +261,7 @@ export default class MainGame extends Phaser.State {
     this.currentPlayer.enableBody = true
     this.game.physics.arcade.enable(this.currentPlayer)
     this.previousPosition = Object.assign({}, this.currentPlayer.position)
+    this.currentPlayer.firing = false
   }
 
   removePlayer(id) {
@@ -254,14 +277,19 @@ export default class MainGame extends Phaser.State {
     this.playerMapBJAD[id].kill();
   }
 
-  movePlayer(id, x, y) {
+  movePlayer(id, x, y, serverSideTime) {
     this.player = this.playerMapBJAD[id]
-    //TODO: Add direction parameter to play corresponding animation
-    this.player.animations.play('right')
-    var distance = Phaser.Math.distance(this.player.x, this.player.y, x, y)
-    var duration = distance * 1
-    var tween = this.game.add.tween(this.player)
-    tween.to({ x: x, y: y }, duration, Phaser.Easing.Default, true, 0, 0)
+    if (this.player.serverSideTime<=serverSideTime){
+      if(!this.player.moving){
+        this.player.moving = true;
+        this.startAnimation(id)
+      }
+      this.player.serverSideTime = serverSideTime
+      //TODO: Add direction parameter to play corresponding animation
+
+      this.player.position.x = x;
+      this.player.position.y = y;
+    }
   }
 
   removeBlockBJAD(playerId) {
@@ -280,6 +308,12 @@ export default class MainGame extends Phaser.State {
   stopAnimation(id) {
     this.player = this.playerMapBJAD[id]
     this.player.animations.stop()
+    this.player.moving = false;
+  }
+
+  startAnimation(id){
+    this.player = this.playerMapBJAD[id]
+    this.player.animations.play('right')
   }
 
   findPossibleTarget() {
@@ -294,9 +328,10 @@ export default class MainGame extends Phaser.State {
           this.possibleTarget = allPlayersObj[id];
           if (this.currentPlayer.pointer) {
             this.currentPlayer.pointer.position.x = allPlayersObj[id].position.x;
-            this.currentPlayer.pointer.position.y = allPlayersObj[id].position.y - 5;
+            this.currentPlayer.pointer.position.y = allPlayersObj[id].position.y - 7;
           } else {
-            let hollowPointer = this.game.add.sprite(allPlayersObj[id].position.x, allPlayersObj[id].position.y - 5, 'hollowPointer')
+            let hollowPointer = this.game.add.sprite(allPlayersObj[id].position.x, allPlayersObj[id].position.y, 'hollowPointer')
+            hollowPointer.scale.setTo(0.07);
             hollowPointer.anchor.x = 0.5;
             hollowPointer.anchor.y = 1.0;
             this.currentPlayer.pointer = hollowPointer;

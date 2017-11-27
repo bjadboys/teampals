@@ -57,7 +57,6 @@ export default class Lobby extends React.Component {
         />
         {this.joinGameButton()}
     </div>
-
    )
   }
 
