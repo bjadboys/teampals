@@ -54,6 +54,7 @@ export default class MainGame extends Phaser.State {
     //set up the keyboard for movement
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
+    this.pickUpButton = this.game.input.keyboard.addKey(Phaser.KeyCode.X)
 
     this.blocksBJAD = this.add.group()
     this.blocksBJAD.enableBody = true
@@ -150,21 +151,12 @@ export default class MainGame extends Phaser.State {
         this.currentPlayer.body.velocity.x = -150;
         this.currentPlayer.direction = 'left';
         this.currentPlayer.animations.play('right')
-        if (this.cursors.left.shiftKey) {
-          //collection added for blocks below. Comment in for block to be added as child sprite to player.
-          this.pickUpBlockPhysicsBJAD()
-        } 
-        console.log(this.currentPlayer.direction)
       }
       if (this.cursors.right.isDown) {
         moving = true
         this.currentPlayer.body.velocity.x = 150;
         this.currentPlayer.direction = 'right';
         this.currentPlayer.animations.play('right')
-        if(this.cursors.right.shiftKey){
-          this.pickUpBlockPhysicsBJAD()
-        }
-        console.log(this.currentPlayer.direction)
       }
       if (this.cursors.up.isDown) {
 
@@ -172,20 +164,12 @@ export default class MainGame extends Phaser.State {
         this.currentPlayer.body.velocity.y = -150;
         this.currentPlayer.direction = 'up';
         this.currentPlayer.animations.play('up')
-        if (this.cursors.up.shiftKey) {
-          this.pickUpBlockPhysicsBJAD()
-        }
-        console.log(this.currentPlayer.direction)
       }
       if (this.cursors.down.isDown) {
         moving = true
         this.currentPlayer.body.velocity.y = 150;
-        if (this.cursors.down.shiftKey) {
-          this.pickUpBlockPhysicsBJAD()
-        }
         this.currentPlayer.direction = 'down';
         this.currentPlayer.animations.play('up')
-        console.log(this.currentPlayer.direction)
       }
       if (!moving) {
         this.currentPlayer.animations.stop()
@@ -198,6 +182,9 @@ export default class MainGame extends Phaser.State {
         if (this.currentPlayer.children.length) { 
           this.dropBlockPhysicsBJAD()
         }
+      }
+      if(this.pickUpButton.isDown) {
+        this.pickUpBlockPhysicsBJAD()
       }
     }
   }
