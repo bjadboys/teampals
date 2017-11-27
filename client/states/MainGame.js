@@ -20,7 +20,6 @@ export default class MainGame extends Phaser.State {
     this.setCurrentPlayer = this.setCurrentPlayer.bind(this)
     this.removePlayer = this.removePlayer.bind(this)
     this.movePlayer = this.movePlayer.bind(this)
-    //this.createBlockBJAD = this.createBlockBJAD.bind(this)
     this.stopAnimation = this.stopAnimation.bind(this);
     this.pickUpBlockPhysicsBJAD = throttle(this.pickUpBlockPhysicsBJAD.bind(this), wait)
     this.dropBlockPhysicsBJAD = throttle(this.dropBlockPhysicsBJAD.bind(this), wait)
