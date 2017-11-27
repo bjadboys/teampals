@@ -49,34 +49,7 @@ module.exports = {
   // When we're in development, we can use this handy live-reload plugin
   // to refresh the page for us every time we make a change to our client-side
   // files. It's like `nodemon` for the front end!
-  plugins: isDev ? [
-    definePlugin,
-    new LiveReloadPlugin({ appendScriptTag: true }),
-    new webpack.optimize.CommonsChunkPlugin({ name: 'vendor'/* chunkName= */, filename: 'vendor.bundle.js'/* filename= */ }),
-    new HtmlWebpackPlugin({
-      filename: '../index.html',
-      template: './src/index.html',
-      chunks: ['vendor', 'app'],
-      chunksSortMode: 'manual',
-      minify: {
-        removeAttributeQuotes: false,
-        collapseWhitespace: false,
-        html5: false,
-        minifyCSS: false,
-        minifyJS: false,
-        minifyURLs: false,
-        removeComments: false,
-        removeEmptyAttributes: false
-      },
-      hash: false
-    }),
-    new BrowserSyncPlugin({
-      host: process.env.IP || 'localhost',
-      port: process.env.PORT || 8080,
-      server: {
-        baseDir: ['./', './build']
-      }
-    })] : [],
+  plugins: isDev ? [] : [],
     resolve: {
       alias: {
       'phaser': phaser,

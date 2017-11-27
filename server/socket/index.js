@@ -36,6 +36,7 @@ module.exports = (io, server) => {
     // })
     //above is brian's lobby code.
     socket.on('newplayer', function () {
+      if (server.lastPlayderID === 4) throw new Error('too many players')
       server.lastPlayderID++
       socket.player = defaultPlayers.find(player => player.id === server.lastPlayderID)
       io.emit()
