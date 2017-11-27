@@ -28,21 +28,10 @@ module.exports = (io, server) => {
       })
 
       socket.on('blockUsed', function(data){
-        const newBlock = {
-          id: server.lastBlockIdBJAD++,
-          x: randomInt(300, 1000),
-          y: randomInt(300, 1000)
-        }
-        mapBlocks = mapBlocks.map(block => {
-          if (block.id === data.blockId) {
-            return newBlock
-          } else {
-            return block
-          }
-        })
-        io.emit('allBlocks', [newBlock])
+        const newBlock = makeBlocks(1)
+        updateMapBlocks(data.blockId, newBlock[0])
+        io.emit('allBlocks', newBlock)
         io.emit('replaceBlock', data)
-        server.lastBlockIdBJAD++;
       })
 
       socket.on('block-dropped', function(playerId){
@@ -90,9 +79,7 @@ module.exports = (io, server) => {
               }
             }
           }
-
         }
-
       }
       // Send updated bullets
       io.emit("bullets-update", bullet_array)
@@ -126,5 +113,15 @@ module.exports = (io, server) => {
 
   function randomInt(low, high) {
     return Math.floor(Math.random() * (high - low) + low);
+  }
+
+  function updateMapBlocks(blockId, newBlock) {
+    mapBlocks = mapBlocks.map(block => {
+      if (block.id === blockId) {
+        return newBlock
+      } else {
+        return block
+      }
+    })
   }
 }
