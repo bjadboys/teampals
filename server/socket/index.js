@@ -39,7 +39,6 @@ module.exports = (io, server) => {
       })
 
       socket.on('stopped-moving', function() {
-        console.log('BROADCAST EMIT STOP ANIMATION')
         socket.broadcast.emit('stop-animation', socket.player.id)
       })
 
