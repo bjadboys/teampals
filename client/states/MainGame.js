@@ -1,10 +1,12 @@
 import Phaser from 'phaser'
 import BlocksBJAD from '../items/blocks'
-
+import {throttle} from 'lodash'
 let map, cursors, weapon, fireButton, currentPlayer, previousPosition, playerMapBJAD
 
 import Client from '../js/client'
 
+const wait = 30
+console.log(throttle)
 export default class MainGame extends Phaser.State {
   constructor() {
     super()
@@ -19,8 +21,12 @@ export default class MainGame extends Phaser.State {
     this.movePlayer = this.movePlayer.bind(this)
     //this.createBlockBJAD = this.createBlockBJAD.bind(this)
     this.stopAnimation = this.stopAnimation.bind(this);
+    this.pickUpBlockPhysicsBJAD = throttle(this.pickUpBlockPhysicsBJAD.bind(this), wait)
+    this.dropBlockPhysicsBJAD = throttle(this.dropBlockPhysicsBJAD.bind(this), wait)
     this.dropBlockBJAD = this.dropBlockBJAD.bind(this)
     this.dropBlockPhysicsBJAD = this.dropBlockPhysicsBJAD.bind(this)
+    this.movementThrottle = throttle(this.movementThrottle.bind(this), wait)
+    this.findPossibleTarget = throttle(this.findPossibleTarget.bind(this), wait)
   }
 
   //here we create everything we need for the game.
@@ -101,6 +107,11 @@ export default class MainGame extends Phaser.State {
     }
   }
 
+  movementThrottle(){
+    Client.updatePosition(this.previousPosition, this.currentPlayer.position, this.currentPlayer.direction);
+    this.previousPosition = Object.assign({}, this.currentPlayer.position);
+  }
+
   useBlockBJAD(block){
     Client.blockUsedBJAD(block.id)
   }
@@ -123,8 +134,9 @@ export default class MainGame extends Phaser.State {
       this.currentPlayer.body.velocity.x = 0;
       this.currentPlayer.body.velocity.y = 0;
 
-      Client.updatePosition(this.previousPosition, this.currentPlayer.position, this.currentPlayer.direction);
-      this.previousPosition = Object.assign({}, this.currentPlayer.position);
+     
+        this.movementThrottle()
+
 
       this.findPossibleTarget();
 
