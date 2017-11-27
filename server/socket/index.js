@@ -70,7 +70,6 @@ module.exports = (io, server) => {
 
     function ServerGameLoop() {
       for (let i = 0; i < bulletArray.length; i++) {
-        console.log('bulletArray length', bulletArray.length)
         // Update position of bullets
         bulletArray[i].x += bulletArray[i].xv;
         bulletArray[i].y += bulletArray[i].yv;
@@ -80,8 +79,6 @@ module.exports = (io, server) => {
         let yTile = Math.floor(yPixels / 32) * 48
         let tile = bulletCollisionLayer[ xTile + yTile]
 
-        console.log('collisionCheck', tile)
-        console.log(bulletArray[i])
         // Remove bullet if it's off screen
         if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || (tile > 0)) {
           bulletArray.splice(i, 1);
