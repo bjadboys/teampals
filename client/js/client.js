@@ -5,7 +5,7 @@ let bullet_array = [];
 const Client = {};
 let offsetX = 0;
 let offsetY = 0;
-let sendStopCalls = false;
+let sendStopCalls = 0;
 Client.socket = io.connect();
 
 Client.askNewPlayer = function(){
@@ -18,12 +18,13 @@ Client.SEND_fire = function (position) {
 
 Client.updatePosition = function (previous, current) {
     if (previous.x !== current.x || previous.y !== current.y) {
-        Client.socket.emit('update-position', { x: current.x, y: current.y })
-        sendStopCalls = false;
+        Client.socket.emit('update-position', { x: current.x, y: current.y, playerSideTime: Date.now() })
+        sendStopCalls = 0;
     }
-    else if (!sendStopCalls) {
+    else if (sendStopCalls<1) {
         Client.socket.emit('stopped-moving')
-        sendStopCalls = true;
+        sendStopCalls++;
+        console.log("sent stop")
     }
 };
 
@@ -43,7 +44,7 @@ Client.playerDropsBlockBJAD = function(playerId) {
 
 Client.socket.on('player-dropped-block', function (playerId) {
     game.state.states.MainGame.dropBlockBJAD(playerId)
-}) 
+})
 
 //Client add on block at a time to the map.
 Client.socket.on('addBlock', function(data){
@@ -66,20 +67,22 @@ Client.socket.on('replaceBlock', function(data){
     game.state.states.MainGame.removeBlockBJAD(data.playerId);
 })
 Client.socket.on('stop-animation', function(data) {
+    console.log('stopping', data)
   game.state.states.MainGame.stopAnimation(data);
 })
+
 
 Client.socket.on('yourID',function(data){
   game.state.states.MainGame.setCurrentPlayer(data);
 });
 
 Client.socket.on('newplayer',function(data){
-  game.state.states.MainGame.addNewPlayer(data.id,data.x,data.y);
+  game.state.states.MainGame.addNewPlayer(data.id,data.x,data.y, data.serverSideTime);
 });
 
 Client.socket.on('allplayers',function(data){
     for (var i = 0; i < data.length; i++){
-        game.state.states.MainGame.addNewPlayer(data[i].id, data[i].x, data[i].y)
+        game.state.states.MainGame.addNewPlayer(data[i].id, data[i].x, data[i].y, data[i].serverSideTime)
         game.state.states.MainGame.addNewBase(data[i].id, data[i].x, data[i].y)
     }
 });
@@ -116,7 +119,7 @@ Client.socket.on("bullets-update", function (RCV_bullet_array) {
 });
 
 Client.socket.on('move', function(data){
-    game.state.states.MainGame.movePlayer(data.id, data.x, data.y);
+    game.state.states.MainGame.movePlayer(data.id, data.x, data.y, data.serverSideTime);
 });
 
 

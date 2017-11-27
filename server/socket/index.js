@@ -10,7 +10,9 @@ module.exports = (io, server) => {
       socket.player = {
         id: server.lastPlayderID++,
         x: randomInt(100, 400),
-        y: randomInt(100, 400)
+        y: randomInt(100, 400),
+        playerSideTime: null,
+        serverSideTime: Date.now()
       };
       socket.emit('allplayers', getAllPlayers());
       socket.emit('yourID', socket.player.id)
@@ -18,8 +20,15 @@ module.exports = (io, server) => {
       socket.emit('allBlocks', mapBlocks)
 
       socket.on('update-position', function (data) {
-        socket.player.x = data.x;
-        socket.player.y = data.y;
+        if(socket.player.playerSideTime<=data.playerSideTime){
+          socket.player.playerSideTime = data.playerSideTime;
+          socket.player.serverSideTime = Date.now();
+          socket.player.x = data.x;
+          socket.player.y = data.y;
+
+        } else {
+          console.log('lost packet', data)
+        }
         socket.broadcast.emit('move', socket.player);
       });
 
@@ -39,16 +48,18 @@ module.exports = (io, server) => {
       })
 
       socket.on('stopped-moving', function() {
-        console.log('BROADCAST EMIT STOP ANIMATION')
+
         socket.broadcast.emit('stop-animation', socket.player.id)
       })
+
+
 
       socket.on('fire', function (data) {
         let new_bullet = {};
         new_bullet.x = data.x;
         new_bullet.y = data.y;
-        new_bullet.xv = -3;
-        new_bullet.yv = -3;
+        new_bullet.xv = -1;
+        new_bullet.yv = -1;
         new_bullet.id = socket.player.id;
         bullet_array.push(new_bullet);
       });
