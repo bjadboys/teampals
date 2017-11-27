@@ -1,8 +1,11 @@
 import React from 'react'
 
 
-export const GameScreen = () => {
+const GameScreen = () => {
   return(
     <div id='app'>
-    </div>)
+    </div>
+  )
 }
+
+export default GameScreen

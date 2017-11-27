@@ -27,12 +27,11 @@ Client.updatePosition = function (previous, current) {
     }
 };
 
-Client.blockUsedBJAD = function(usedBlockId) {
-    Client.socket.emit('blockUsed', usedBlockId)
+Client.blockUsedBJAD = function(data) {
+    Client.socket.emit('blockUsed', data)
 }
 
 Client.playerPicksUpBlockBJAD = function(player, block) {
-    console.log(block, 'block in client')
     const playerId = player.id
     const blockId = block.id
     Client.socket.emit('block-picked-up', {playerId, blockId})
@@ -52,7 +51,6 @@ Client.socket.on('addBlock', function(data){
 })
 
 Client.socket.on('player-picked-up-block', function(data){
-    console.log(data)
     game.state.states.MainGame.collectBlockBJAD(data.playerId, data.blockId)
 })
 
@@ -65,8 +63,7 @@ Client.socket.on('allBlocks', function(data){
 
 Client.socket.on('replaceBlock', function(data){
     console.log(data)
-    game.state.states.MainGame.removeBlockBJAD(data.usedBlockId);
-    game.state.states.MainGame.addBlockBJAD(data.newBlock.id, data.newBlock.x, data.newBlock.y)
+    game.state.states.MainGame.removeBlockBJAD(data.playerId);
 })
 Client.socket.on('stop-animation', function(data) {
   game.state.states.MainGame.stopAnimation(data);
@@ -82,7 +79,8 @@ Client.socket.on('newplayer',function(data){
 
 Client.socket.on('allplayers',function(data){
     for (var i = 0; i < data.length; i++){
-        game.state.states.MainGame.addNewPlayer(data[i].id,data[i].x,data[i].y);
+        game.state.states.MainGame.addNewPlayer(data[i].id, data[i].x, data[i].y)
+        game.state.states.MainGame.addNewBase(data[i].id, data[i].x, data[i].y)
     }
 });
 
