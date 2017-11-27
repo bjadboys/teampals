@@ -5,6 +5,7 @@ let map, cursors, weapon, fireButton, currentPlayer, previousPosition, playerMap
 
 import Client from '../js/client'
 
+const hudWait = 500
 const wait = 30
 console.log(throttle)
 export default class MainGame extends Phaser.State {
@@ -27,6 +28,7 @@ export default class MainGame extends Phaser.State {
     this.dropBlockPhysicsBJAD = this.dropBlockPhysicsBJAD.bind(this)
     this.movementThrottle = throttle(this.movementThrottle.bind(this), wait)
     this.findPossibleTarget = throttle(this.findPossibleTarget.bind(this), wait)
+    this.hudThrottle = throttle(this.hudThrottle.bind(this), hudWait)
   }
 
   //here we create everything we need for the game.
@@ -60,7 +62,6 @@ export default class MainGame extends Phaser.State {
     this.ammoText = this.game.add.text(250, 5, 'AMMO: ')
     this.healthText.fixedToCamera = true;
     this.ammoText.fixedToCamera = true;
-    this.game.stage.disableVisibilityChange = true
   
   }
 
@@ -107,6 +108,11 @@ export default class MainGame extends Phaser.State {
     }
   }
 
+  hudThrottle(){
+    this.healthText.setText(`HEALTH: ${this.currentPlayer.health}`)
+    this.ammoText.setText(`AMMO: ${this.currentPlayer.ammo}`)
+  }
+
   movementThrottle(){
     Client.updatePosition(this.previousPosition, this.currentPlayer.position, this.currentPlayer.direction);
     this.previousPosition = Object.assign({}, this.currentPlayer.position);
@@ -125,9 +131,8 @@ export default class MainGame extends Phaser.State {
     //this collision only matters if we're push blocks. We may want to delete.
 
     if (this.currentPlayer) {
-      // this.healthText.setText(`HEALTH: ${this.currentPlayer.health}`)
-      // this.ammoText.setText(`AMMO: ${this.currentPlayer.ammo}`)
       this.game.physics.arcade.collide(this.currentPlayer, this.layerCollision)
+      this.hudThrottle()
       //collision added for blocks below. With this on player pushes the block around. Comment in for pushing physics
       // this.game.physics.arcade.collide(this.currentPlayer, this.blocksBJAD)
       //when the above is on it makes it impossible to push  a block out of a corner.
