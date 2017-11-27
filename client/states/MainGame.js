@@ -7,7 +7,7 @@ import Client from '../js/client'
 
 const hudWait = 500
 const wait = 30
-console.log(throttle)
+
 export default class MainGame extends Phaser.State {
   constructor() {
     super()
@@ -139,13 +139,70 @@ export default class MainGame extends Phaser.State {
       this.currentPlayer.body.velocity.x = 0;
       this.currentPlayer.body.velocity.y = 0;
 
-
-        this.movementThrottle()
-
-
+      this.movementThrottle()
       this.findPossibleTarget();
 
       let moving = false
+      if (this.cursors.up.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown) {
+        moving = true
+        this.currentPlayer.body.velocity.y = -150;
+        this.currentPlayer.direction = 'up';
+        this.currentPlayer.animations.play('up')
+        if (this.cursors.up.shiftKey) {
+          this.pickUpBlockPhysicsBJAD()
+        }
+      }
+      if (this.cursors.up.isDown && this.cursors.left.isDown && !this.cursors.right.isDown) {
+        moving = true
+        this.currentPlayer.body.velocity.y = -150;
+        this.currentPlayer.body.velocity.x = -150;
+        this.currentPlayer.direction = 'up-left';
+        this.currentPlayer.animations.play('up')
+        if (this.cursors.up.shiftKey) {
+          this.pickUpBlockPhysicsBJAD()
+        }
+      }
+      if (this.cursors.up.isDown && !this.cursors.left.isDown && this.cursors.right.isDown) {
+        moving = true
+        this.currentPlayer.body.velocity.y = -150;
+        this.currentPlayer.body.velocity.x = 150;
+        this.currentPlayer.direction = 'up-right';
+        this.currentPlayer.animations.play('up')
+        if (this.cursors.up.shiftKey) {
+          this.pickUpBlockPhysicsBJAD()
+        }
+      }
+      if (this.cursors.down.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown) {
+        moving = true
+        this.currentPlayer.body.velocity.y = 150;
+        if (this.cursors.down.shiftKey) {
+          this.pickUpBlockPhysicsBJAD()
+        }
+        this.currentPlayer.direction = 'down';
+        this.currentPlayer.animations.play('up')
+      }
+      if (this.cursors.down.isDown && this.cursors.left.isDown && !this.cursors.right.isDown) {
+        moving = true
+        this.currentPlayer.body.velocity.y = 150;
+        this.currentPlayer.body.velocity.x = -150;
+
+        if (this.cursors.down.shiftKey) {
+          this.pickUpBlockPhysicsBJAD()
+        }
+        this.currentPlayer.direction = 'down-left';
+        this.currentPlayer.animations.play('up')
+      }
+      if (this.cursors.down.isDown && !this.cursors.left.isDown && this.cursors.right.isDown) {
+        moving = true
+        this.currentPlayer.body.velocity.y = 150;
+        this.currentPlayer.body.velocity.x = 150;
+
+        if (this.cursors.down.shiftKey) {
+          this.pickUpBlockPhysicsBJAD()
+        }
+        this.currentPlayer.direction = 'down-right';
+        this.currentPlayer.animations.play('up')
+      }
       if (this.cursors.left.isDown) {
         moving = true
         this.currentPlayer.body.velocity.x = -150;
@@ -155,7 +212,6 @@ export default class MainGame extends Phaser.State {
           //collection added for blocks below. Comment in for block to be added as child sprite to player.
           this.pickUpBlockPhysicsBJAD()
         }
-        console.log(this.currentPlayer.direction)
       }
       if (this.cursors.right.isDown) {
         moving = true
@@ -165,28 +221,6 @@ export default class MainGame extends Phaser.State {
         if(this.cursors.right.shiftKey){
           this.pickUpBlockPhysicsBJAD()
         }
-        console.log(this.currentPlayer.direction)
-      }
-      if (this.cursors.up.isDown) {
-
-        moving = true
-        this.currentPlayer.body.velocity.y = -150;
-        this.currentPlayer.direction = 'up';
-        this.currentPlayer.animations.play('up')
-        if (this.cursors.up.shiftKey) {
-          this.pickUpBlockPhysicsBJAD()
-        }
-        console.log(this.currentPlayer.direction)
-      }
-      if (this.cursors.down.isDown) {
-        moving = true
-        this.currentPlayer.body.velocity.y = 150;
-        if (this.cursors.down.shiftKey) {
-          this.pickUpBlockPhysicsBJAD()
-        }
-        this.currentPlayer.direction = 'down';
-        this.currentPlayer.animations.play('up')
-        console.log(this.currentPlayer.direction)
       }
       if (!moving) {
         this.currentPlayer.animations.stop()
@@ -293,7 +327,7 @@ export default class MainGame extends Phaser.State {
           this.possibleTarget = allPlayersObj[id];
           if (this.currentPlayer.pointer) {
             this.currentPlayer.pointer.position.x = allPlayersObj[id].position.x;
-            this.currentPlayer.pointer.position.y = allPlayersObj[id].position.y - 5;
+            this.currentPlayer.pointer.position.y = allPlayersObj[id].position.y - 7;
           } else {
             let hollowPointer = this.game.add.sprite(allPlayersObj[id].position.x, allPlayersObj[id].position.y, 'hollowPointer')
             hollowPointer.scale.setTo(0.07);

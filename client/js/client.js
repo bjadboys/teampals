@@ -43,7 +43,7 @@ Client.playerDropsBlockBJAD = function(playerId) {
 
 Client.socket.on('player-dropped-block', function (playerId) {
     game.state.states.MainGame.dropBlockBJAD(playerId)
-}) 
+})
 
 //Client add on block at a time to the map.
 Client.socket.on('addBlock', function(data){
@@ -62,8 +62,7 @@ Client.socket.on('allBlocks', function(data){
 
 
 Client.socket.on('replaceBlock', function(data){
-    console.log(data)
-    game.state.states.MainGame.removeBlockBJAD(data.playerId);
+  game.state.states.MainGame.removeBlockBJAD(data.playerId);
 })
 Client.socket.on('stop-animation', function(data) {
   game.state.states.MainGame.stopAnimation(data);
