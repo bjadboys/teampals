@@ -155,8 +155,6 @@ export default class MainGame extends Phaser.State {
         // console.log('dead')
         // this.killPlayer(this.currentPlayer)
       }
-      // Client.updatePosition(this.previousPosition, this.currentPlayer.position);
-      // this.previousPosition = Object.assign({}, this.currentPlayer.position);
 
 
         this.movementThrottle()
