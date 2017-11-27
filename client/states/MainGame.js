@@ -25,6 +25,7 @@ export default class MainGame extends Phaser.State {
     this.pickUpBlockPhysicsBJAD = throttle(this.pickUpBlockPhysicsBJAD.bind(this), wait)
     this.dropBlockPhysicsBJAD = throttle(this.dropBlockPhysicsBJAD.bind(this), wait)
     this.dropBlockBJAD = this.dropBlockBJAD.bind(this)
+    this.isInDeathBJAD = this.isInDeathBJAD.bind(this)
     this.dropBlockPhysicsBJAD = this.dropBlockPhysicsBJAD.bind(this)
     this.movementThrottle = throttle(this.movementThrottle.bind(this), wait)
     this.findPossibleTarget = throttle(this.findPossibleTarget.bind(this), wait)
@@ -62,8 +63,27 @@ export default class MainGame extends Phaser.State {
     this.ammoText = this.game.add.text(250, 5, 'AMMO: ')
     this.healthText.fixedToCamera = true;
     this.ammoText.fixedToCamera = true;
-
+    this.death = this.map.layers[2].data
+    this.deathTiles = this.death.map( array => array.filter((element) => element.index !== -1))
+    console.log('death', this.death)
+    console.log('deathTiles', this.deathTiles)
+    // const isInDeath = function(x, y){
+    //   const xIndex = Math.floor(x / 32)
+    //   const yIndex = Math.floor(y / 32)
+    //   console.log('indices', xIndex, yIndex)
+    //   console.log('isdead', death[yIndex][xIndex].index)
+    // }
+    // isInDeath(17 * 32, 2 * 32)
   }
+
+  isInDeathBJAD(x, y){
+    const xIndex = Math.floor(x / 32)
+    const yIndex = Math.floor(y / 32)
+    // console.log('indices', xIndex, yIndex)
+    // console.log('isdead', this.death[yIndex][xIndex].index)
+    return this.death[yIndex][xIndex].index
+  }
+
 
   //adds the block as a child of the current user sprite, if player is holding Shift and Left or Right (just for test)
   //updates the x y of the block so it is 0 0 on the parent element which is now the current player.
@@ -196,26 +216,24 @@ export default class MainGame extends Phaser.State {
         moving = true
         this.currentPlayer.body.velocity.y = 150;
         this.currentPlayer.body.velocity.x = 150;
-
         if (this.cursors.down.shiftKey) {
           this.pickUpBlockPhysicsBJAD()
         }
         this.currentPlayer.direction = 'down-right';
         this.currentPlayer.animations.play('up')
       }
-      if (this.cursors.left.isDown) {
+      if (this.cursors.right.isDown && !this.cursors.up.isDown && !this.cursors.down.isDown) {
         moving = true
-        this.currentPlayer.body.velocity.x = -150;
-        this.currentPlayer.direction = 'left';
+        this.currentPlayer.body.velocity.x = 150;
+        this.currentPlayer.direction = 'right';
         this.currentPlayer.animations.play('right')
-        if (this.cursors.left.shiftKey) {
-          //collection added for blocks below. Comment in for block to be added as child sprite to player.
+        if(this.cursors.right.shiftKey){
           this.pickUpBlockPhysicsBJAD()
         }
       }
-      if (this.cursors.right.isDown) {
+      if (this.cursors.left.isDown && !this.cursors.up.isDown && !this.cursors.down.isDown) {
         moving = true
-        this.currentPlayer.body.velocity.x = 150;
+        this.currentPlayer.body.velocity.x = -150;
         this.currentPlayer.direction = 'right';
         this.currentPlayer.animations.play('right')
         if(this.cursors.right.shiftKey){
@@ -237,13 +255,11 @@ export default class MainGame extends Phaser.State {
     }
   }
 
-
-
   addNewPlayer(id, x, y) {
     this.newPlayer = this.game.add.sprite(x, y, 'characters')
     this.newPlayer.frame = 0
-    this.newPlayer.anchor.x = .5
-    this.newPlayer.anchor.y = .5
+    this.newPlayer.anchor.x = 0.5
+    this.newPlayer.anchor.y = 0.5
     this.game.physics.arcade.enable(this.newPlayer)
     this.newPlayer.body.collideWorldBounds = true
     this.newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], 10, true)
