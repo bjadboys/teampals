@@ -3,15 +3,42 @@ module.exports = (io, server) => {
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
   let bullet_array = [];
   let players = []
+  let defaultPlayers = [
+    {
+      id: 1,
+      x: 20,
+      y: 20
+    }, {
+      id: 2,
+      x: 1516,
+      y: 20
+    }, {
+      id: 3,
+      x: 1516,
+      y: 1516
+    }, {
+      id: 4,
+      x: 20,
+      y: 1516
+      }
+  ]
   let mapBlocks = makeBlocks(10)
 
   io.on('connection', function (socket) {
+
+    //brian's lobby code
+    // socket.on('joinLobby', function() {
+    //     server.lastPlayderID++
+    //     socket.player = players.find(player=> player.id === server.lastPlayderID)
+
+    //   }
+    //   io.emit('addPlayerLobby')
+    // })
+    //above is brian's lobby code.
     socket.on('newplayer', function () {
-      socket.player = {
-        id: server.lastPlayderID++,
-        x: randomInt(100, 400),
-        y: randomInt(100, 400)
-      };
+      server.lastPlayderID++
+      socket.player = defaultPlayers.find(player => player.id === server.lastPlayderID)
+      io.emit()
       socket.emit('allplayers', getAllPlayers());
       socket.emit('yourID', socket.player.id)
       socket.broadcast.emit('newplayer', socket.player);

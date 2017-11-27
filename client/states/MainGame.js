@@ -1,7 +1,5 @@
 import Phaser from 'phaser'
-import BlocksBJAD from '../items/blocks'
 import {throttle} from 'lodash'
-let map, cursors, weapon, fireButton, currentPlayer, previousPosition, playerMapBJAD
 
 import Client from '../js/client'
 
@@ -46,7 +44,6 @@ export default class MainGame extends Phaser.State {
     this.game.physics.arcade.enable(this.layerCollision)
     this.map.setCollisionBetween(0, 48 * 32, true, this.layerCollision)
 
-    let layer;
     for (let i = 0; i < this.map.layers.length; i++) {
       this.layer = this.map.createLayer(i)
     }
@@ -65,15 +62,6 @@ export default class MainGame extends Phaser.State {
     this.ammoText.fixedToCamera = true;
     this.death = this.map.layers[2].data
     this.deathTiles = this.death.map( array => array.filter((element) => element.index !== -1))
-    console.log('death', this.death)
-    console.log('deathTiles', this.deathTiles)
-    // const isInDeath = function(x, y){
-    //   const xIndex = Math.floor(x / 32)
-    //   const yIndex = Math.floor(y / 32)
-    //   console.log('indices', xIndex, yIndex)
-    //   console.log('isdead', death[yIndex][xIndex].index)
-    // }
-    // isInDeath(17 * 32, 2 * 32)
   }
 
   isInDeathBJAD(x, y){
@@ -143,15 +131,15 @@ export default class MainGame extends Phaser.State {
   }
 
   update() {
-
     //physics added for blocks
     if (this.blocksBJAD.children.length){
       this.blockBJAD.body.velocity.x = 0
       this.blockBJAD.body.velocity.y = 0
     }
     //this collision only matters if we're push blocks. We may want to delete.
-
+    
     if (this.currentPlayer) {
+      console.log(this.currentPlayer.x, '<x|y>', this.currentPlayer.y)
       this.game.physics.arcade.collide(this.currentPlayer, this.layerCollision)
       this.hudThrottle()
       //collision added for blocks below. With this on player pushes the block around. Comment in for pushing physics
@@ -211,7 +199,7 @@ export default class MainGame extends Phaser.State {
           this.dropBlockPhysicsBJAD()
         }
       }
-      if(this.pickUpButton.isDown) {
+      if (this.pickUpButton.isDown) {
         this.pickUpBlockPhysicsBJAD()
       }
     }
@@ -232,12 +220,12 @@ export default class MainGame extends Phaser.State {
 
   }
 
-  addNewBase(id, x, y,) {
-    this.newBase = this.game.add.sprite(x, y, 'base')
+  addNewBase(base) {
+    this.newBase = this.game.add.sprite(base.x, base.y, 'base')
     this.game.physics.arcade.enable(this.newBase)
     this.newBase.body.immovable = true
     this.newBase.health = 1000
-    this.playerBaseBJAD[id] = this.newBase
+    this.playerBaseBJAD[base.id] = this.newBase
   }
 
   setCurrentPlayer(id) {

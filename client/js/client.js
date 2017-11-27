@@ -78,9 +78,11 @@ Client.socket.on('newplayer',function(data){
 });
 
 Client.socket.on('allplayers',function(data){
+    const locations = [{id: 1, x: 135, y: 120}, {id: 2, x: 1340, y: 120}, {id: 3, x: 1340, y: 1340}, {id: 4, x:120, y: 1340}]
     for (var i = 0; i < data.length; i++){
         game.state.states.MainGame.addNewPlayer(data[i].id, data[i].x, data[i].y)
-        game.state.states.MainGame.addNewBase(data[i].id, data[i].x, data[i].y)
+        const base = locations.find(location => location.id === data[i].id)
+        game.state.states.MainGame.addNewBase(base)
     }
 });
 
