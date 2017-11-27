@@ -1,11 +1,11 @@
 import io from 'socket.io-client'
 import {game} from '../game/index'
 // import {movePlayer, setCurrentPlayer, removePlayer, addNewPlayer, hitEnemy} from '../states/MainGame'
-let bullet_array = [];
+let bulletArray = [];
 const Client = {};
 let offsetX = 0;
 let offsetY = 0;
-let sendStopCalls = false;
+let sendStopCalls = 0;
 Client.socket = io.connect();
 
 Client.askNewPlayer = function(){
@@ -18,12 +18,12 @@ Client.SEND_fire = function (position) {
 
 Client.updatePosition = function (previous, current) {
     if (previous.x !== current.x || previous.y !== current.y) {
-        Client.socket.emit('update-position', { x: current.x, y: current.y })
-        sendStopCalls = false;
+        Client.socket.emit('update-position', { x: current.x, y: current.y, playerSideTime: Date.now() })
+        sendStopCalls = 0;
     }
-    else if (!sendStopCalls) {
+    else if (sendStopCalls<1) {
         Client.socket.emit('stopped-moving')
-        sendStopCalls = true;
+        sendStopCalls++;
     }
 };
 
@@ -68,17 +68,18 @@ Client.socket.on('stop-animation', function(data) {
   game.state.states.MainGame.stopAnimation(data);
 })
 
+
 Client.socket.on('yourID',function(data){
   game.state.states.MainGame.setCurrentPlayer(data);
 });
 
 Client.socket.on('newplayer',function(data){
-  game.state.states.MainGame.addNewPlayer(data.id,data.x,data.y);
+  game.state.states.MainGame.addNewPlayer(data.id,data.x,data.y, data.serverSideTime);
 });
 
 Client.socket.on('allplayers',function(data){
     for (var i = 0; i < data.length; i++){
-        game.state.states.MainGame.addNewPlayer(data[i].id, data[i].x, data[i].y)
+        game.state.states.MainGame.addNewPlayer(data[i].id, data[i].x, data[i].y, data[i].serverSideTime)
         game.state.states.MainGame.addNewBase(data[i].id, data[i].x, data[i].y)
     }
 });
@@ -92,32 +93,30 @@ Client.socket.on('player-hit',function(id){
 });
 
 
-Client.socket.on("bullets-update", function (RCV_bullet_array) {
+Client.socket.on("bullets-update", function (RCVbulletArray) {
     // If there's not enough bullets on the client, create them
-    for (var i = 0; i < RCV_bullet_array.length; i++) {
-        if (bullet_array[i] === undefined) {
-            let bullet = game.add.sprite(RCV_bullet_array[i].x, RCV_bullet_array[i].y, 'bullet');
+    for (var i = 0; i < RCVbulletArray.length; i++) {
+        if (bulletArray[i] === undefined) {
+            let bullet = game.add.sprite(RCVbulletArray[i].x, RCVbulletArray[i].y, 'bullet');
             bullet.scale.setTo(0.5);
             bullet.anchor.setTo(0.5,0.5);
-            bullet_array[i] = bullet;
+            bulletArray[i] = bullet;
         } else {
             //Otherwise, just update it!
-            bullet_array[i].x = RCV_bullet_array[i].x;
-            bullet_array[i].y = RCV_bullet_array[i].y;
+            bulletArray[i].x = RCVbulletArray[i].x;
+            bulletArray[i].y = RCVbulletArray[i].y;
         }
     }
     // Otherwise if there's too many, delete the extra
-    for (var i = RCV_bullet_array.length; i < bullet_array.length; i++) {
-        bullet_array[i].destroy();
-        bullet_array.splice(i, 1);
+    for (var i = RCVbulletArray.length; i < bulletArray.length; i++) {
+        bulletArray[i].destroy();
+        bulletArray.splice(i, 1);
         i--;
     }
 });
 
 Client.socket.on('move', function(data){
-    game.state.states.MainGame.movePlayer(data.id, data.x, data.y);
+    game.state.states.MainGame.movePlayer(data.id, data.x, data.y, data.serverSideTime);
 });
-
-
 
 export default Client

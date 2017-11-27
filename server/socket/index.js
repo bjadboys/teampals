@@ -1,7 +1,7 @@
 module.exports = (io, server) => {
   server.lastPlayderID = 0; // Keep track of the last id assigned to a new player
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
-  let bullet_array = [];
+  let bulletArray = [];
   let players = []
   let mapBlocks = makeBlocks(10)
 
@@ -10,7 +10,9 @@ module.exports = (io, server) => {
       socket.player = {
         id: server.lastPlayderID++,
         x: randomInt(100, 400),
-        y: randomInt(100, 400)
+        y: randomInt(100, 400),
+        playerSideTime: null,
+        serverSideTime: Date.now()
       };
       socket.emit('allplayers', getAllPlayers());
       socket.emit('yourID', socket.player.id)
@@ -18,8 +20,15 @@ module.exports = (io, server) => {
       socket.emit('allBlocks', mapBlocks)
 
       socket.on('update-position', function (data) {
-        socket.player.x = data.x;
-        socket.player.y = data.y;
+        if (socket.player.playerSideTime <= data.playerSideTime){
+          socket.player.playerSideTime = data.playerSideTime;
+          socket.player.serverSideTime = Date.now();
+          socket.player.x = data.x;
+          socket.player.y = data.y;
+
+        } else {
+          console.log('lost packet', data)
+        }
         socket.broadcast.emit('move', socket.player);
       });
 
@@ -43,13 +52,13 @@ module.exports = (io, server) => {
       })
 
       socket.on('fire', function (data) {
-        let new_bullet = {};
-        new_bullet.x = data.x;
-        new_bullet.y = data.y;
-        new_bullet.xv = -3;
-        new_bullet.yv = -3;
-        new_bullet.id = socket.player.id;
-        bullet_array.push(new_bullet);
+        let newBullet = {};
+        newBullet.x = data.x;
+        newBullet.y = data.y;
+        newBullet.xv = -1;
+        newBullet.yv = -1;
+        newBullet.id = socket.player.id;
+        bulletArray.push(newBullet);
       });
 
       socket.on('disconnect', function () {
@@ -58,22 +67,22 @@ module.exports = (io, server) => {
     });
 
     function ServerGameLoop() {
-      for (let i = 0; i < bullet_array.length; i++) {
+      for (let i = 0; i < bulletArray.length; i++) {
         // Update position of bullets
-        bullet_array[i].x += bullet_array[i].xv;
-        bullet_array[i].y += bullet_array[i].yv;
+        bulletArray[i].x += bulletArray[i].xv;
+        bulletArray[i].y += bulletArray[i].yv;
         // Remove bullet if it's off screen
-        if (bullet_array[i].y < 0) {
-          bullet_array.splice(i, 1);
+        if (bulletArray[i].y < 0) {
+          bulletArray.splice(i, 1);
           i--;
         }
         let playerArr = players;
-        if (bullet_array[i]) {
+        if (bulletArray[i]) {
           for (let j = 0; j < playerArr.length; j++) {
-            if (bullet_array[i].id !== playerArr[j].id) {
-              if(playerArr[j].x-12<bullet_array[i].x && playerArr[j].x+12>bullet_array[i].x){
-                if(playerArr[j].y-7<bullet_array[i].y && playerArr[j].y+16>bullet_array[i].y){
-                  io.emit('player-hit',playerArr[j].id);
+            if (bulletArray[i].id !== playerArr[j].id) {
+              if (playerArr[j].x - 12<bulletArray[i].x && playerArr[j].x + 12>bulletArray[i].x){
+                if (playerArr[j].y - 7<bulletArray[i].y && playerArr[j].y + 16>bulletArray[i].y){
+                  io.emit('player-hit', playerArr[j].id);
                 }
               }
             }
@@ -81,7 +90,7 @@ module.exports = (io, server) => {
         }
       }
       // Send updated bullets
-      io.emit("bullets-update", bullet_array)
+      io.emit('bullets-update', bulletArray)
     }
 
     setInterval(ServerGameLoop, 16);
