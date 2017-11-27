@@ -54,6 +54,7 @@ export default class MainGame extends Phaser.State {
     this.ammoText = this.game.add.text(250, 5, 'AMMO: ')
     this.healthText.fixedToCamera = true;
     this.ammoText.fixedToCamera = true;
+    this.game.stage.disableVisibilityChange = true
   
   }
 
@@ -113,8 +114,8 @@ export default class MainGame extends Phaser.State {
     //this collision only matters if we're push blocks. We may want to delete.
 
     if (this.currentPlayer) {
-      this.healthText.setText(`HEALTH: ${this.currentPlayer.health}`)
-      this.ammoText.setText(`AMMO: ${this.currentPlayer.ammo}`)
+      // this.healthText.setText(`HEALTH: ${this.currentPlayer.health}`)
+      // this.ammoText.setText(`AMMO: ${this.currentPlayer.ammo}`)
       this.game.physics.arcade.collide(this.currentPlayer, this.layerCollision)
       //collision added for blocks below. With this on player pushes the block around. Comment in for pushing physics
       // this.game.physics.arcade.collide(this.currentPlayer, this.blocksBJAD)

@@ -32,7 +32,6 @@ Client.blockUsedBJAD = function(data) {
 }
 
 Client.playerPicksUpBlockBJAD = function(player, block) {
-    console.log(block, 'block in client')
     const playerId = player.id
     const blockId = block.id
     Client.socket.emit('block-picked-up', {playerId, blockId})
@@ -52,7 +51,6 @@ Client.socket.on('addBlock', function(data){
 })
 
 Client.socket.on('player-picked-up-block', function(data){
-    console.log(data)
     game.state.states.MainGame.collectBlockBJAD(data.playerId, data.blockId)
 })
 
