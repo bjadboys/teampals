@@ -20,6 +20,7 @@ export default class MainGame extends Phaser.State {
     //this.createBlockBJAD = this.createBlockBJAD.bind(this)
     this.stopAnimation = this.stopAnimation.bind(this);
     this.dropBlockBJAD = this.dropBlockBJAD.bind(this)
+    this.isInDeathBJAD = this.isInDeathBJAD.bind(this)
   }
 
   //here we create everything we need for the game.
@@ -52,8 +53,27 @@ export default class MainGame extends Phaser.State {
     this.ammoText = this.game.add.text(250, 5, 'AMMO: ')
     this.healthText.fixedToCamera = true;
     this.ammoText.fixedToCamera = true;
-  
+    this.death = this.map.layers[2].data
+    this.deathTiles = this.death.map( array => array.filter((element) => element.index !== -1))
+    console.log('death', this.death)
+    console.log('deathTiles', this.deathTiles)
+    // const isInDeath = function(x, y){
+    //   const xIndex = Math.floor(x / 32)
+    //   const yIndex = Math.floor(y / 32)
+    //   console.log('indices', xIndex, yIndex)
+    //   console.log('isdead', death[yIndex][xIndex].index)
+    // }
+    // isInDeath(17 * 32, 2 * 32)
   }
+
+  isInDeathBJAD(x, y){
+    const xIndex = Math.floor(x / 32)
+    const yIndex = Math.floor(y / 32)
+    // console.log('indices', xIndex, yIndex)
+    // console.log('isdead', this.death[yIndex][xIndex].index)
+    return this.death[yIndex][xIndex].index
+  }
+
 
   //adds the block as a child of the current user sprite, if player is holding Shift and Left or Right (just for test)
   //updates the x y of the block so it is 0 0 on the parent element which is now the current player.
@@ -81,7 +101,7 @@ export default class MainGame extends Phaser.State {
   pickUpBlockPhysicsBJAD() {
     //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
     //that they touch.
-    if (!this.currentPlayer.children.length) { 
+    if (!this.currentPlayer.children.length) {
       this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
     }
   }
@@ -91,9 +111,9 @@ export default class MainGame extends Phaser.State {
   }
 
   update() {
-    
+
     //physics added for blocks
-    if(this.blocksBJAD.children.length){
+    if (this.blocksBJAD.children.length){
       this.blockBJAD.body.velocity.x = 0
       this.blockBJAD.body.velocity.y = 0
     }
@@ -108,7 +128,10 @@ export default class MainGame extends Phaser.State {
       //when the above is on it makes it impossible to push  a block out of a corner.
       this.currentPlayer.body.velocity.x = 0;
       this.currentPlayer.body.velocity.y = 0;
-
+      if (this.isInDeathBJAD(this.currentPlayer.position.x, this.currentPlayer.position.y) !== -1){
+        console.log('dead')
+        // this.killPlayer(this.currentPlayer)
+      }
       Client.updatePosition(this.previousPosition, this.currentPlayer.position, this.currentPlayer.direction);
       this.previousPosition = Object.assign({}, this.currentPlayer.position);
 
@@ -116,6 +139,7 @@ export default class MainGame extends Phaser.State {
 
       let moving = false
       if (this.cursors.left.isDown) {
+        console.log(this.currentPlayer)
         moving = true
         this.currentPlayer.body.velocity.x = -150;
         this.currentPlayer.direction = 'left';
@@ -123,7 +147,7 @@ export default class MainGame extends Phaser.State {
         if (this.cursors.left.shiftKey) {
           //collection added for blocks below. Comment in for block to be added as child sprite to player.
           this.pickUpBlockPhysicsBJAD()
-        } 
+        }
         console.log(this.currentPlayer.direction)
       }
       if (this.cursors.right.isDown) {
@@ -131,7 +155,7 @@ export default class MainGame extends Phaser.State {
         this.currentPlayer.body.velocity.x = 150;
         this.currentPlayer.direction = 'right';
         this.currentPlayer.animations.play('right')
-        if(this.cursors.right.shiftKey){
+        if (this.cursors.right.shiftKey){
           this.pickUpBlockPhysicsBJAD()
         }
         console.log(this.currentPlayer.direction)
@@ -173,12 +197,11 @@ export default class MainGame extends Phaser.State {
   }
 
 
-
   addNewPlayer(id, x, y) {
     this.newPlayer = this.game.add.sprite(x, y, 'characters')
     this.newPlayer.frame = 0
-    this.newPlayer.anchor.x = .5
-    this.newPlayer.anchor.y = .5
+    this.newPlayer.anchor.x = 0.5
+    this.newPlayer.anchor.y = 0.5
     this.game.physics.arcade.enable(this.newPlayer)
     this.newPlayer.body.collideWorldBounds = true
     this.newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], 10, true)
