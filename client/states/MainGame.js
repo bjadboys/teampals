@@ -62,7 +62,7 @@ export default class MainGame extends Phaser.State {
     this.ammoText = this.game.add.text(250, 5, 'AMMO: ')
     this.healthText.fixedToCamera = true;
     this.ammoText.fixedToCamera = true;
-  
+
   }
 
   //adds the block as a child of the current user sprite, if player is holding Shift and Left or Right (just for test)
@@ -92,7 +92,7 @@ export default class MainGame extends Phaser.State {
   pickUpBlockPhysicsBJAD() {
     //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
     //that they touch.
-    if (!this.currentPlayer.children.length) { 
+    if (!this.currentPlayer.children.length) {
       this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
     }
   }
@@ -139,7 +139,7 @@ export default class MainGame extends Phaser.State {
       this.currentPlayer.body.velocity.x = 0;
       this.currentPlayer.body.velocity.y = 0;
 
-     
+
         this.movementThrottle()
 
 
@@ -154,7 +154,7 @@ export default class MainGame extends Phaser.State {
         if (this.cursors.left.shiftKey) {
           //collection added for blocks below. Comment in for block to be added as child sprite to player.
           this.pickUpBlockPhysicsBJAD()
-        } 
+        }
         console.log(this.currentPlayer.direction)
       }
       if (this.cursors.right.isDown) {
@@ -196,7 +196,7 @@ export default class MainGame extends Phaser.State {
         //if you shoot the gun, you drop the block.
         //the block is removed from current player's children and added back to blocks group.
         //the block's x y is updated with the players x y.
-        if (this.currentPlayer.children.length) { 
+        if (this.currentPlayer.children.length) {
           this.dropBlockPhysicsBJAD()
         }
       }
@@ -295,7 +295,8 @@ export default class MainGame extends Phaser.State {
             this.currentPlayer.pointer.position.x = allPlayersObj[id].position.x;
             this.currentPlayer.pointer.position.y = allPlayersObj[id].position.y - 5;
           } else {
-            let hollowPointer = this.game.add.sprite(allPlayersObj[id].position.x, allPlayersObj[id].position.y - 5, 'hollowPointer')
+            let hollowPointer = this.game.add.sprite(allPlayersObj[id].position.x, allPlayersObj[id].position.y, 'hollowPointer')
+            hollowPointer.scale.setTo(0.07);
             hollowPointer.anchor.x = 0.5;
             hollowPointer.anchor.y = 1.0;
             this.currentPlayer.pointer = hollowPointer;
