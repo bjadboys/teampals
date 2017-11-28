@@ -67,8 +67,11 @@ export default class MainGame extends Phaser.State {
     this.deathTiles = this.death.map( array => array.filter((element) => element.index !== -1))
     this.game.world.bringToTop(this.ammoText)
     this.game.world.bringToTop(this.healthText)
-    this.weaponsBJAD.create(100, 100, 'weapon')
-    this.weaponsBJAD.create(200, 200, 'weapon2')
+
+    this.firstWeapon = this.weaponsBJAD.create(100, 100, 'weapon')
+    this.firstWeapon.id = 0
+    this.secondWeapon = this.weaponsBJAD.create(200, 200, 'weapon2')
+    this.secondWeapon.id = 1
 
   }
 
@@ -128,9 +131,12 @@ export default class MainGame extends Phaser.State {
   pickUpWeaponPhysicsBJAD() {
     let weapon = arguments[1]
     this.currentPlayer.selectedWeapon = weapon.key
-    console.log('sending to Client.playerPicksUpWeaponBjad', this.currentPlayer, weapon)
     Client.playerPicksUpWeaponBJAD(this.currentPlayer, weapon)
-    // weapon.destroy()
+  }
+
+  removeWeaponBJAD(weaponId) {
+    this.weaponsBJAD.children[weaponId].kill()
+
   }
 
   hudThrottle(){

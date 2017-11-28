@@ -71,13 +71,14 @@ Client.socket.on('replaceBlock', function(data){
 Client.playerPicksUpWeaponBJAD = function (player, weapon){
     let playerId = player.id
     let weaponId = weapon.id
-    console.log('in playerPicksUpWeaponBJAD', player, weapon)
     Client.socket.emit('weaponPickedUp', {playerId, weaponId})
 }
 
 
-Client.socket.on('playerPickedUpWeapon', function(player, weapon){
-    console.log('inside playerPickedUpWeapon', player, weapon)
+Client.socket.on('playerPickedUpWeapon', function(data){
+    let playerId = data.playerId
+    let weaponId = data.weaponId
+    game.state.states.MainGame.removeWeaponBJAD(weaponId)
 })
 
 Client.socket.on('stop-animation', function(data) {
