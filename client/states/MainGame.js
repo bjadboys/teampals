@@ -131,7 +131,7 @@ export default class MainGame extends Phaser.State {
     Client.blockUsedBJAD(block.id)
   }
 
-  
+
 
   addNewPlayer(id, x, y, serverSideTime) {
     this.newPlayer = this.game.add.sprite(x, y, 'characters')
@@ -145,6 +145,7 @@ export default class MainGame extends Phaser.State {
     this.newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], 10, true)
     this.newPlayer.animations.add('up', [18, 19, 20, 21, 22], 10, true)
     this.playerMapBJAD[id] = this.newPlayer
+    this.game.world.bringToTop(this.newPlayer)
   }
 
   addNewBase(base) {
@@ -167,6 +168,7 @@ export default class MainGame extends Phaser.State {
     this.game.physics.arcade.enable(this.currentPlayer)
     this.previousPosition = Object.assign({}, this.currentPlayer.position)
     this.currentPlayer.firing = false
+
   }
 
   removePlayer(id) {
