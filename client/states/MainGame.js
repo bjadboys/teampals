@@ -18,7 +18,7 @@ export default class MainGame extends Phaser.State {
     this.setCurrentPlayer = this.setCurrentPlayer.bind(this)
     this.removePlayer = this.removePlayer.bind(this)
     this.movePlayer = this.movePlayer.bind(this)
-    this.stopAnimation = this.stopAnimation.bind(this);
+    this.stopAnimation = this.stopAnimation.bind(this)
     this.startAnimation = this.startAnimation.bind(this)
     this.pickUpBlockPhysicsBJAD = throttle(this.pickUpBlockPhysicsBJAD.bind(this), wait)
     this.dropBlockPhysicsBJAD = throttle(this.dropBlockPhysicsBJAD.bind(this), wait)
@@ -54,6 +54,7 @@ export default class MainGame extends Phaser.State {
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
     this.pickUpButton = this.game.input.keyboard.addKey(Phaser.KeyCode.X)
+    this.lockOnButton = this.game.input.keyboard.addKey(Phaser.KeyCode.C)
 
     this.blocksBJAD = this.add.group()
     this.blocksBJAD.enableBody = true
@@ -167,6 +168,9 @@ export default class MainGame extends Phaser.State {
     this.currentPlayer.ammo = 0
     this.currentPlayer.id = id
     this.currentPlayer.pointer = null;
+    this.currentPlayer.possibleTarget = null;
+    this.currentPlayer.lockOnToggle = false;
+    this.currentPlayer.targetLocked = false;
     this.game.camera.follow(this.currentPlayer)
     this.currentPlayer.enableBody = true
     this.game.physics.arcade.enable(this.currentPlayer)
@@ -195,8 +199,8 @@ export default class MainGame extends Phaser.State {
   movePlayer(id, x, y, serverSideTime, direction) {
     this.player = this.playerMapBJAD[id]
 
-    if (this.player.serverSideTime<=serverSideTime){
-      if(!this.player.moving || this.player.direction !== direction){
+    if (this.player.serverSideTime <= serverSideTime){
+      if (!this.player.moving || this.player.direction !== direction){
         this.player.moving = true;
         this.startAnimation(id, direction)
       }
@@ -231,8 +235,10 @@ export default class MainGame extends Phaser.State {
   }
 
   lockOnTarget() {
-    this.currentPlayer.pointer.destroy();
-    let solidPointer = this.game.add.sprite(this.possibleTarget.position.x, this.possibleTarget.position.y, 'solidPointer');
+    if (this.currentPlayer.pointer) {
+      this.currentPlayer.pointer.destroy();
+    }
+    let solidPointer = this.game.add.sprite(this.currentPlayer.possibleTarget.position.x, this.currentPlayer.possibleTarget.position.y - 15, 'solidPointer');
     solidPointer.scale.setTo(0.07);
     solidPointer.anchor.x = 0.5;
     solidPointer.anchor.y = 1.0;
@@ -248,7 +254,7 @@ export default class MainGame extends Phaser.State {
         let dy = allPlayersObj[id].position.y - this.currentPlayer.position.y;
         let calcDist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
         if (calcDist < 100) {
-          this.possibleTarget = allPlayersObj[id];
+          this.currentPlayer.possibleTarget = allPlayersObj[id];
           if (this.currentPlayer.pointer) {
             if (!allPlayersObj[id].alive) {
               this.currentPlayer.pointer.destroy();
@@ -266,15 +272,11 @@ export default class MainGame extends Phaser.State {
           if (this.currentPlayer.pointer) {
             this.currentPlayer.pointer.destroy();
           }
-          this.possibleTarget = null;
+          this.currentPlayer.possibleTarget = null;
           this.currentPlayer.pointer = null;
         }
       }
     })
-  }
-
-  lockOn() {
-
   }
 
 }
