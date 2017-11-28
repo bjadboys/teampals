@@ -21,7 +21,7 @@ module.exports = (io, server) => {
       id: 4,
       x: 20,
       y: 1516
-    }
+    }  
   ]
   const directionValues = {
     up: { x: 0, y: -1.0 },
@@ -46,7 +46,6 @@ module.exports = (io, server) => {
     // })
     //above is brian's lobby code.
     socket.on('newplayer', function () {
-      if (server.lastPlayderID === 4) throw new Error('too many players')
       server.lastPlayderID++
       socket.player = defaultPlayers.find(player => player.id === server.lastPlayderID)
       io.emit()
@@ -102,12 +101,10 @@ module.exports = (io, server) => {
     });
 
     socket.on('disconnect', function () {
-      io.emit('remove', socket.player.id);
+      if (socket.player){
+        io.emit('remove', socket.player.id);
+      } 
     });
-
-
-
-
 
   });
 
@@ -121,9 +118,8 @@ module.exports = (io, server) => {
       let xTile = Math.floor(xPixels / 32)
       let yTile = Math.floor(yPixels / 32) * 48
       let tile = bulletCollisionLayer[xTile + yTile]
-      console.log(bulletArray.length)
       // Remove bullet if it's off screen
-      if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || bulletArray[i].y > 1536 || bulletArray[i].x > 1536) {
+      if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || bulletArray[i].y > 1536 || bulletArray[i].x > 1536 || tile > 0) {
         bulletArray.splice(i, 1);
         i--;
       }
