@@ -8,7 +8,7 @@ export default class Lobby extends React.Component {
     this.state = {
       name: '',
       joined: false,
-      lobby: ['a', 'b']
+      lobby: []
     }
     this.handleNameChange = this.handleNameChange.bind(this)
   }
@@ -32,6 +32,7 @@ export default class Lobby extends React.Component {
               label={this.state.joined ? 'leave' : 'join'}
               onClick={() => {
                 this.setState({joined: !this.state.joined})
+
 
               }} />
             </div>)
