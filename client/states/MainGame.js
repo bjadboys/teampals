@@ -230,6 +230,15 @@ export default class MainGame extends Phaser.State {
     this.player.animations.play(direction)
   }
 
+  lockOnTarget() {
+    this.currentPlayer.pointer.destroy();
+    let solidPointer = this.game.add.sprite(this.possibleTarget.position.x, this.possibleTarget.position.y, 'solidPointer');
+    solidPointer.scale.setTo(0.07);
+    solidPointer.anchor.x = 0.5;
+    solidPointer.anchor.y = 1.0;
+    this.currentPlayer.pointer = solidPointer;
+  }
+
   findPossibleTarget() {
     let allPlayersObj = this.playerMapBJAD
 
@@ -262,6 +271,10 @@ export default class MainGame extends Phaser.State {
         }
       }
     })
+  }
+
+  lockOn() {
+
   }
 
 }

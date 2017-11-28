@@ -54,7 +54,7 @@ module.exports = (io, server) => {
       socket.player.playerSideTime = null
       socket.player.serverSideTime = Date.now()
       socket.player.direction = 'down'
-      
+
       socket.emit('allplayers', getAllPlayers());
       socket.emit('yourID', socket.player.id)
       socket.broadcast.emit('newplayer', socket.player);
@@ -106,10 +106,6 @@ module.exports = (io, server) => {
       });
     });
 
-    
-
-    
-
   });
 
   function ServerGameLoop() {
@@ -148,7 +144,7 @@ module.exports = (io, server) => {
 
   setInterval(ServerGameLoop, 16);
 
-  
+
   function makeBlocks(num) {
     const madeBlocks = []
     for (let i = 0; i < num; i++){
