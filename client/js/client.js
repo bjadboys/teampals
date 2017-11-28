@@ -12,8 +12,8 @@ Client.askNewPlayer = function(){
   Client.socket.emit('newplayer');
 };
 
-Client.SEND_fire = function (position, direction) {
-  Client.socket.emit('fire', { x: position.x+offsetX, y: position.y+offsetY, direction })
+Client.SEND_fire = function (position, direction, selectedWeapon) {
+  Client.socket.emit('fire', { x: position.x+offsetX, y: position.y+offsetY, direction, selectedWeapon })
 };
 
 Client.updatePosition = function (previous, current, direction) {

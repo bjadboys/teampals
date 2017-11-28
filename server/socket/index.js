@@ -21,7 +21,7 @@ module.exports = (io, server) => {
       id: 4,
       x: 20,
       y: 1516
-    }  
+    }
   ]
   const directionValues = {
     up: { x: 0, y: -1.0 },
@@ -90,6 +90,7 @@ module.exports = (io, server) => {
     })
 
     socket.on('fire', function (data) {
+      console.log('do i have weapon data', data.selectedWeapon)
       let newBullet = {};
       let axisVelocities = directionValues[data.direction];
       newBullet.x = data.x;
@@ -103,10 +104,11 @@ module.exports = (io, server) => {
     socket.on('disconnect', function () {
       if (socket.player){
         io.emit('remove', socket.player.id);
-      } 
+      }
     });
 
   });
+
 
   function ServerGameLoop() {
     for (let i = 0; i < bulletArray.length; i++) {
