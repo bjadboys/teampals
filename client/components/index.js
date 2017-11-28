@@ -6,3 +6,4 @@
 
 export {default as Lobby} from './lobby'
 export {default as Main} from './main'
+export {default as GameScreen} from './game'

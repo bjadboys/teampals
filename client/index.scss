@@ -22,7 +22,11 @@ body {
 }
 
 #buttonHolder {
-  font-family: Arial !important;
   display: flex;
   flex-direction: row;
+}
+
+.belowTextField {
+  display: flex;
+  flex-direction: column;
 }

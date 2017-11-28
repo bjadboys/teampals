@@ -1,6 +1,6 @@
 const bulletCollisionLayer = require('./collisionLayerData')
 module.exports = (io, server) => {
-  server.lastPlayderID = 0; // Keep track of the last id assigned to a new player
+  // Keep track of the last id assigned to a new player
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
   let bulletArray = [];
   let players = []
@@ -21,7 +21,7 @@ module.exports = (io, server) => {
       id: 4,
       x: 20,
       y: 1516
-    }  
+    }
   ]
   const directionValues = {
     up: { x: 0, y: -1.0 },
@@ -45,20 +45,29 @@ module.exports = (io, server) => {
     //   io.emit('addPlayerLobby')
     // })
     //above is brian's lobby code.
-    socket.on('newplayer', function () {
-      server.lastPlayderID++
-      socket.player = defaultPlayers.find(player => player.id === server.lastPlayderID)
-      io.emit()
-      socket.player.playerSideTime = null
-      socket.player.serverSideTime = Date.now()
-      socket.player.direction = 'down'
+    socket.on('newplayer', function (name) {
+      if (defaultPlayers.length) {
+        io.emit()
+        socket.player = defaultPlayers.pop()
+        socket.player.name = name
+        socket.player.playerSideTime = null
+        socket.player.serverSideTime = Date.now()
+        socket.player.direction = 'down'
+        io.emit('addPlayersToLobby', getAllPlayers())
+      }
+    });
 
+    socket.on('startGame', function () {
+      io.emit('newGame')
+      io.emit('lobbyChange')
+    })
+
+    socket.on('setUpGame', function(){
+      io.emit('allBlocks', mapBlocks)
       socket.emit('allplayers', getAllPlayers());
       socket.emit('yourID', socket.player.id)
-      socket.broadcast.emit('newplayer', socket.player);
-      socket.emit('allBlocks', mapBlocks)
+    })
 
-    });
     socket.on('update-position', function (data) {
       if (socket.player.playerSideTime <= data.playerSideTime) {
         socket.player.playerSideTime = data.playerSideTime;
@@ -101,10 +110,19 @@ module.exports = (io, server) => {
     });
 
     socket.on('disconnect', function () {
-      if (socket.player){
+      if (socket.player) {
+
         io.emit('remove', socket.player.id);
-      } 
+      }
     });
+
+    socket.on('playerLeavesLobby', function () {
+      defaultPlayers.push(socket.player)
+      io.emit('removePlayerFromLobby', socket.player.id)
+      console.log(socket.player)
+      removePlayer(socket.player.id)
+      socket.player = null;
+    })
 
   });
 
@@ -154,6 +172,10 @@ module.exports = (io, server) => {
       madeBlocks.push(initializedBlock)
     }
     return madeBlocks
+  }
+
+  function removePlayer(id) {
+    return players.filter(player => player.id === id)
   }
 
   function getAllPlayers() {
