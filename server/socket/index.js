@@ -121,9 +121,9 @@ module.exports = (io, server) => {
       let xTile = Math.floor(xPixels / 32)
       let yTile = Math.floor(yPixels / 32) * 48
       let tile = bulletCollisionLayer[ xTile + yTile]
-
+      console.log(bulletArray.length)
       // Remove bullet if it's off screen
-      if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || (tile > 0)) {
+      if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || bulletArray[i].y > 1536 || bulletArray[i].x > 1536 ) {
         bulletArray.splice(i, 1);
         i--;
       }
