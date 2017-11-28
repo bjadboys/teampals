@@ -5,25 +5,25 @@ let bulletArray = [];
 const Client = {};
 let offsetX = 0;
 let offsetY = 0;
-let sendStopCalls = 0;
+let sendStopCalls = false;
 Client.socket = io.connect();
 
 Client.askNewPlayer = function(){
   Client.socket.emit('newplayer');
 };
 
-Client.SEND_fire = function (position) {
-  Client.socket.emit('fire', { x: position.x+offsetX, y: position.y+offsetY })
+Client.SEND_fire = function (position, direction) {
+  Client.socket.emit('fire', { x: position.x+offsetX, y: position.y+offsetY, direction })
 };
 
-Client.updatePosition = function (previous, current) {
+Client.updatePosition = function (previous, current, direction) {
     if (previous.x !== current.x || previous.y !== current.y) {
-        Client.socket.emit('update-position', { x: current.x, y: current.y, playerSideTime: Date.now() })
-        sendStopCalls = 0;
+        Client.socket.emit('update-position', { x: current.x, y: current.y, playerSideTime: Date.now(), direction })
+        sendStopCalls = false;
     }
-    else if (sendStopCalls<1) {
+    else if (!sendStopCalls) {
         Client.socket.emit('stopped-moving')
-        sendStopCalls++;
+        sendStopCalls = true;
     }
 };
 
@@ -118,7 +118,7 @@ Client.socket.on("bullets-update", function (RCVbulletArray) {
 });
 
 Client.socket.on('move', function(data){
-    game.state.states.MainGame.movePlayer(data.id, data.x, data.y, data.serverSideTime);
+    game.state.states.MainGame.movePlayer(data.id, data.x, data.y, data.serverSideTime, data.direction);
 });
 
 export default Client

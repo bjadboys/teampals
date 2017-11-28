@@ -8,8 +8,8 @@ import Preload from '../states/Preload'
 import MainGame from '../states/MainGame'
 import Lobby from '../states/Lobby'
 import GameOver from '../states/GameOver'
-const HEIGHT = 480
-const WIDTH = 320
+const HEIGHT = 768
+const WIDTH = 416
 
 export default class Game extends Phaser.Game {
   constructor(){
