@@ -23,6 +23,16 @@ module.exports = (io, server) => {
       y: 1516
       }
   ]
+  const directionValues = {
+    up: {x: 0, y: -1.0},
+    down: {x: 0, y: 1.0},
+    left: {x: -1.0, y: 0},
+    right: {x: 1.0, y: 0},
+    upLeft: {x: -0.707, y: -.707},
+    downLeft: {x: -.707, y: 0.707},
+    upRight: {x: 0.707, y: -0.707},
+    downRight: {x: 0.707, y: 0.707},
+  }
   let mapBlocks = makeBlocks(10)
   console.log('bulletCollisionLayer', bulletCollisionLayer.length)
   io.on('connection', function (socket) {
@@ -43,6 +53,7 @@ module.exports = (io, server) => {
       io.emit()
       socket.player.playerSideTime = null
       socket.player.serverSideTime = Date.now()
+      socket.player.direction = 'down'
       
       socket.emit('allplayers', getAllPlayers());
       socket.emit('yourID', socket.player.id)
@@ -55,9 +66,7 @@ module.exports = (io, server) => {
           socket.player.serverSideTime = Date.now();
           socket.player.x = data.x;
           socket.player.y = data.y;
-
-        } else {
-          console.log('lost packet', data)
+          socket.player.direction = data.direction
         }
         socket.broadcast.emit('move', socket.player);
       });
@@ -83,10 +92,11 @@ module.exports = (io, server) => {
 
       socket.on('fire', function (data) {
         let newBullet = {};
+        let axisVelocities = directionValues[data.direction];
         newBullet.x = data.x;
         newBullet.y = data.y;
-        newBullet.xv = -1;
-        newBullet.yv = -1;
+        newBullet.xv = axisVelocities.x * 5.0;
+        newBullet.yv = axisVelocities.y * 5.0;
         newBullet.id = socket.player.id;
         bulletArray.push(newBullet);
       });
@@ -96,43 +106,49 @@ module.exports = (io, server) => {
       });
     });
 
-    function ServerGameLoop() {
-      for (let i = 0; i < bulletArray.length; i++) {
-        // Update position of bullets
-        bulletArray[i].x += bulletArray[i].xv;
-        bulletArray[i].y += bulletArray[i].yv;
-        let xPixels = bulletArray[i].x
-        let yPixels = bulletArray[i].y
-        let xTile = Math.floor(xPixels / 32)
-        let yTile = Math.floor(yPixels / 32) * 48
-        let tile = bulletCollisionLayer[ xTile + yTile]
+    
 
-        // Remove bullet if it's off screen
-        if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || (tile > 0)) {
-          bulletArray.splice(i, 1);
-          i--;
-        }
-        let playerArr = players;
-        if (bulletArray[i]) {
-          for (let j = 0; j < playerArr.length; j++) {
-            if (bulletArray[i].id !== playerArr[j].id) {
-              if (playerArr[j].x - 12<bulletArray[i].x && playerArr[j].x + 12>bulletArray[i].x){
-                if (playerArr[j].y - 7<bulletArray[i].y && playerArr[j].y + 16>bulletArray[i].y){
-                  io.emit('player-hit', playerArr[j].id);
-                }
+    
+
+  });
+
+  function ServerGameLoop() {
+    for (let i = 0; i < bulletArray.length; i++) {
+      // Update position of bullets
+      console.log(bulletArray[i].x)
+      bulletArray[i].x += bulletArray[i].xv;
+      bulletArray[i].y += bulletArray[i].yv;
+      let xPixels = bulletArray[i].x
+      let yPixels = bulletArray[i].y
+      let xTile = Math.floor(xPixels / 32)
+      let yTile = Math.floor(yPixels / 32) * 48
+      let tile = bulletCollisionLayer[ xTile + yTile]
+
+      // Remove bullet if it's off screen
+      if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || (tile > 0)) {
+        bulletArray.splice(i, 1);
+        i--;
+      }
+      let playerArr = players;
+      if (bulletArray[i]) {
+        for (let j = 0; j < playerArr.length; j++) {
+          if (bulletArray[i].id !== playerArr[j].id) {
+            if (playerArr[j].x - 12<bulletArray[i].x && playerArr[j].x + 12>bulletArray[i].x){
+              if (playerArr[j].y - 7<bulletArray[i].y && playerArr[j].y + 16>bulletArray[i].y){
+                io.emit('player-hit', playerArr[j].id);
               }
             }
           }
         }
       }
-      // Send updated bullets
-      io.emit('bullets-update', bulletArray)
     }
+    // Send updated bullets
+    io.emit('bullets-update', bulletArray)
+  }
 
-    setInterval(ServerGameLoop, 16);
+  setInterval(ServerGameLoop, 16);
 
-  });
-
+  
   function makeBlocks(num) {
     const madeBlocks = []
     for (let i = 0; i < num; i++){

@@ -12,11 +12,12 @@ export default class Preload extends Phaser.State {
     this.load.tilemap('map', '../../assets/map/teamPals.json', null, Phaser.Tilemap.TILED_JSON);
     this.load.spritesheet('tileset', '../../assets/map/terrain.png', 32, 32);
     this.load.image('bullet', '../../assets/sprites/bullet.png')
-    this.load.spritesheet('characters', '../../assets/sprites/characters.png', 32, 32)
+    this.load.spritesheet('characters', '../../assets/sprites/Character1/Char_1_Run.png', 32, 32)
     this.load.spritesheet('block', '../../assets/sprites/block.png', 24, 24)
     this.load.image('hollowPointer', '../../assets/sprites/pointerHollow.png', 32, 32)
     this.load.image('solidPointer', '../../assets/sprites/pointerSolid.png', 32, 32)
     this.load.image('base', '../../assets/sprites/base.png')
+
 
     //lobby assets go here too.
     //Once the above have run, we run assets loaded

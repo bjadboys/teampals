@@ -131,10 +131,9 @@ export default class MainGame extends Phaser.State {
     Client.blockUsedBJAD(block.id)
   }
 
-  
-
   addNewPlayer(id, x, y, serverSideTime) {
     this.newPlayer = this.game.add.sprite(x, y, 'characters')
+    this.newPlayer.alive = true;
     this.newPlayer.moving = false;
     this.newPlayer.serverSideTime = serverSideTime
     this.newPlayer.frame = 0
@@ -142,8 +141,14 @@ export default class MainGame extends Phaser.State {
     this.newPlayer.anchor.y = 0.5
     this.game.physics.arcade.enable(this.newPlayer)
     this.newPlayer.body.collideWorldBounds = true
-    this.newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5, 6, 7], 10, true)
-    this.newPlayer.animations.add('up', [18, 19, 20, 21, 22], 10, true)
+    this.newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5], 10, true)
+    this.newPlayer.animations.add('upRight', [0, 1, 2, 3, 4, 5], 10, true)
+    this.newPlayer.animations.add('downRight', [0, 1, 2, 3, 4, 5], 10, true)
+    this.newPlayer.animations.add('down', [6, 7, 8, 9, 10, 11], 10, true)
+    this.newPlayer.animations.add('left', [12, 13, 14, 15, 16, 17], 10, true)
+    this.newPlayer.animations.add('upLeft', [12, 13, 14, 15, 16, 17], 10, true)
+    this.newPlayer.animations.add('downLeft', [12, 13, 14, 15, 16, 17], 10, true)
+    this.newPlayer.animations.add('up', [18, 19, 20, 21, 22, 23], 10, true)
     this.playerMapBJAD[id] = this.newPlayer
   }
 
@@ -157,7 +162,7 @@ export default class MainGame extends Phaser.State {
 
   setCurrentPlayer(id) {
     this.currentPlayer = this.playerMapBJAD[id]
-    this.currentPlayer.direction = 'right'
+    this.currentPlayer.direction = 'down'
     this.currentPlayer.health = 100
     this.currentPlayer.ammo = 0
     this.currentPlayer.id = id
@@ -167,6 +172,7 @@ export default class MainGame extends Phaser.State {
     this.game.physics.arcade.enable(this.currentPlayer)
     this.previousPosition = Object.assign({}, this.currentPlayer.position)
     this.currentPlayer.firing = false
+    this.currentPlayer.holdToggle = false
   }
 
   removePlayer(id) {
@@ -179,19 +185,22 @@ export default class MainGame extends Phaser.State {
     if (this.player.children.length) {
       this.dropBlockBJAD(id)
     }
-    this.playerMapBJAD[id].kill();
+    this.player.kill();
+    if (this.currentPlayer.id === id && !this.currentPlayer.alive && this.currentPlayer.pointer){
+      this.currentPlayer.pointer.destroy();
+      this.currentPlayer.pointer = null;
+    }
   }
 
-  movePlayer(id, x, y, serverSideTime) {
+  movePlayer(id, x, y, serverSideTime, direction) {
     this.player = this.playerMapBJAD[id]
+
     if (this.player.serverSideTime<=serverSideTime){
-      if(!this.player.moving){
+      if(!this.player.moving || this.player.direction !== direction){
         this.player.moving = true;
-        this.startAnimation(id)
+        this.startAnimation(id, direction)
       }
       this.player.serverSideTime = serverSideTime
-      //TODO: Add direction parameter to play corresponding animation
-
       this.player.position.x = x;
       this.player.position.y = y;
     }
@@ -216,9 +225,9 @@ export default class MainGame extends Phaser.State {
     this.player.moving = false;
   }
 
-  startAnimation(id){
+  startAnimation(id, direction){
     this.player = this.playerMapBJAD[id]
-    this.player.animations.play('right')
+    this.player.animations.play(direction)
   }
 
   findPossibleTarget() {
@@ -232,8 +241,11 @@ export default class MainGame extends Phaser.State {
         if (calcDist < 100) {
           this.possibleTarget = allPlayersObj[id];
           if (this.currentPlayer.pointer) {
+            if (!allPlayersObj[id].alive) {
+              this.currentPlayer.pointer.destroy();
+            }
             this.currentPlayer.pointer.position.x = allPlayersObj[id].position.x;
-            this.currentPlayer.pointer.position.y = allPlayersObj[id].position.y - 7;
+            this.currentPlayer.pointer.position.y = allPlayersObj[id].position.y - 15;
           } else {
             let hollowPointer = this.game.add.sprite(allPlayersObj[id].position.x, allPlayersObj[id].position.y, 'hollowPointer')
             hollowPointer.scale.setTo(0.07);
