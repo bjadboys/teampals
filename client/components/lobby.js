@@ -11,7 +11,7 @@ export default class Lobby extends React.Component {
       lobby: []
     }
     this.handleNameChange = this.handleNameChange.bind(this)
-  }
+  } 
 
   startGameButton() {
     return (
