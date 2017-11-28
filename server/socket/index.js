@@ -1,10 +1,12 @@
+const bulletCollisionLayer = require('./collisionLayerData')
 module.exports = (io, server) => {
   server.lastPlayderID = 0; // Keep track of the last id assigned to a new player
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
   let bulletArray = [];
   let players = []
-  let mapBlocks = makeBlocks(10)
 
+  let mapBlocks = makeBlocks(10)
+  console.log('bulletCollisionLayer', bulletCollisionLayer.length)
   io.on('connection', function (socket) {
     socket.on('newplayer', function () {
       socket.player = {
@@ -71,8 +73,14 @@ module.exports = (io, server) => {
         // Update position of bullets
         bulletArray[i].x += bulletArray[i].xv;
         bulletArray[i].y += bulletArray[i].yv;
+        let xPixels = bulletArray[i].x
+        let yPixels = bulletArray[i].y
+        let xTile = Math.floor(xPixels / 32)
+        let yTile = Math.floor(yPixels / 32) * 48
+        let tile = bulletCollisionLayer[ xTile + yTile]
+
         // Remove bullet if it's off screen
-        if (bulletArray[i].y < 0) {
+        if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || (tile > 0)) {
           bulletArray.splice(i, 1);
           i--;
         }
