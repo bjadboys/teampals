@@ -24,8 +24,6 @@ module.exports = (io, server) => {
       }
   ]
   let mapBlocks = makeBlocks(10)
-
-  let mapBlocks = makeBlocks(10)
   console.log('bulletCollisionLayer', bulletCollisionLayer.length)
   io.on('connection', function (socket) {
 
