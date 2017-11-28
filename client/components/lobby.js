@@ -2,7 +2,7 @@ import React from 'react'
 import {TextField, RaisedButton} from 'material-ui'
 import socket from '../js/socket'
 import {connect} from 'react-redux'
-import store, {addPlayersAction, removePlayerAction, startGameAction, addNewPlayerAction} from '../store/'
+import store, {addPlayersAction, removePlayerAction, startGameAction} from '../store/'
 import { withRouter } from 'react-router-dom'
 import GameScreen from './game'
 
@@ -31,8 +31,11 @@ ClientLobby.socket.on('removePlayerFromLobby', function(data){
 
 ClientLobby.startGame = function() {
   ClientLobby.socket.emit('startGame')
-  store.dispatch(startGameAction(true))
 }
+
+ClientLobby.socket.on('gameHasStarted', function(){
+  store.dispatch(startGameAction(true))
+})
 
 class Lobby extends React.Component {
   constructor(){

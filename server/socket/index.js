@@ -59,7 +59,7 @@ module.exports = (io, server) => {
 
     socket.on('startGame', function () {
       io.emit('newGame')
-      io.emit('lobbyChange')
+      io.emit('gameHasStarted')
     })
 
     socket.on('setUpGame', function(){

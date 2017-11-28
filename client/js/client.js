@@ -12,8 +12,7 @@ Client.socket = socket
 // Client.askNewPlayer = function(){
 //   Client.socket.emit('newplayer');
 // };
-
-const RB = {}
+let game;
 
 Client.SEND_fire = function (position, direction) {
   Client.socket.emit('fire', { x: position.x+offsetX, y: position.y+offsetY, direction })
@@ -51,9 +50,13 @@ Client.socket.on('player-dropped-block', function (playerId) {
 //Client add on block at a time to the map.
 
 Client.socket.on('newGame', function(){
-    RB.game = new Game()
-    RB.game.startGame();
-    Client.socket.emit('setUpGame')
+    game = new Game()
+    game.startGame();
+    console.log(game)
+    let timeoutId = setTimeout(function(){
+        Client.socket.emit('setUpGame')
+    }, 3000)
+    
 })
 
 

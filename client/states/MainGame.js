@@ -13,6 +13,7 @@ export default class MainGame extends Phaser.State {
   }
 
   init() {
+    console.log(this, 'Main Game')
     this.stage.disableVisibilityChange = true
     this.addNewPlayer = this.addNewPlayer.bind(this)
     this.setCurrentPlayer = this.setCurrentPlayer.bind(this)
@@ -49,7 +50,6 @@ export default class MainGame extends Phaser.State {
       this.layer = this.map.createLayer(i)
     }
     this.layer.inputEnabled = true;
-    Client.askNewPlayer()
     //set up the keyboard for movement
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
