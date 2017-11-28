@@ -54,9 +54,11 @@ export default class MainGame extends Phaser.State {
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
     this.pickUpButton = this.game.input.keyboard.addKey(Phaser.KeyCode.X)
-
+    this.weaponSelectButton = this.game.input.keyboard.addKey(Phaser.KeyCode.V)
     this.blocksBJAD = this.add.group()
     this.blocksBJAD.enableBody = true
+    this.weaponsBJAD = this.add.group()
+    this.weaponsBJAD.enableBody = true
     this.healthText = this.game.add.text(5, 5, 'HEALTH: ')
     this.ammoText = this.game.add.text(250, 5, 'AMMO: ')
     this.healthText.fixedToCamera = true;
@@ -65,6 +67,12 @@ export default class MainGame extends Phaser.State {
     this.deathTiles = this.death.map( array => array.filter((element) => element.index !== -1))
     this.game.world.bringToTop(this.ammoText)
     this.game.world.bringToTop(this.healthText)
+
+    this.firstWeapon = this.weaponsBJAD.create(100, 100, 'weapon')
+    this.firstWeapon.id = 0
+    this.secondWeapon = this.weaponsBJAD.create(200, 200, 'weapon2')
+    this.secondWeapon.id = 1
+
   }
 
   isInDeathBJAD(x, y){
@@ -106,6 +114,8 @@ export default class MainGame extends Phaser.State {
     }
   }
 
+
+
   dropBlockPhysicsBJAD(){
     this.base = this.playerBaseBJAD[this.currentPlayer.id]
     if (this.game.physics.arcade.overlap(this.currentPlayer, this.base)) {
@@ -115,6 +125,18 @@ export default class MainGame extends Phaser.State {
     } else {
       Client.playerDropsBlockBJAD(this.currentPlayer.id)
     }
+  }
+
+    //Getting a weapon
+  pickUpWeaponPhysicsBJAD() {
+    let weapon = arguments[1]
+    this.currentPlayer.selectedWeapon = weapon.key
+    Client.playerPicksUpWeaponBJAD(this.currentPlayer, weapon)
+  }
+
+  removeWeaponBJAD(weaponId) {
+    this.weaponsBJAD.children[weaponId].kill()
+
   }
 
   hudThrottle(){
@@ -173,6 +195,9 @@ export default class MainGame extends Phaser.State {
     this.previousPosition = Object.assign({}, this.currentPlayer.position)
     this.currentPlayer.firing = false
     this.currentPlayer.holdToggle = false
+
+
+    this.currentPlayer.selectedWeapon = null
   }
 
   removePlayer(id) {

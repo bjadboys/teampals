@@ -12,8 +12,8 @@ Client.askNewPlayer = function(){
   Client.socket.emit('newplayer');
 };
 
-Client.SEND_fire = function (position, direction) {
-  Client.socket.emit('fire', { x: position.x+offsetX, y: position.y+offsetY, direction })
+Client.SEND_fire = function (position, direction, selectedWeapon) {
+  Client.socket.emit('fire', { x: position.x+offsetX, y: position.y+offsetY, direction, selectedWeapon })
 };
 
 Client.updatePosition = function (previous, current, direction) {
@@ -41,6 +41,7 @@ Client.playerDropsBlockBJAD = function(playerId) {
     Client.socket.emit('block-dropped', playerId)
 }
 
+
 Client.socket.on('player-dropped-block', function (playerId) {
     game.state.states.MainGame.dropBlockBJAD(playerId)
 })
@@ -64,6 +65,22 @@ Client.socket.on('allBlocks', function(data){
 Client.socket.on('replaceBlock', function(data){
   game.state.states.MainGame.removeBlockBJAD(data.playerId);
 })
+
+//weapon item events
+
+Client.playerPicksUpWeaponBJAD = function (player, weapon){
+    let playerId = player.id
+    let weaponId = weapon.id
+    Client.socket.emit('weaponPickedUp', {playerId, weaponId})
+}
+
+
+Client.socket.on('playerPickedUpWeapon', function(data){
+    let playerId = data.playerId
+    let weaponId = data.weaponId
+    game.state.states.MainGame.removeWeaponBJAD(weaponId)
+})
+
 Client.socket.on('stop-animation', function(data) {
   game.state.states.MainGame.stopAnimation(data);
 })

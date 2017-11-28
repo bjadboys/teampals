@@ -17,6 +17,8 @@ export default class Preload extends Phaser.State {
     this.load.image('hollowPointer', '../../assets/sprites/pointerHollow.png', 32, 32)
     this.load.image('solidPointer', '../../assets/sprites/pointerSolid.png', 32, 32)
     this.load.image('base', '../../assets/sprites/base.png')
+    this.load.image('weapon', '../../assets/sprites/sprite.png')
+    this.load.image('weapon2', '../../assets/sprites/sprite.png')
 
 
     //lobby assets go here too.
