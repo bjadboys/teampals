@@ -34,7 +34,6 @@ module.exports = (io, server) => {
     downRight: {x: 0.707, y: 0.707},
   }
   let mapBlocks = makeBlocks(10)
-  console.log('bulletCollisionLayer', bulletCollisionLayer.length)
   io.on('connection', function (socket) {
 
     //brian's lobby code
@@ -54,7 +53,7 @@ module.exports = (io, server) => {
       socket.player.playerSideTime = null
       socket.player.serverSideTime = Date.now()
       socket.player.direction = 'down'
-      
+
       socket.emit('allplayers', getAllPlayers());
       socket.emit('yourID', socket.player.id)
       socket.broadcast.emit('newplayer', socket.player);
@@ -106,16 +105,15 @@ module.exports = (io, server) => {
       });
     });
 
-    
 
-    
+
+
 
   });
 
   function ServerGameLoop() {
     for (let i = 0; i < bulletArray.length; i++) {
       // Update position of bullets
-      console.log(bulletArray[i].x)
       bulletArray[i].x += bulletArray[i].xv;
       bulletArray[i].y += bulletArray[i].yv;
       let xPixels = bulletArray[i].x
@@ -123,9 +121,9 @@ module.exports = (io, server) => {
       let xTile = Math.floor(xPixels / 32)
       let yTile = Math.floor(yPixels / 32) * 48
       let tile = bulletCollisionLayer[ xTile + yTile]
-
+      console.log(bulletArray.length)
       // Remove bullet if it's off screen
-      if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || (tile > 0)) {
+      if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || bulletArray[i].y > 1536 || bulletArray[i].x > 1536 ) {
         bulletArray.splice(i, 1);
         i--;
       }
@@ -133,8 +131,8 @@ module.exports = (io, server) => {
       if (bulletArray[i]) {
         for (let j = 0; j < playerArr.length; j++) {
           if (bulletArray[i].id !== playerArr[j].id) {
-            if (playerArr[j].x - 12<bulletArray[i].x && playerArr[j].x + 12>bulletArray[i].x){
-              if (playerArr[j].y - 7<bulletArray[i].y && playerArr[j].y + 16>bulletArray[i].y){
+            if (playerArr[j].x - 12 < bulletArray[i].x && playerArr[j].x + 12 > bulletArray[i].x){
+              if (playerArr[j].y - 7 < bulletArray[i].y && playerArr[j].y + 16 > bulletArray[i].y){
                 io.emit('player-hit', playerArr[j].id);
               }
             }
@@ -148,7 +146,7 @@ module.exports = (io, server) => {
 
   setInterval(ServerGameLoop, 16);
 
-  
+
   function makeBlocks(num) {
     const madeBlocks = []
     for (let i = 0; i < num; i++){
