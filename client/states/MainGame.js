@@ -279,6 +279,7 @@ export default class MainGame extends Phaser.State {
     let allPlayersObj = this.playerMapBJAD
     let closest = [];
     let current = [];
+    const range = 200;
 
     Object.keys(allPlayersObj).forEach(id => {
       if (Number(id) !== this.currentPlayer.id && allPlayersObj[id].alive) {
@@ -287,8 +288,7 @@ export default class MainGame extends Phaser.State {
         let calcDist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
         current[0] = calcDist;
         current[1] = id;
-        if (calcDist < 200) {
-
+        if (calcDist < range) {
           if (!closest.length){
             closest[0] = current[0];
             closest[1] = current[1];
@@ -306,7 +306,7 @@ export default class MainGame extends Phaser.State {
       if (this.currentPlayer.pointer) {
           this.currentPlayer.pointer.destroy();
       }
-        let hollowPointer = this.game.add.sprite(allPlayersObj[targetID].position.x, allPlayersObj[targetID].position.y - 15 , 'hollowPointer')
+        let hollowPointer = this.game.add.sprite(allPlayersObj[targetID].position.x, allPlayersObj[targetID].position.y - 15, 'hollowPointer')
         hollowPointer.scale.setTo(0.07);
         hollowPointer.anchor.x = 0.5;
         hollowPointer.anchor.y = 1.0;
