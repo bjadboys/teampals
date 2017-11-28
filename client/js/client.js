@@ -41,7 +41,6 @@ Client.playerDropsBlockBJAD = function(playerId) {
     Client.socket.emit('block-dropped', playerId)
 }
 
-
 Client.socket.on('player-dropped-block', function (playerId) {
     game.state.states.MainGame.dropBlockBJAD(playerId)
 })
@@ -60,7 +59,6 @@ Client.socket.on('allBlocks', function(data){
         game.state.states.MainGame.addBlockBJAD(block.id, block.x, block.y)
     })
 })
-
 
 Client.socket.on('replaceBlock', function(data){
   game.state.states.MainGame.removeBlockBJAD(data.playerId);
