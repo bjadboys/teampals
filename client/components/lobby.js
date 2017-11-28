@@ -19,7 +19,7 @@ export default class Lobby extends React.Component {
         <RaisedButton
             disabled={this.state.lobby.length < 2}
             label={this.state.lobby.length > 1 ? 'start game' : 'wait for players'}
-            onClick={()=>{console.log('joined the game')}}
+            onClick={()=>{console.log('joined the game')}} //TODO: create socket connection. Add to lobby array.
             />
       </div>
 
