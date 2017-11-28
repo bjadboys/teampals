@@ -21,20 +21,19 @@ module.exports = (io, server) => {
       id: 4,
       x: 20,
       y: 1516
-      }
+    }
   ]
   const directionValues = {
-    up: {x: 0, y: -1.0},
-    down: {x: 0, y: 1.0},
-    left: {x: -1.0, y: 0},
-    right: {x: 1.0, y: 0},
-    upLeft: {x: -0.707, y: -.707},
-    downLeft: {x: -.707, y: 0.707},
-    upRight: {x: 0.707, y: -0.707},
-    downRight: {x: 0.707, y: 0.707},
+    up: { x: 0, y: -1.0 },
+    down: { x: 0, y: 1.0 },
+    left: { x: -1.0, y: 0 },
+    right: { x: 1.0, y: 0 },
+    upLeft: { x: -0.707, y: -.707 },
+    downLeft: { x: -.707, y: 0.707 },
+    upRight: { x: 0.707, y: -0.707 },
+    downRight: { x: 0.707, y: 0.707 },
   }
   let mapBlocks = makeBlocks(10)
-  console.log('bulletCollisionLayer', bulletCollisionLayer.length)
   io.on('connection', function (socket) {
 
     //brian's lobby code
@@ -47,7 +46,6 @@ module.exports = (io, server) => {
     // })
     //above is brian's lobby code.
     socket.on('newplayer', function () {
-      if (server.lastPlayderID === 4) throw new Error('too many players')
       server.lastPlayderID++
       socket.player = defaultPlayers.find(player => player.id === server.lastPlayderID)
       io.emit()
@@ -60,68 +58,75 @@ module.exports = (io, server) => {
       socket.broadcast.emit('newplayer', socket.player);
       socket.emit('allBlocks', mapBlocks)
 
-      socket.on('update-position', function (data) {
-        if (socket.player.playerSideTime <= data.playerSideTime){
-          socket.player.playerSideTime = data.playerSideTime;
-          socket.player.serverSideTime = Date.now();
-          socket.player.x = data.x;
-          socket.player.y = data.y;
-          socket.player.direction = data.direction
-        }
-        socket.broadcast.emit('move', socket.player);
-      });
+    });
+    socket.on('update-position', function (data) {
+      if (socket.player.playerSideTime <= data.playerSideTime) {
+        socket.player.playerSideTime = data.playerSideTime;
+        socket.player.serverSideTime = Date.now();
+        socket.player.x = data.x;
+        socket.player.y = data.y;
+        socket.player.direction = data.direction
+      }
+      socket.broadcast.emit('move', socket.player);
+    });
 
-      socket.on('block-picked-up', function(data){
-        io.emit('player-picked-up-block', data)
-      })
+    socket.on('block-picked-up', function (data) {
+      io.emit('player-picked-up-block', data)
+    })
 
-      socket.on('blockUsed', function(data){
-        const newBlock = makeBlocks(1)
-        updateMapBlocks(data.blockId, newBlock[0])
-        io.emit('allBlocks', newBlock)
-        io.emit('replaceBlock', data)
-      })
+    socket.on('blockUsed', function (data) {
+      const newBlock = makeBlocks(1)
+      updateMapBlocks(data.blockId, newBlock[0])
+      io.emit('allBlocks', newBlock)
+      io.emit('replaceBlock', data)
+    })
 
-      socket.on('block-dropped', function(playerId){
-        io.emit('player-dropped-block', playerId)
-      })
+    socket.on('block-dropped', function (playerId) {
+      io.emit('player-dropped-block', playerId)
+    })
 
-      socket.on('stopped-moving', function() {
-        socket.broadcast.emit('stop-animation', socket.player.id)
-      })
+    socket.on('stopped-moving', function () {
+      socket.broadcast.emit('stop-animation', socket.player.id)
+    })
 
-      socket.on('fire', function (data) {
-        let newBullet = {};
-        let axisVelocities = directionValues[data.direction];
-        newBullet.x = data.x;
-        newBullet.y = data.y;
-        newBullet.xv = axisVelocities.x * 5.0;
-        newBullet.yv = axisVelocities.y * 5.0;
-        newBullet.id = socket.player.id;
-        bulletArray.push(newBullet);
-      });
+    socket.on('weaponPickedUp', function(data){
+      console.log('inside weaponPickedUp on server')
+      io.emit('playerPickedUpWeapon', data)
+    })
 
-      socket.on('disconnect', function () {
+    socket.on('fire', function (data) {
+      console.log('do i have weapon data', data.selectedWeapon)
+      let newBullet = {};
+      let axisVelocities = directionValues[data.direction];
+      newBullet.x = data.x;
+      newBullet.y = data.y;
+      newBullet.xv = axisVelocities.x * 5.0;
+      newBullet.yv = axisVelocities.y * 5.0;
+      newBullet.id = socket.player.id;
+      bulletArray.push(newBullet);
+    });
+
+    socket.on('disconnect', function () {
+      if (socket.player){
         io.emit('remove', socket.player.id);
-      });
+      }
     });
 
   });
 
+
   function ServerGameLoop() {
     for (let i = 0; i < bulletArray.length; i++) {
       // Update position of bullets
-      console.log(bulletArray[i].x)
       bulletArray[i].x += bulletArray[i].xv;
       bulletArray[i].y += bulletArray[i].yv;
       let xPixels = bulletArray[i].x
       let yPixels = bulletArray[i].y
       let xTile = Math.floor(xPixels / 32)
       let yTile = Math.floor(yPixels / 32) * 48
-      let tile = bulletCollisionLayer[ xTile + yTile]
-
+      let tile = bulletCollisionLayer[xTile + yTile]
       // Remove bullet if it's off screen
-      if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || (tile > 0)) {
+      if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || bulletArray[i].y > 1536 || bulletArray[i].x > 1536 || tile > 0) {
         bulletArray.splice(i, 1);
         i--;
       }
@@ -129,8 +134,8 @@ module.exports = (io, server) => {
       if (bulletArray[i]) {
         for (let j = 0; j < playerArr.length; j++) {
           if (bulletArray[i].id !== playerArr[j].id) {
-            if (playerArr[j].x - 12<bulletArray[i].x && playerArr[j].x + 12>bulletArray[i].x){
-              if (playerArr[j].y - 7<bulletArray[i].y && playerArr[j].y + 16>bulletArray[i].y){
+            if (playerArr[j].x - 12 < bulletArray[i].x && playerArr[j].x + 12 > bulletArray[i].x) {
+              if (playerArr[j].y - 7 < bulletArray[i].y && playerArr[j].y + 16 > bulletArray[i].y) {
                 io.emit('player-hit', playerArr[j].id);
               }
             }
@@ -147,7 +152,7 @@ module.exports = (io, server) => {
 
   function makeBlocks(num) {
     const madeBlocks = []
-    for (let i = 0; i < num; i++){
+    for (let i = 0; i < num; i++) {
       const initializedBlock = {
         id: server.lastBlockIdBJAD++,
         x: randomInt(500, 800),

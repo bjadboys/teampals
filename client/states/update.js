@@ -8,13 +8,15 @@ export default Client => function () {
   //this collision only matters if we're push blocks. We may want to delete.
 
   if (this.currentPlayer && this.currentPlayer.alive) {
-    this.game.physics.arcade.collide(this.currentPlayer, this.layerCollision);
-    this.hudThrottle();
+    this.game.physics.arcade.collide(this.currentPlayer, this.layerCollision)
+    this.game.physics.arcade.overlap(this.currentPlayer, this.weaponsBJAD, this.pickUpWeaponPhysicsBJAD, null, this)
+    this.hudThrottle()
     //collision added for blocks below. With this on player pushes the block around. Comment in for pushing physics
     // this.game.physics.arcade.collide(this.currentPlayer, this.blocksBJAD)
     //when the above is on it makes it impossible to push  a block out of a corner.
     this.currentPlayer.body.velocity.x = 0;
     this.currentPlayer.body.velocity.y = 0;
+
     if (this.isInDeathBJAD(this.currentPlayer.position.x, this.currentPlayer.position.y) !== -1) {
       //TODO: Damage player vs kill.
     }
@@ -31,7 +33,6 @@ export default Client => function () {
     if (this.currentPlayer.targetLocked) {
       this.lockOnTarget();
     }
-
     if (this.lockOnButton.isDown && this.currentPlayer.possibleTarget && !this.currentPlayer.lockOnToggle) {
       this.currentPlayer.lockOnToggle = true
       this.currentPlayer.targetLocked = !this.currentPlayer.targetLocked
@@ -101,12 +102,16 @@ export default Client => function () {
       this.currentPlayer.animations.stop()
     }
     if (this.fireButton.isDown && !this.currentPlayer.firing && this.currentPlayer.children.length === 0) {
-      this.currentPlayer.firing = true;
-      Client.SEND_fire(this.currentPlayer.position, this.currentPlayer.direction);
+      this.currentPlayer.firing = true
+      Client.SEND_fire(this.currentPlayer.position, this.currentPlayer.direction, this.currentPlayer.selectedWeapon);
+      console.log(this.currentPlayer.selectedWeapon)
       // Cannot shoot if you're holding something
     }
+    if (!this.fireButton.isDown) {
+      this.currentPlayer.firing = false;
+    }
     if (this.pickUpButton.isDown && !this.currentPlayer.holdToggle) {
-      this.currentPlayer.holdToggle = true;
+      this.currentPlayer.holdToggle = true
       if (this.currentPlayer.children.length) {
         this.dropBlockPhysicsBJAD();
       } else {
@@ -116,9 +121,5 @@ export default Client => function () {
     if (!this.pickUpButton.isDown) {
       this.currentPlayer.holdToggle = false;
     }
-    if (!this.fireButton.isDown) {
-      this.currentPlayer.firing = false;
-    }
-
   }
 }
