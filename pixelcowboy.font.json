@@ -1,4 +1,4 @@
 {"name": "Pixel Cowboy",
 "files" : [{
-  "file": ".public/assets/fonts/PixelCowboy.otf"
+  "file": ".client/fonts/PixelCowboy.otf"
 }]}

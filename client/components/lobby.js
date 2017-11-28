@@ -49,7 +49,7 @@ export default class Lobby extends React.Component {
     return (
     <div>
         <TextField
-          hintText="Nothing offensive."
+          hintText="Hello."
           floatingLabelText="Name"
           onChange={(event) => {this.handleNameChange(event.target.value)}}
         />

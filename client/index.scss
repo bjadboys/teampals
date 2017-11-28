@@ -1,8 +1,6 @@
-
-@import "~pixelcowboy";
-
 body {
-  font-family: pixelcowboy;
+  font-family: "PixelCowboy" !important;
+  src: url("./fonts/PixelCowboy.otf") format('otf')
 
   a {
     text-decoration: none;
@@ -24,6 +22,7 @@ body {
 }
 
 #buttonHolder {
+  font-family: Arial !important;
   display: flex;
   flex-direction: row;
 }

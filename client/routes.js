@@ -4,13 +4,15 @@ import {Route, Switch} from 'react-router-dom'
 import history from './history'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
+import "./fonts/PixelCowboy.otf"
 
 import {Lobby} from './components/'
 
 const muiTheme = getMuiTheme({
   palette: {
-    textColor: '#5FC069',
+    textColor: '#B2391E',
   },
+  fontFamily: 'PixelCowboy',
   appBar: {
     height: 50,
   },
