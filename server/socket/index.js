@@ -89,6 +89,11 @@ module.exports = (io, server) => {
       socket.broadcast.emit('stop-animation', socket.player.id)
     })
 
+    socket.on('weaponPickedUp', function(data){
+      console.log('inside weaponPickedUp on server')
+      io.emit('playerPickedUpWeapon', data)
+    })
+
     socket.on('fire', function (data) {
       console.log('do i have weapon data', data.selectedWeapon)
       let newBullet = {};

@@ -128,9 +128,9 @@ export default class MainGame extends Phaser.State {
   pickUpWeaponPhysicsBJAD() {
     let weapon = arguments[1]
     this.currentPlayer.selectedWeapon = weapon.key
-
-    console.log('what weapon',weapon.key)
-    weapon.destroy()
+    console.log('sending to Client.playerPicksUpWeaponBjad', this.currentPlayer, weapon)
+    Client.playerPicksUpWeaponBJAD(this.currentPlayer, weapon)
+    // weapon.destroy()
   }
 
   hudThrottle(){

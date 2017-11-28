@@ -41,6 +41,7 @@ Client.playerDropsBlockBJAD = function(playerId) {
     Client.socket.emit('block-dropped', playerId)
 }
 
+
 Client.socket.on('player-dropped-block', function (playerId) {
     game.state.states.MainGame.dropBlockBJAD(playerId)
 })
@@ -64,6 +65,21 @@ Client.socket.on('allBlocks', function(data){
 Client.socket.on('replaceBlock', function(data){
   game.state.states.MainGame.removeBlockBJAD(data.playerId);
 })
+
+//weapon item events
+
+Client.playerPicksUpWeaponBJAD = function (player, weapon){
+    let playerId = player.id
+    let weaponId = weapon.id
+    console.log('in playerPicksUpWeaponBJAD', player, weapon)
+    Client.socket.emit('weaponPickedUp', {playerId, weaponId})
+}
+
+
+Client.socket.on('playerPickedUpWeapon', function(player, weapon){
+    console.log('inside playerPickedUpWeapon', player, weapon)
+})
+
 Client.socket.on('stop-animation', function(data) {
   game.state.states.MainGame.stopAnimation(data);
 })
