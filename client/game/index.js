@@ -13,7 +13,7 @@ const WIDTH = 320
 
 export default class Game extends Phaser.Game {
   constructor(){
-    super(HEIGHT, WIDTH, Phaser.AUTO, 'app')
+    super(HEIGHT, WIDTH, Phaser.AUTO, 'gameDiv')
     this.state.add('Boot', Boot)
     this.state.add('Preload', Preload)
     this.state.add('Lobby', Lobby)
@@ -24,4 +24,4 @@ export default class Game extends Phaser.Game {
   }
 
 }
-export const game = new Game()
+// export const game = new Game()

@@ -1,6 +1,6 @@
 import React from 'react'
 import {TextField, RaisedButton} from 'material-ui'
-import Client from ''
+import Client from '../js/client'
 
 export default class Lobby extends React.Component {
   constructor(){
@@ -8,12 +8,10 @@ export default class Lobby extends React.Component {
     this.state = {
       name: '',
       joined: false,
-      lobby: []
+      lobby: ['a', 'b']
     }
     this.handleNameChange = this.handleNameChange.bind(this)
   }
-
-
 
   startGameButton() {
     return (
@@ -21,7 +19,7 @@ export default class Lobby extends React.Component {
         <RaisedButton
             disabled={this.state.lobby.length < 2}
             label={this.state.lobby.length > 1 ? 'start game' : 'wait for players'}
-            onClick={()=>{}}
+            onClick={()=>{console.log('joined the game')}}
             />
       </div>
 
@@ -40,7 +38,7 @@ export default class Lobby extends React.Component {
   }
 
   updateLobby(playerArray){
-    this.setState({lobby: playerArray})
+    this.setState({lobby: []})
   }
 
   handleNameChange(input) {
@@ -55,7 +53,11 @@ export default class Lobby extends React.Component {
           floatingLabelText="Name"
           onChange={(event) => {this.handleNameChange(event.target.value)}}
         />
+        <div id='buttonHolder'>
         {this.joinGameButton()}
+        {this.state.joined && this.startGameButton()}
+        </div>
+        
     </div>
    )
   }

@@ -19,3 +19,8 @@ body {
     display: inline-block;
   }
 }
+
+#buttonHolder {
+  display: flex;
+  flex-direction: row;
+}

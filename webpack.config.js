@@ -16,7 +16,7 @@ var definePlugin = new webpack.DefinePlugin({
 })
 
 module.exports = {
-  entry: './client/game/index',
+  entry: './client/index.js',
   output: {
     path: __dirname,
     filename: './public/bundle.js'
