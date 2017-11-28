@@ -259,50 +259,66 @@ export default class MainGame extends Phaser.State {
   }
 
   lockOnTarget() {
-    if (this.currentPlayer.pointer) {
-      this.currentPlayer.pointer.destroy();
+    if (this.currentPlayer.possibleTarget.alive) {
+      if (this.currentPlayer.pointer) {
+        this.currentPlayer.pointer.destroy();
+      }
+      let solidPointer = this.game.add.sprite(this.currentPlayer.possibleTarget.position.x, this.currentPlayer.possibleTarget.position.y - 15, 'solidPointer');
+      solidPointer.scale.setTo(0.07);
+      solidPointer.anchor.x = 0.5;
+      solidPointer.anchor.y = 1.0;
+      this.currentPlayer.pointer = solidPointer;
+    } else {
+      this.currentPlayer.lockOnToggle = false;
+      this.currentPlayer.targetLocked = false;
     }
-    let solidPointer = this.game.add.sprite(this.currentPlayer.possibleTarget.position.x, this.currentPlayer.possibleTarget.position.y - 15, 'solidPointer');
-    solidPointer.scale.setTo(0.07);
-    solidPointer.anchor.x = 0.5;
-    solidPointer.anchor.y = 1.0;
-    this.currentPlayer.pointer = solidPointer;
+
   }
 
   findPossibleTarget() {
     let allPlayersObj = this.playerMapBJAD
+    let closest = [];
+    let current = [];
 
     Object.keys(allPlayersObj).forEach(id => {
-      if (Number(id) !== this.currentPlayer.id) {
+      if (Number(id) !== this.currentPlayer.id && allPlayersObj[id].alive) {
         let dx = allPlayersObj[id].position.x - this.currentPlayer.position.x;
         let dy = allPlayersObj[id].position.y - this.currentPlayer.position.y;
         let calcDist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-        if (calcDist < 100) {
-          this.currentPlayer.possibleTarget = allPlayersObj[id];
-          if (this.currentPlayer.pointer) {
-            if (!allPlayersObj[id].alive) {
-              this.currentPlayer.pointer.destroy();
-            }
-            this.currentPlayer.pointer.position.x = allPlayersObj[id].position.x;
-            this.currentPlayer.pointer.position.y = allPlayersObj[id].position.y - 15;
-          } else {
-            let hollowPointer = this.game.add.sprite(allPlayersObj[id].position.x, allPlayersObj[id].position.y, 'hollowPointer')
-            hollowPointer.scale.setTo(0.07);
-            hollowPointer.anchor.x = 0.5;
-            hollowPointer.anchor.y = 1.0;
-            this.currentPlayer.pointer = hollowPointer;
+        current[0] = calcDist;
+        current[1] = id;
+        if (calcDist < 200) {
+
+          if (!closest.length){
+            closest[0] = current[0];
+            closest[1] = current[1];
+
+          } else if (closest[0] > current[0]) {
+            closest[0] = current[0];
+            closest[1] = current[1];
           }
-        } else {
-          if (this.currentPlayer.pointer) {
-            this.currentPlayer.pointer.destroy();
-          }
-          this.currentPlayer.possibleTarget = null;
-          this.currentPlayer.pointer = null;
         }
       }
     })
+    if (closest.length){
+      let targetID = closest[1];
+      this.currentPlayer.possibleTarget = allPlayersObj[targetID];
+      if (this.currentPlayer.pointer) {
+          this.currentPlayer.pointer.destroy();
+      }
+        let hollowPointer = this.game.add.sprite(allPlayersObj[targetID].position.x, allPlayersObj[targetID].position.y - 15 , 'hollowPointer')
+        hollowPointer.scale.setTo(0.07);
+        hollowPointer.anchor.x = 0.5;
+        hollowPointer.anchor.y = 1.0;
+        this.currentPlayer.pointer = hollowPointer;
+    } else {
+      if (this.currentPlayer.pointer) {
+        this.currentPlayer.pointer.destroy();
+      }
+      this.currentPlayer.possibleTarget = null;
+      this.currentPlayer.pointer = null;
+    }
   }
-
 }
 
 MainGame.prototype.update = updateMaker(Client)

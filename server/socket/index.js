@@ -11,16 +11,16 @@ module.exports = (io, server) => {
       y: 20
     }, {
       id: 2,
-      x: 1516,
-      y: 20
+      x: 40,
+      y: 40
     }, {
       id: 3,
-      x: 1516,
-      y: 1516
+      x: 80,
+      y: 80
     }, {
       id: 4,
-      x: 20,
-      y: 1516
+      x: 60,
+      y: 60
     }
   ]
   const directionValues = {
@@ -98,10 +98,11 @@ module.exports = (io, server) => {
       console.log('do i have weapon data', data.selectedWeapon)
       let newBullet = {};
       let axisVelocities = directionValues[data.direction];
+      const bulletSpeed = 3.0;
       newBullet.x = data.x;
       newBullet.y = data.y;
-      newBullet.xv = axisVelocities.x * 5.0;
-      newBullet.yv = axisVelocities.y * 5.0;
+      newBullet.xv = data.xv ? data.xv * bulletSpeed : axisVelocities.x * bulletSpeed;
+      newBullet.yv = data.xy ? data.xy * bulletSpeed : axisVelocities.y * bulletSpeed;
       newBullet.id = socket.player.id;
       bulletArray.push(newBullet);
     });
