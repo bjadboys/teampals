@@ -4,7 +4,6 @@ module.exports = (io, server) => {
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
   let bulletArray = [];
   let players = []
-
   let defaultPlayers = [
     {
       id: 1,
@@ -24,8 +23,6 @@ module.exports = (io, server) => {
       y: 1516
       }
   ]
-  let mapBlocks = makeBlocks(10)
-
   let mapBlocks = makeBlocks(10)
   console.log('bulletCollisionLayer', bulletCollisionLayer.length)
   io.on('connection', function (socket) {
