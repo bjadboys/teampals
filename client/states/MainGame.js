@@ -238,15 +238,19 @@ export default class MainGame extends Phaser.State {
   changeHealth(healthNum, id) {
     if (this.currentPlayer.id === id) {
       this.currentPlayer.health += healthNum
-      this.game.camera.flash([0xff0000],[250])
-      this.game.camera.shake()
+      if (healthNum < 0) {
+        this.game.camera.flash([0xde5242], [250])
+        this.game.camera.shake([.01], [100])
+      } else { 
+        this.game.camera.flash([0xb3fc95])
+      }
     }
   }
 
   removePlayer(id) {
     this.playerMapBJAD[id].destroy()
     delete this.playerMapBJAD[id]
-  }
+  } 
 
   killPlayer(id) {
     this.player = this.playerMapBJAD[id]
