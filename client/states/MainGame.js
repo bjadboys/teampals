@@ -131,7 +131,6 @@ export default class MainGame extends Phaser.State {
     }
   }
 
-<<<<<<< HEAD
     // } else {
     //   console.log(this.player.direction)
 
@@ -153,13 +152,6 @@ export default class MainGame extends Phaser.State {
       if (!hasBlock) {
         this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
       }
-=======
-  pickUpBlockPhysicsBJAD() {
-    //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
-    //that they touch.
-    if (!this.currentPlayer.children.length) {
-      this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
->>>>>>> master
     }
 
   dropBlockPhysicsBJAD(){
@@ -178,20 +170,19 @@ export default class MainGame extends Phaser.State {
     let weapon = arguments[1]
     // this.currentPlayer.selectedWeapon = weapon.key
       Client.playerPicksUpWeaponBJAD(this.currentPlayer, weapon)
-    }
   }
 
-<<<<<<< HEAD
+
   collectWeaponBJAD(playerId, weaponId) {
     let collectedWeapon = this.weaponsBJAD.children.find(weapon => weapon.id == weaponId)
     let player = this.playerMapBJAD[playerId]
     collectedWeapon.x = 0
     collectedWeapon.y = 0
     player.addChild(collectedWeapon)
-=======
+  }
+
   removeWeaponBJAD(weaponId) {
     this.weaponsBJAD.children[weaponId].kill()
->>>>>>> master
   }
 
   hudThrottle(){
@@ -252,10 +243,6 @@ export default class MainGame extends Phaser.State {
     this.previousPosition = Object.assign({}, this.currentPlayer.position)
     this.currentPlayer.firing = false
     this.currentPlayer.holdToggle = false
-<<<<<<< HEAD
-
-=======
->>>>>>> master
     this.currentPlayer.selectedWeapon = null
   }
 
