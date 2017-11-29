@@ -236,7 +236,11 @@ export default class MainGame extends Phaser.State {
   }
 
   changeHealth(healthNum, id) {
-    if (this.currentPlayer.id === id) this.currentPlayer.health += healthNum
+    if (this.currentPlayer.id === id) {
+      this.currentPlayer.health += healthNum
+      this.game.camera.flash([0xff0000],[250])
+      this.game.camera.shake()
+    }
   }
 
   removePlayer(id) {

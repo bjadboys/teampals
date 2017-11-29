@@ -9,7 +9,7 @@ module.exports = (io, server) => {
 
   //Gameplay Variables
   const bulletSpeed = 3.0
-
+  const playerHealth = 100
   // Keep track of the last id assigned to a new player
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
   let bulletArray = [];
