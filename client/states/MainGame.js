@@ -222,11 +222,7 @@ export default class MainGame extends Phaser.State {
   movePlayer(id, x, y, serverSideTime, direction) {
     this.player = this.playerMapBJAD[id]
 
-<<<<<<< HEAD
-    if (this.player.serverSideTime<=serverSideTime){
-=======
     if (this.player.serverSideTime <= serverSideTime){
->>>>>>> master
       if (!this.player.moving || this.player.direction !== direction){
         this.player.moving = true;
         this.startAnimation(id, direction)

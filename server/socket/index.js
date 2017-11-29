@@ -19,13 +19,8 @@ module.exports = (io, server) => {
       y: 80
     }, {
       id: 4,
-<<<<<<< HEAD
-      x: 20,
-      y: 1516
-=======
       x: 60,
       y: 60
->>>>>>> master
     }
   ]
   const directionValues = {
