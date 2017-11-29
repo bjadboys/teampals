@@ -122,6 +122,7 @@ export default class MainGame extends Phaser.State {
   dropBlockBJAD(playerId){
     this.player = this.playerMapBJAD[playerId]
     const block = this.player.children.find(item => item.isBlock)
+    console.log('dropping: what is block', block)
     if (block) {
       this.droppedBlock = this.player.removeChild(block)
       this.droppedBlock.x = this.player.x
@@ -174,15 +175,18 @@ export default class MainGame extends Phaser.State {
 
 
   collectWeaponBJAD(playerId, weaponId) {
+    this.player = this.playerMapBJAD[playerId]
+    const oldWeapon = this.player.children.find(item => item.isWeapon)
+    if (oldWeapon){
+      const ejectedWeapon = this.player.removeChild(oldWeapon)
+      ejectedWeapon.x = this.player.x + 50
+      ejectedWeapon.y = this.player.y + 50
+      this.weaponsBJAD.addChild(ejectedWeapon)
+    }
     let collectedWeapon = this.weaponsBJAD.children.find(weapon => weapon.id == weaponId)
-    let player = this.playerMapBJAD[playerId]
     collectedWeapon.x = 0
     collectedWeapon.y = 0
-    player.addChild(collectedWeapon)
-  }
-
-  removeWeaponBJAD(weaponId) {
-    this.weaponsBJAD.children[weaponId].kill()
+    this.player.addChild(collectedWeapon)
   }
 
   hudThrottle(){
@@ -288,6 +292,7 @@ export default class MainGame extends Phaser.State {
     const duplicate = this.blocksBJAD.children.find(block => block.id === id)
     if (!duplicate) {
       this.blockBJAD = this.blocksBJAD.create(x, y, 'block')
+      this.blockBJAD.isBlock = true
       this.blockBJAD.id = id;
       this.blockBJAD.body.collideWorldBounds = true
     }

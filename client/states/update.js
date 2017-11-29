@@ -53,7 +53,10 @@ export default Client => function () {
       this.currentPlayer.body.velocity.y = -150;
       this.currentPlayer.direction = 'up';
       this.currentPlayer.animations.play('up');
-      if (this.currentPlayer.children[0]) {      this.currentPlayer.children[0].angle = -90}
+
+      if (this.currentPlayer.children.length) {
+            this.currentPlayer.children.forEach(child => {child.angle = -90})
+          }
     }
     if (this.cursors.up.isDown && this.cursors.left.isDown && !this.cursors.right.isDown) {
       moving = true;
@@ -112,7 +115,7 @@ export default Client => function () {
       this.currentPlayer.animations.stop()
     }
     if (this.fireButton.isDown && !this.currentPlayer.firing
-      /*&& this.currentPlayer.children.length === 0*/) {
+      && !this.currentPlayer.children.find(item => item.isBlock)) {
       this.currentPlayer.firing = true
       Client.SEND_fire(this.currentPlayer.position, this.currentPlayer.direction, this.currentPlayer.selectedWeapon, this.currentPlayer.targetLocked, this.currentPlayer.possibleTarget);
       // console.log(this.currentPlayer.selectedWeapon)
@@ -123,7 +126,9 @@ export default Client => function () {
     }
     if (this.pickUpButton.isDown && !this.currentPlayer.holdToggle) {
       this.currentPlayer.holdToggle = true
-      if (this.currentPlayer.children.length) {
+      const hasBlock = this.currentPlayer.children.find(item => item.isBlock)
+      console.log('trying to drop the block, what is children', this.currentPlayer.children)
+      if (hasBlock) {
         this.dropBlockPhysicsBJAD();
       } else {
         this.pickUpBlockPhysicsBJAD();

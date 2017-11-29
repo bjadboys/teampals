@@ -61,7 +61,7 @@ module.exports = (io, server) => {
       io.emit('newGame')
       io.emit('gameHasStarted')
     })
-
+    console.log('what is socket.player', socket.player)
     socket.on('setUpGame', function(){
       io.emit('allBlocks', mapBlocks)
       socket.emit('allplayers', getAllPlayers());
@@ -99,7 +99,6 @@ module.exports = (io, server) => {
     })
 
     socket.on('weaponPickedUp', function(data){
-      console.log('inside weaponPickedUp on server')
       io.emit('playerPickedUpWeapon', data)
     })
 
