@@ -25,14 +25,15 @@ export default Client => function () {
 
     // Target Lock-On Feature //
 
-    //If NO target locked, continue to run findPossibleTarget
-    if (!this.currentPlayer.targetLocked) {
-      this.findPossibleTarget();
-    }
     //If target locked, run lockOnTarget to set solid pointer for target lock visual feedback
     if (this.currentPlayer.targetLocked) {
       this.lockOnTarget();
     }
+    //If NO target locked, continue to run findPossibleTarget
+    else {
+      this.findPossibleTarget();
+    }
+
     if (this.lockOnButton.isDown && this.currentPlayer.possibleTarget && !this.currentPlayer.lockOnToggle) {
       this.currentPlayer.lockOnToggle = true
       this.currentPlayer.targetLocked = !this.currentPlayer.targetLocked
@@ -103,8 +104,8 @@ export default Client => function () {
     }
     if (this.fireButton.isDown && !this.currentPlayer.firing && this.currentPlayer.children.length === 0) {
       this.currentPlayer.firing = true
-      Client.SEND_fire(this.currentPlayer.position, this.currentPlayer.direction, this.currentPlayer.selectedWeapon);
-      console.log(this.currentPlayer.selectedWeapon)
+      Client.SEND_fire(this.currentPlayer.position, this.currentPlayer.direction, this.currentPlayer.selectedWeapon, this.currentPlayer.targetLocked, this.currentPlayer.possibleTarget);
+      // console.log(this.currentPlayer.selectedWeapon)
       // Cannot shoot if you're holding something
     }
     if (!this.fireButton.isDown) {
