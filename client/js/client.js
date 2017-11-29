@@ -67,7 +67,7 @@ Client.socket.on('newGame', function(){
     let timeoutId = setTimeout(function(){
         Client.socket.emit('setUpGame')
     }, 1000)
-    
+
 })
 
 
@@ -98,9 +98,10 @@ Client.playerPicksUpWeaponBJAD = function (player, weapon){
 }
 
 Client.socket.on('playerPickedUpWeapon', function(data){
-  let playerId = data.playerId
-  let weaponId = data.weaponId
-  game.state.states.MainGame.removeWeaponBJAD(weaponId)
+    let playerId = data.playerId
+    let weaponId = data.weaponId
+    console.log('in server', weaponId)
+    game.state.states.MainGame.collectWeaponBJAD(playerId, weaponId)
 })
 
 Client.socket.on('stop-animation', function(data) {

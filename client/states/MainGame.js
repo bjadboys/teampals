@@ -97,18 +97,32 @@ export default class MainGame extends Phaser.State {
 
   dropBlockBJAD(playerId){
     this.player = this.playerMapBJAD[playerId]
-    this.droppedBlock = this.player.removeChild(this.player.children[0])
+    this.droppedBlock = this.player.children[0]
+    console.log('in dropBlock', this.droppedBlock)
+    if (this.droppedBlock.key == 'block'){
     this.droppedBlock.x = this.player.x
     this.droppedBlock.y = this.player.y
+    this.player.removeChild(this.droppedBlock)
     this.blocksBJAD.addChild(this.droppedBlock)
     this.droppedBlock = null;
+    } else {
+      console.log(this.player.direction)
+
+      let spawnX = this.player.x + 50
+      let spawnY = this.player.y + 50
+      let key = this.player.children[0].key
+      this.player.children[0].destroy()
+      let newWeapon = this.weaponsBJAD.create(spawnX, spawnY, key)
+      newWeapon.id = (key == 'weapon') ? 0 : 1
+    }
+
   }
 
 
   pickUpBlockPhysicsBJAD() {
     //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
     //that they touch.
-    if (!this.currentPlayer.children.length) {
+    if (!this.currentPlayer.children[0]) {
       this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
     }
   }
@@ -130,11 +144,20 @@ export default class MainGame extends Phaser.State {
   pickUpWeaponPhysicsBJAD() {
     let weapon = arguments[1]
     this.currentPlayer.selectedWeapon = weapon.key
-    Client.playerPicksUpWeaponBJAD(this.currentPlayer, weapon)
+    if (!this.currentPlayer.children.length) {
+
+      Client.playerPicksUpWeaponBJAD(this.currentPlayer, weapon)
+    }
   }
 
-  removeWeaponBJAD(weaponId) {
-    this.weaponsBJAD.children[weaponId].kill()
+  collectWeaponBJAD(playerId, weaponId) {
+    let collectedWeapon = this.weaponsBJAD.children.find(weapon => weapon.id == weaponId)
+    let player = this.playerMapBJAD[playerId]
+    collectedWeapon.x = 0
+    collectedWeapon.y = 0
+    player.addChild(collectedWeapon)
+
+
 
   }
 
@@ -197,7 +220,6 @@ export default class MainGame extends Phaser.State {
     this.previousPosition = Object.assign({}, this.currentPlayer.position)
     this.currentPlayer.firing = false
     this.currentPlayer.holdToggle = false
-
 
     this.currentPlayer.selectedWeapon = null
   }
