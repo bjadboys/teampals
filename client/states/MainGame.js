@@ -69,7 +69,9 @@ export default class MainGame extends Phaser.State {
 
     this.firstWeapon = this.weaponsBJAD.create(100, 100, 'weapon')
     this.firstWeapon.id = 0
+    this.firstWeapon.isWeapon = true
     this.secondWeapon = this.weaponsBJAD.create(200, 200, 'weapon2')
+    this.secondWeapon.isWeapon = true
     this.secondWeapon.id = 1
 
   }
