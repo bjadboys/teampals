@@ -1,5 +1,6 @@
 import Game from '../game/'
 import socket from './socket'
+import store, {gameInProgressAction} from '../store/'
 // import {movePlayer, setCurrentPlayer, removePlayer, addNewPlayer, hitEnemy} from '../states/MainGame'
 let bulletArray = [];
 const Client = {};
@@ -62,11 +63,12 @@ Client.socket.on('player-dropped-block', function (playerId) {
 Client.socket.on('newGame', function(){
     game = new Game()
     game.startGame();
-    console.log(game)
+    
     let timeoutId = setTimeout(function(){
         Client.socket.emit('setUpGame')
     }, 1000)
-
+    store.dispatch(gameInProgressAction())
+    
 })
 
 

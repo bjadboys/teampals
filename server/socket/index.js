@@ -13,6 +13,7 @@ module.exports = (io, server) => {
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
   let bulletArray = [];
   let players = []
+  server.gameInProgress = false
   let defaultPlayers = [
     {
       id: 1,
@@ -44,16 +45,11 @@ module.exports = (io, server) => {
   }
   let mapBlocks = makeBlocks(10)
   io.on('connection', function (socket) {
+    
+    if (server.gameInProgress){
+      socket.emit('gameInProgress')
+    }
 
-    //brian's lobby code
-    // socket.on('joinLobby', function() {
-    //     server.lastPlayderID++
-    //     socket.player = players.find(player=> player.id === server.lastPlayderID)
-
-    //   }
-    //   io.emit('addPlayerLobby')
-    // })
-    //above is brian's lobby code.
     socket.on('newplayer', function (name) {
       if (defaultPlayers.length) {
         io.emit()
@@ -70,6 +66,7 @@ module.exports = (io, server) => {
     socket.on('startGame', function () {
       io.emit('newGame')
       io.emit('gameHasStarted')
+      server.gameInProgress = true
     })
 
     socket.on('setUpGame', function () {

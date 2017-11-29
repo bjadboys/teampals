@@ -2,7 +2,7 @@ import React from 'react'
 import {TextField, RaisedButton} from 'material-ui'
 import socket from '../js/socket'
 import {connect} from 'react-redux'
-import store, {addPlayersAction, removePlayerAction, startGameAction} from '../store/'
+import store, {addPlayersAction, removePlayerAction, startGameAction, gameInProgressAction} from '../store/'
 import { withRouter } from 'react-router-dom'
 import GameScreen from './game'
 
@@ -34,7 +34,11 @@ ClientLobby.startGame = function() {
 }
 
 ClientLobby.socket.on('gameHasStarted', function(){
-  store.dispatch(startGameAction(true))
+  store.dispatch(startGameAction())
+})
+
+ClientLobby.socket.on('gameInProgress', function(){
+  store.dispatch(gameInProgressAction())
 })
 
 class Lobby extends React.Component {
@@ -90,7 +94,7 @@ class Lobby extends React.Component {
   }
 
   render () {
-    if (!this.props.game) {
+    if (!this.props.localGame && !this.props.serverGame) {
       return (
       <div>
           <TextField
@@ -115,9 +119,13 @@ class Lobby extends React.Component {
           
       </div>
      )
-    } else {
+    } else if (this.props.localGame && this.props.serverGame) {
       return (
         <GameScreen />
+      )
+    } else if (!this.props.localGame && this.props.serverGame) {
+      return (
+        <p>Game in progress. Please wait.</p>
       )
     }
   }
@@ -126,7 +134,8 @@ class Lobby extends React.Component {
 
 const mapState = (state) => ({
   lobby: state.lobby,
-  game: state.game
+  localGame: state.game.localGame,
+  serverGame: state.game.serverGame
 })
 
 const mapDispatch = (dispatch) => ({
