@@ -188,9 +188,8 @@ export default class MainGame extends Phaser.State {
 
   addNewPlayer(id, x, y, serverSideTime) {
     this.newPlayer = this.game.add.sprite(x, y, 'characters')
-    console.log(this)
-    this.addNewPlayer.direction = 'down'
-    this.addNewPlayer.health = playerHealth
+    this.newPlayer.direction = 'down'
+    this.newPlayer.health = playerHealth
     this.newPlayer.alive = true
     this.newPlayer.moving = false
     this.newPlayer.serverSideTime = serverSideTime
