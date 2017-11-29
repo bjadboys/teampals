@@ -12,7 +12,6 @@ const wait = 30
 const tilePx = 32
 const mapHeight = 48
 const mapWidth = 48
-
 //Sprite Animation Variables
 const animationFrequency = 10
 const pointerOffset = 15
