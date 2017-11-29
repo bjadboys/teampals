@@ -1,16 +1,18 @@
-import io from 'socket.io-client'
-import {game} from '../game/index'
+
+import Game from '../game/'
+import socket from './socket'
 // import {movePlayer, setCurrentPlayer, removePlayer, addNewPlayer, hitEnemy} from '../states/MainGame'
 let bulletArray = [];
 const Client = {};
 let offsetX = 0;
 let offsetY = 0;
 let sendStopCalls = false;
-Client.socket = io.connect();
+Client.socket = socket
 
-Client.askNewPlayer = function(){
-  Client.socket.emit('newplayer');
-};
+// Client.askNewPlayer = function(){
+//   Client.socket.emit('newplayer');
+// };
+let game;
 
 Client.SEND_fire = function (position, direction, selectedWeapon, targetLocked, target) {
 
@@ -57,6 +59,18 @@ Client.socket.on('player-dropped-block', function (playerId) {
 })
 
 //Client add on block at a time to the map.
+//TODO : duplicate blocks.
+Client.socket.on('newGame', function(){
+    game = new Game()
+    game.startGame();
+    console.log(game)
+    let timeoutId = setTimeout(function(){
+        Client.socket.emit('setUpGame')
+    }, 1000)
+    
+})
+
+
 Client.socket.on('addBlock', function(data){
   game.state.states.MainGame.addBlockBJAD(data.id, data.x, data.y)
 })

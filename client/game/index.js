@@ -13,15 +13,18 @@ const WIDTH = 416
 
 export default class Game extends Phaser.Game {
   constructor(){
-    super(HEIGHT, WIDTH, Phaser.AUTO, 'app')
+    super(HEIGHT, WIDTH, Phaser.AUTO, 'gameDiv')
     this.state.add('Boot', Boot)
     this.state.add('Preload', Preload)
     this.state.add('Lobby', Lobby)
     this.state.add('MainGame', MainGame)
     this.state.add('GameOver', GameOver)
-
+  }
+  startGame(){
+    console.log('started')
     this.state.start('Boot')
+    console.log(this)
   }
 
 }
-export const game = new Game()
+// export const game = new Game()

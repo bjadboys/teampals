@@ -49,7 +49,6 @@ export default class MainGame extends Phaser.State {
       this.layer = this.map.createLayer(i)
     }
     this.layer.inputEnabled = true;
-    Client.askNewPlayer()
     //set up the keyboard for movement
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
@@ -242,9 +241,12 @@ export default class MainGame extends Phaser.State {
   }
 
   addBlockBJAD(id, x, y) {
-    this.blockBJAD = this.blocksBJAD.create(x, y, 'block')
-    this.blockBJAD.id = id;
-    this.blockBJAD.body.collideWorldBounds = true
+    const duplicate = this.blocksBJAD.children.find(block => block.id === id)
+    if (!duplicate) {
+      this.blockBJAD = this.blocksBJAD.create(x, y, 'block')
+      this.blockBJAD.id = id;
+      this.blockBJAD.body.collideWorldBounds = true
+    }
   }
 
   stopAnimation(id) {
