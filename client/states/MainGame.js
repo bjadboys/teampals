@@ -3,8 +3,30 @@ import {throttle} from 'lodash'
 
 import Client from '../js/client'
 import updateMaker  from './update'
+
+//Throttle Speed Variables
 const hudWait = 500
 const wait = 30
+
+//Map Variables
+const tilePx = 32
+const mapHeight = 48
+const mapWidth = 48
+
+//Sprite Animation Variables
+const animationFrequency = 10
+const pointerOffset = 15
+const pointerScale = 0.07
+const pointerAnchorX = 0.5
+const pointerAnchorY = 1.0
+const playerAnchorX = 0.5
+const playerAnchorY = 0.5
+
+//Gameplay Variables
+const targetRange = 200
+const baseHealth = 1000
+const playerHealth = 100
+const playerAmmo = 0
 
 export default class MainGame extends Phaser.State {
   constructor() {
@@ -33,7 +55,7 @@ export default class MainGame extends Phaser.State {
   //here we create everything we need for the game.
   create() {
     //Add the map to the game.
-    this.game.world.setBounds(0, 0, 48 * 32, 48 * 32)
+    this.game.world.setBounds(0, 0, mapWidth * tilePx, mapHeight * tilePx)
     this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
     this.playerMapBJAD = {}
     this.playerBaseBJAD = {}
@@ -43,6 +65,7 @@ export default class MainGame extends Phaser.State {
     this.layerGrass = this.map.createLayer('grass')
     this.layerCollision = this.map.createLayer('collision')
     this.game.physics.arcade.enable(this.layerCollision)
+    //TODO: Confirm inputs below which .... 48? 32?
     this.map.setCollisionBetween(0, 48 * 32, true, this.layerCollision)
 
     for (let i = 0; i < this.map.layers.length; i++) {
@@ -73,15 +96,13 @@ export default class MainGame extends Phaser.State {
     this.secondWeapon = this.weaponsBJAD.create(200, 200, 'weapon2')
     this.secondWeapon.isWeapon = true
     this.secondWeapon.id = 1
-
   }
 
   isInDeathBJAD(x, y){
-    const xIndex = Math.floor(x / 32)
-    const yIndex = Math.floor(y / 32)
+    const xIndex = Math.floor(x / tilePx)
+    const yIndex = Math.floor(y / tilePx)
     return this.death[yIndex][xIndex].index
   }
-
 
   //adds the block as a child of the current user sprite, if player is holding Shift and Left or Right (just for test)
   //updates the x y of the block so it is 0 0 on the parent element which is now the current player.
@@ -110,6 +131,7 @@ export default class MainGame extends Phaser.State {
     }
   }
 
+<<<<<<< HEAD
     // } else {
     //   console.log(this.player.direction)
 
@@ -131,9 +153,14 @@ export default class MainGame extends Phaser.State {
       if (!hasBlock) {
         this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
       }
+=======
+  pickUpBlockPhysicsBJAD() {
+    //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
+    //that they touch.
+    if (!this.currentPlayer.children.length) {
+      this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
+>>>>>>> master
     }
-
-
 
   dropBlockPhysicsBJAD(){
     this.base = this.playerBaseBJAD[this.currentPlayer.id]
@@ -154,12 +181,17 @@ export default class MainGame extends Phaser.State {
     }
   }
 
+<<<<<<< HEAD
   collectWeaponBJAD(playerId, weaponId) {
     let collectedWeapon = this.weaponsBJAD.children.find(weapon => weapon.id == weaponId)
     let player = this.playerMapBJAD[playerId]
     collectedWeapon.x = 0
     collectedWeapon.y = 0
     player.addChild(collectedWeapon)
+=======
+  removeWeaponBJAD(weaponId) {
+    this.weaponsBJAD.children[weaponId].kill()
+>>>>>>> master
   }
 
   hudThrottle(){
@@ -178,22 +210,21 @@ export default class MainGame extends Phaser.State {
 
   addNewPlayer(id, x, y, serverSideTime) {
     this.newPlayer = this.game.add.sprite(x, y, 'characters')
-    this.newPlayer.alive = true;
-    this.newPlayer.moving = false;
+    this.newPlayer.alive = true
+    this.newPlayer.moving = false
     this.newPlayer.serverSideTime = serverSideTime
-    this.newPlayer.frame = 0
-    this.newPlayer.anchor.x = 0.5
-    this.newPlayer.anchor.y = 0.5
+    this.newPlayer.anchor.x = playerAnchorX
+    this.newPlayer.anchor.y = playerAnchorY
     this.game.physics.arcade.enable(this.newPlayer)
     this.newPlayer.body.collideWorldBounds = true
-    this.newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5], 10, true)
-    this.newPlayer.animations.add('upRight', [0, 1, 2, 3, 4, 5], 10, true)
-    this.newPlayer.animations.add('downRight', [0, 1, 2, 3, 4, 5], 10, true)
-    this.newPlayer.animations.add('down', [6, 7, 8, 9, 10, 11], 10, true)
-    this.newPlayer.animations.add('left', [12, 13, 14, 15, 16, 17], 10, true)
-    this.newPlayer.animations.add('upLeft', [12, 13, 14, 15, 16, 17], 10, true)
-    this.newPlayer.animations.add('downLeft', [12, 13, 14, 15, 16, 17], 10, true)
-    this.newPlayer.animations.add('up', [18, 19, 20, 21, 22, 23], 10, true)
+    this.newPlayer.animations.add('right', [0, 1, 2, 3, 4, 5], animationFrequency, true)
+    this.newPlayer.animations.add('upRight', [0, 1, 2, 3, 4, 5], animationFrequency, true)
+    this.newPlayer.animations.add('downRight', [0, 1, 2, 3, 4, 5], animationFrequency, true)
+    this.newPlayer.animations.add('down', [6, 7, 8, 9, 10, 11], animationFrequency, true)
+    this.newPlayer.animations.add('left', [12, 13, 14, 15, 16, 17], animationFrequency, true)
+    this.newPlayer.animations.add('upLeft', [12, 13, 14, 15, 16, 17], animationFrequency, true)
+    this.newPlayer.animations.add('downLeft', [12, 13, 14, 15, 16, 17], animationFrequency, true)
+    this.newPlayer.animations.add('up', [18, 19, 20, 21, 22, 23], animationFrequency, true)
     this.playerMapBJAD[id] = this.newPlayer
   }
 
@@ -201,27 +232,30 @@ export default class MainGame extends Phaser.State {
     this.newBase = this.game.add.sprite(base.x, base.y, 'base')
     this.game.physics.arcade.enable(this.newBase)
     this.newBase.body.immovable = true
-    this.newBase.health = 1000
+    this.newBase.health = baseHealth
     this.playerBaseBJAD[base.id] = this.newBase
   }
 
   setCurrentPlayer(id) {
     this.currentPlayer = this.playerMapBJAD[id]
     this.currentPlayer.direction = 'down'
-    this.currentPlayer.health = 100
-    this.currentPlayer.ammo = 0
+    this.currentPlayer.health = playerHealth
+    this.currentPlayer.ammo = playerAmmo
     this.currentPlayer.id = id
-    this.currentPlayer.pointer = null;
-    this.currentPlayer.possibleTarget = null;
-    this.currentPlayer.lockOnToggle = false;
-    this.currentPlayer.targetLocked = false;
+    this.currentPlayer.pointer = null
+    this.currentPlayer.possibleTarget = null
+    this.currentPlayer.lockOnToggle = false
+    this.currentPlayer.targetLocked = false
     this.game.camera.follow(this.currentPlayer)
     this.currentPlayer.enableBody = true
     this.game.physics.arcade.enable(this.currentPlayer)
     this.previousPosition = Object.assign({}, this.currentPlayer.position)
     this.currentPlayer.firing = false
     this.currentPlayer.holdToggle = false
+<<<<<<< HEAD
 
+=======
+>>>>>>> master
     this.currentPlayer.selectedWeapon = null
   }
 
@@ -288,39 +322,33 @@ export default class MainGame extends Phaser.State {
       if (this.currentPlayer.pointer) {
         this.currentPlayer.pointer.destroy();
       }
-      let solidPointer = this.game.add.sprite(this.currentPlayer.possibleTarget.position.x, this.currentPlayer.possibleTarget.position.y - 15, 'solidPointer');
-      solidPointer.scale.setTo(0.07);
-      solidPointer.anchor.x = 0.5;
-      solidPointer.anchor.y = 1.0;
+      let solidPointer = this.game.add.sprite(this.currentPlayer.possibleTarget.position.x, this.currentPlayer.possibleTarget.position.y - pointerOffset, 'solidPointer');
+      solidPointer.scale.setTo(pointerScale);
+      solidPointer.anchor.x = pointerAnchorX;
+      solidPointer.anchor.y = pointerAnchorY;
       this.currentPlayer.pointer = solidPointer;
     } else {
       this.currentPlayer.lockOnToggle = false;
       this.currentPlayer.targetLocked = false;
     }
-
   }
 
   findPossibleTarget() {
     let allPlayersObj = this.playerMapBJAD
     let closest = [];
     let current = [];
-    const range = 200;
 
     Object.keys(allPlayersObj).forEach(id => {
       if (Number(id) !== this.currentPlayer.id && allPlayersObj[id].alive) {
         let dx = allPlayersObj[id].position.x - this.currentPlayer.position.x;
         let dy = allPlayersObj[id].position.y - this.currentPlayer.position.y;
         let calcDist = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
-        current[0] = calcDist;
-        current[1] = id;
-        if (calcDist < range) {
+        current = [calcDist, id];
+        if (calcDist < targetRange) {
           if (!closest.length){
-            closest[0] = current[0];
-            closest[1] = current[1];
-
+            closest = [...current];
           } else if (closest[0] > current[0]) {
-            closest[0] = current[0];
-            closest[1] = current[1];
+            closest = [...current];
           }
         }
       }
@@ -331,10 +359,10 @@ export default class MainGame extends Phaser.State {
       if (this.currentPlayer.pointer) {
           this.currentPlayer.pointer.destroy();
       }
-        let hollowPointer = this.game.add.sprite(allPlayersObj[targetID].position.x, allPlayersObj[targetID].position.y - 15, 'hollowPointer')
-        hollowPointer.scale.setTo(0.07);
-        hollowPointer.anchor.x = 0.5;
-        hollowPointer.anchor.y = 1.0;
+        let hollowPointer = this.game.add.sprite(allPlayersObj[targetID].position.x, allPlayersObj[targetID].position.y - pointerOffset, 'hollowPointer')
+        hollowPointer.scale.setTo(pointerScale);
+        hollowPointer.anchor.x = pointerAnchorX;
+        hollowPointer.anchor.y = pointerAnchorY;
         this.currentPlayer.pointer = hollowPointer;
     } else {
       if (this.currentPlayer.pointer) {
