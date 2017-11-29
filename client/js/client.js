@@ -48,14 +48,14 @@ Client.socket.on('player-dropped-block', function (playerId) {
 })
 
 //Client add on block at a time to the map.
-
+//TODO : duplicate blocks.
 Client.socket.on('newGame', function(){
     game = new Game()
     game.startGame();
     console.log(game)
     let timeoutId = setTimeout(function(){
         Client.socket.emit('setUpGame')
-    }, 3000)
+    }, 1000)
     
 })
 

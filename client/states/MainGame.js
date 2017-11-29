@@ -13,7 +13,6 @@ export default class MainGame extends Phaser.State {
   }
 
   init() {
-    console.log(this, 'Main Game')
     this.stage.disableVisibilityChange = true
     this.addNewPlayer = this.addNewPlayer.bind(this)
     this.setCurrentPlayer = this.setCurrentPlayer.bind(this)
@@ -196,7 +195,7 @@ export default class MainGame extends Phaser.State {
     this.player = this.playerMapBJAD[id]
 
     if (this.player.serverSideTime<=serverSideTime){
-      if(!this.player.moving || this.player.direction !== direction){
+      if (!this.player.moving || this.player.direction !== direction){
         this.player.moving = true;
         this.startAnimation(id, direction)
       }
@@ -214,9 +213,12 @@ export default class MainGame extends Phaser.State {
   }
 
   addBlockBJAD(id, x, y) {
-    this.blockBJAD = this.blocksBJAD.create(x, y, 'block')
-    this.blockBJAD.id = id;
-    this.blockBJAD.body.collideWorldBounds = true
+    const duplicate = this.blocksBJAD.children.find(block => block.id === id)
+    if (!duplicate) {
+      this.blockBJAD = this.blocksBJAD.create(x, y, 'block')
+      this.blockBJAD.id = id;
+      this.blockBJAD.body.collideWorldBounds = true
+    }
   }
 
   stopAnimation(id) {

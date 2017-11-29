@@ -51,7 +51,7 @@ class Lobby extends React.Component {
     return (
       <div>
         <RaisedButton
-            disabled={this.props.lobby.length < 2}
+            disabled={this.props.lobby.length < 2 || this.props.lobby.length > 4}
             label={this.props.lobby.length > 1 ? 'start game' : 'wait for players'}
             onClick={()=> {
               ClientLobby.startGame()
