@@ -47,11 +47,16 @@ export default Client => function () {
     }
 
     let moving = false;
+
     if (this.cursors.up.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown) {
       moving = true;
       this.currentPlayer.body.velocity.y = -150;
       this.currentPlayer.direction = 'up';
       this.currentPlayer.animations.play('up');
+
+      if (this.currentPlayer.children.length) {
+            this.currentPlayer.children.forEach(child => {child.angle = -90})
+          }
     }
     if (this.cursors.up.isDown && this.cursors.left.isDown && !this.cursors.right.isDown) {
       moving = true;
@@ -59,6 +64,9 @@ export default Client => function () {
       this.currentPlayer.body.velocity.x = -106;
       this.currentPlayer.direction = 'upLeft';
       this.currentPlayer.animations.play('upLeft');
+        if (this.currentPlayer.children.length) {
+          this.currentPlayer.children.forEach(child => {child.angle = -135})
+        }
     }
     if (this.cursors.up.isDown && !this.cursors.left.isDown && this.cursors.right.isDown) {
       moving = true;
@@ -66,12 +74,18 @@ export default Client => function () {
       this.currentPlayer.body.velocity.x = 106;
       this.currentPlayer.direction = 'upRight';
       this.currentPlayer.animations.play('upRight');
+         if (this.currentPlayer.children.length) {
+          this.currentPlayer.children.forEach(child => {child.angle = -45})
+        }
     }
     if (this.cursors.down.isDown && !this.cursors.left.isDown && !this.cursors.right.isDown) {
       moving = true;
       this.currentPlayer.body.velocity.y = 150;
       this.currentPlayer.direction = 'down';
       this.currentPlayer.animations.play('down');
+         if (this.currentPlayer.children.length) {
+          this.currentPlayer.children.forEach(child => {child.angle = 90})
+        }
     }
     if (this.cursors.down.isDown && this.cursors.left.isDown && !this.cursors.right.isDown) {
       moving = true;
@@ -79,6 +93,9 @@ export default Client => function () {
       this.currentPlayer.body.velocity.x = -106;
       this.currentPlayer.direction = 'downLeft';
       this.currentPlayer.animations.play('downLeft');
+         if (this.currentPlayer.children.length) {
+          this.currentPlayer.children.forEach(child => {child.angle = 135})
+        }
     }
     if (this.cursors.down.isDown && !this.cursors.left.isDown && this.cursors.right.isDown) {
       moving = true;
@@ -86,26 +103,36 @@ export default Client => function () {
       this.currentPlayer.body.velocity.x = 106;
       this.currentPlayer.direction = 'downRight';
       this.currentPlayer.animations.play('downRight');
+        if (this.currentPlayer.children.length) {
+          this.currentPlayer.children.forEach(child => {child.angle = 45})
+        }
     }
     if (this.cursors.right.isDown && !this.cursors.up.isDown && !this.cursors.down.isDown) {
       moving = true;
       this.currentPlayer.body.velocity.x = 150;
       this.currentPlayer.direction = 'right';
       this.currentPlayer.animations.play('right');
+        if (this.currentPlayer.children.length) {
+          this.currentPlayer.children.forEach(child => {child.angle = 0})
+        }
     }
     if (this.cursors.left.isDown && !this.cursors.up.isDown && !this.cursors.down.isDown) {
       moving = true;
       this.currentPlayer.body.velocity.x = -150;
       this.currentPlayer.direction = 'left';
       this.currentPlayer.animations.play('left');
+        if (this.currentPlayer.children.length) {
+          this.currentPlayer.children.forEach(child => {child.angle = 180})
+        }
     }
     if (!moving) {
       this.currentPlayer.animations.stop()
     }
-    if (this.fireButton.isDown && !this.currentPlayer.firing && this.currentPlayer.children.length === 0) {
+    if (this.fireButton.isDown && !this.currentPlayer.firing
+      && !this.currentPlayer.children.find(item => item.isBlock)) {
       this.currentPlayer.firing = true
       Client.SEND_fire(this.currentPlayer.position, this.currentPlayer.direction, this.currentPlayer.selectedWeapon, this.currentPlayer.targetLocked, this.currentPlayer.possibleTarget);
-      // console.log(this.currentPlayer.selectedWeapon)
+
       // Cannot shoot if you're holding something
     }
     if (!this.fireButton.isDown) {
@@ -113,7 +140,9 @@ export default Client => function () {
     }
     if (this.pickUpButton.isDown && !this.currentPlayer.holdToggle) {
       this.currentPlayer.holdToggle = true
-      if (this.currentPlayer.children.length) {
+      const hasBlock = this.currentPlayer.children.find(item => item.isBlock)
+      console.log('trying to drop the block, what is children', this.currentPlayer.children)
+      if (hasBlock) {
         this.dropBlockPhysicsBJAD();
       } else {
         this.pickUpBlockPhysicsBJAD();

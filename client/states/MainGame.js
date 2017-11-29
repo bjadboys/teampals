@@ -93,7 +93,9 @@ export default class MainGame extends Phaser.State {
 
     this.firstWeapon = this.weaponsBJAD.create(100, 100, 'weapon')
     this.firstWeapon.id = 0
+    this.firstWeapon.isWeapon = true
     this.secondWeapon = this.weaponsBJAD.create(200, 200, 'weapon2')
+    this.secondWeapon.isWeapon = true
     this.secondWeapon.id = 1
   }
 
@@ -107,7 +109,8 @@ export default class MainGame extends Phaser.State {
   //updates the x y of the block so it is 0 0 on the parent element which is now the current player.
   collectBlockBJAD(playerId, blockId){
     this.player = this.playerMapBJAD[playerId]
-    if (!this.player.children.length) {//added this second length check in case player is touching two blocks when they do a pick up.
+    const hasBlock = this.player.children.find(item => item.isBlock)
+    if (!hasBlock) {//added this second length check in case player is touching two blocks when they do a pick up.
       this.block = this.blocksBJAD.children.find(block => block.id === blockId)
       if (this.block) {
         this.block.y = 3
@@ -119,20 +122,24 @@ export default class MainGame extends Phaser.State {
 
   dropBlockBJAD(playerId){
     this.player = this.playerMapBJAD[playerId]
-    this.droppedBlock = this.player.removeChild(this.player.children[0])
-    this.droppedBlock.x = this.player.x
-    this.droppedBlock.y = this.player.y
-    this.blocksBJAD.addChild(this.droppedBlock)
-    this.droppedBlock = null;
-  }
-
-  pickUpBlockPhysicsBJAD() {
-    //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
-    //that they touch.
-    if (!this.currentPlayer.children.length) {
-      this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
+    const block = this.player.children.find(item => item.isBlock)
+    if (block) {
+      this.droppedBlock = this.player.removeChild(block)
+      this.droppedBlock.x = this.player.x
+      this.droppedBlock.y = this.player.y
+      this.blocksBJAD.addChild(this.droppedBlock)
+      this.droppedBlock = null;
     }
   }
+
+    pickUpBlockPhysicsBJAD() {
+      //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
+      //that they touch.
+      const hasBlock = this.currentPlayer.children.find(item => item.isBlock)
+      if (!hasBlock) {
+        this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
+      }
+    }
 
   dropBlockPhysicsBJAD(){
     this.base = this.playerBaseBJAD[this.currentPlayer.id]
@@ -148,12 +155,24 @@ export default class MainGame extends Phaser.State {
     //Getting a weapon
   pickUpWeaponPhysicsBJAD() {
     let weapon = arguments[1]
-    this.currentPlayer.selectedWeapon = weapon.key
-    Client.playerPicksUpWeaponBJAD(this.currentPlayer, weapon)
+    // this.currentPlayer.selectedWeapon = weapon.key
+      Client.playerPicksUpWeaponBJAD(this.currentPlayer, weapon)
   }
 
-  removeWeaponBJAD(weaponId) {
-    this.weaponsBJAD.children[weaponId].kill()
+
+  collectWeaponBJAD(playerId, weaponId) {
+    this.player = this.playerMapBJAD[playerId]
+    const oldWeapon = this.player.children.find(item => item.isWeapon)
+    if (oldWeapon){
+      const ejectedWeapon = this.player.removeChild(oldWeapon)
+      ejectedWeapon.x = this.player.x + 50
+      ejectedWeapon.y = this.player.y + 50
+      this.weaponsBJAD.addChild(ejectedWeapon)
+    }
+    let collectedWeapon = this.weaponsBJAD.children.find(weapon => weapon.id == weaponId)
+    collectedWeapon.x = 0
+    collectedWeapon.y = 0
+    this.player.addChild(collectedWeapon)
   }
 
   hudThrottle(){
@@ -263,6 +282,7 @@ export default class MainGame extends Phaser.State {
     const duplicate = this.blocksBJAD.children.find(block => block.id === id)
     if (!duplicate) {
       this.blockBJAD = this.blocksBJAD.create(x, y, 'block')
+      this.blockBJAD.isBlock = true
       this.blockBJAD.id = id;
       this.blockBJAD.body.collideWorldBounds = true
     }
