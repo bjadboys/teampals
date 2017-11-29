@@ -1,4 +1,3 @@
-
 import Game from '../game/'
 import socket from './socket'
 // import {movePlayer, setCurrentPlayer, removePlayer, addNewPlayer, hitEnemy} from '../states/MainGame'
@@ -128,7 +127,11 @@ Client.socket.on('remove', function(id){
   game.state.states.MainGame.removePlayer(id);
 });
 
-Client.socket.on('player-hit', function(id){
+Client.socket.on('player-hit', function(data){
+  game.state.states.MainGame.changeHealth(data.healthNum, data.id);
+});
+
+Client.socket.on('player-killed', function(id){
   game.state.states.MainGame.killPlayer(id);
 });
 
