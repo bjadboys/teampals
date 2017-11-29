@@ -53,6 +53,7 @@ module.exports = (io, server) => {
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
         socket.player.direction = 'down'
+        socket.player.health = 100;
         io.emit('addPlayersToLobby', getAllPlayers())
       }
     });
@@ -62,7 +63,7 @@ module.exports = (io, server) => {
       io.emit('gameHasStarted')
     })
 
-    socket.on('setUpGame', function(){
+    socket.on('setUpGame', function () {
       io.emit('allBlocks', mapBlocks)
       socket.emit('allplayers', getAllPlayers());
       socket.emit('yourID', socket.player.id)
@@ -98,7 +99,7 @@ module.exports = (io, server) => {
       socket.broadcast.emit('stop-animation', socket.player.id)
     })
 
-    socket.on('weaponPickedUp', function(data){
+    socket.on('weaponPickedUp', function (data) {
       console.log('inside weaponPickedUp on server')
       io.emit('playerPickedUpWeapon', data)
     })
@@ -150,17 +151,22 @@ module.exports = (io, server) => {
         i--;
       }
       let playerArr = players;
-      if (bulletArray[i]) {
         for (let j = 0; j < playerArr.length; j++) {
-          if (bulletArray[i].id !== playerArr[j].id) {
+          if (playerArr[j].health > 0 && bulletArray[i] && bulletArray[i].id !== playerArr[j].id) {
             if (playerArr[j].x - 12 < bulletArray[i].x && playerArr[j].x + 12 > bulletArray[i].x) {
               if (playerArr[j].y - 7 < bulletArray[i].y && playerArr[j].y + 16 > bulletArray[i].y) {
-                io.emit('player-hit', playerArr[j].id);
+                console.log("hit")
+                playerArr[j].health += -10
+                if (playerArr[j].health <= 0) {
+                  io.emit('player-killed', playerArr[j].id)
+                }
+                io.emit('player-hit', { id: playerArr[j].id, healthNum: -10 });
+                bulletArray.splice(i, 1);
+                i--;
               }
             }
           }
         }
-      }
     }
     // Send updated bullets
     io.emit('bullets-update', bulletArray)

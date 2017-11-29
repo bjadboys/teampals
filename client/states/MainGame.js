@@ -5,7 +5,7 @@ import Client from '../js/client'
 import updateMaker  from './update'
 
 //Throttle Speed Variables
-const hudWait = 500
+const hudWait = 125
 const wait = 30
 
 //Map Variables
@@ -42,6 +42,7 @@ export default class MainGame extends Phaser.State {
     this.movePlayer = this.movePlayer.bind(this)
     this.stopAnimation = this.stopAnimation.bind(this)
     this.startAnimation = this.startAnimation.bind(this)
+    this.changeHealth = this.changeHealth.bind(this)
     this.pickUpBlockPhysicsBJAD = throttle(this.pickUpBlockPhysicsBJAD.bind(this), wait)
     this.dropBlockPhysicsBJAD = throttle(this.dropBlockPhysicsBJAD.bind(this), wait)
     this.dropBlockBJAD = this.dropBlockBJAD.bind(this)
@@ -214,6 +215,10 @@ export default class MainGame extends Phaser.State {
     this.currentPlayer.firing = false
     this.currentPlayer.holdToggle = false
     this.currentPlayer.selectedWeapon = null
+  }
+
+  changeHealth(healthNum, id) {
+    if (this.currentPlayer.id === id) this.currentPlayer.health += healthNum
   }
 
   removePlayer(id) {
