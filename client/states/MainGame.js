@@ -87,7 +87,8 @@ export default class MainGame extends Phaser.State {
   //updates the x y of the block so it is 0 0 on the parent element which is now the current player.
   collectBlockBJAD(playerId, blockId){
     this.player = this.playerMapBJAD[playerId]
-    if (!this.player.children.length) {//added this second length check in case player is touching two blocks when they do a pick up.
+    const hasBlock = this.player.children.find(item => item.isBlock)
+    if (!hasBlock) {//added this second length check in case player is touching two blocks when they do a pick up.
       this.block = this.blocksBJAD.children.find(block => block.id === blockId)
       if (this.block) {
         this.block.y = 3
@@ -99,35 +100,38 @@ export default class MainGame extends Phaser.State {
 
   dropBlockBJAD(playerId){
     this.player = this.playerMapBJAD[playerId]
-    this.droppedBlock = this.player.children[0]
-    console.log('in dropBlock', this.droppedBlock)
-    if (this.droppedBlock.key == 'block'){
-    this.droppedBlock.x = this.player.x
-    this.droppedBlock.y = this.player.y
-    this.player.removeChild(this.droppedBlock)
-    this.blocksBJAD.addChild(this.droppedBlock)
-    this.droppedBlock = null;
-    } else {
-      console.log(this.player.direction)
-
-      let spawnX = this.player.x + 50
-      let spawnY = this.player.y + 50
-      let key = this.player.children[0].key
-      this.player.children[0].destroy()
-      let newWeapon = this.weaponsBJAD.create(spawnX, spawnY, key)
-      newWeapon.id = (key == 'weapon') ? 0 : 1
-    }
-
-  }
-
-
-  pickUpBlockPhysicsBJAD() {
-    //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
-    //that they touch.
-    if (!this.currentPlayer.children[0]) {
-      this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
+    const block = this.player.children.find(item => item.isBlock)
+    if (block) {
+      this.droppedBlock = this.player.removeChild(block)
+      this.droppedBlock.x = this.player.x
+      this.droppedBlock.y = this.player.y
+      this.blocksBJAD.addChild(this.droppedBlock)
+      this.droppedBlock = null;
     }
   }
+
+    // } else {
+    //   console.log(this.player.direction)
+
+    //   let spawnX = this.player.x + 50
+    //   let spawnY = this.player.y + 50
+    //   let key = this.player.children[0].key
+    //   this.player.children[0].destroy()
+    //   let newWeapon = this.weaponsBJAD.create(spawnX, spawnY, key)
+    //   newWeapon.id = (key == 'weapon') ? 0 : 1
+    // }
+
+
+
+
+    pickUpBlockPhysicsBJAD() {
+      //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
+      //that they touch.
+      const hasBlock = this.currentPlayer.children.find(item => item.isBlock)
+      if (!hasBlock) {
+        this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
+      }
+    }
 
 
 
@@ -145,9 +149,7 @@ export default class MainGame extends Phaser.State {
     //Getting a weapon
   pickUpWeaponPhysicsBJAD() {
     let weapon = arguments[1]
-    this.currentPlayer.selectedWeapon = weapon.key
-    if (!this.currentPlayer.children.length) {
-
+    // this.currentPlayer.selectedWeapon = weapon.key
       Client.playerPicksUpWeaponBJAD(this.currentPlayer, weapon)
     }
   }
@@ -158,9 +160,6 @@ export default class MainGame extends Phaser.State {
     collectedWeapon.x = 0
     collectedWeapon.y = 0
     player.addChild(collectedWeapon)
-
-
-
   }
 
   hudThrottle(){
