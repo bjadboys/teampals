@@ -132,7 +132,7 @@ export default Client => function () {
       && !this.currentPlayer.children.find(item => item.isBlock)) {
       this.currentPlayer.firing = true
       Client.SEND_fire(this.currentPlayer.position, this.currentPlayer.direction, this.currentPlayer.selectedWeapon, this.currentPlayer.targetLocked, this.currentPlayer.possibleTarget);
-      // console.log(this.currentPlayer.selectedWeapon)
+
       // Cannot shoot if you're holding something
     }
     if (!this.fireButton.isDown) {

@@ -122,7 +122,6 @@ export default class MainGame extends Phaser.State {
   dropBlockBJAD(playerId){
     this.player = this.playerMapBJAD[playerId]
     const block = this.player.children.find(item => item.isBlock)
-    console.log('dropping: what is block', block)
     if (block) {
       this.droppedBlock = this.player.removeChild(block)
       this.droppedBlock.x = this.player.x
@@ -131,20 +130,6 @@ export default class MainGame extends Phaser.State {
       this.droppedBlock = null;
     }
   }
-
-    // } else {
-    //   console.log(this.player.direction)
-
-    //   let spawnX = this.player.x + 50
-    //   let spawnY = this.player.y + 50
-    //   let key = this.player.children[0].key
-    //   this.player.children[0].destroy()
-    //   let newWeapon = this.weaponsBJAD.create(spawnX, spawnY, key)
-    //   newWeapon.id = (key == 'weapon') ? 0 : 1
-    // }
-
-
-
 
     pickUpBlockPhysicsBJAD() {
       //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block

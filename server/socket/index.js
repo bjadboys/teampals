@@ -61,7 +61,7 @@ module.exports = (io, server) => {
       io.emit('newGame')
       io.emit('gameHasStarted')
     })
-    console.log('what is socket.player', socket.player)
+
     socket.on('setUpGame', function(){
       io.emit('allBlocks', mapBlocks)
       socket.emit('allplayers', getAllPlayers());
@@ -103,7 +103,6 @@ module.exports = (io, server) => {
     })
 
     socket.on('fire', function (data) {
-      console.log('do i have weapon data', data.selectedWeapon)
       let newBullet = {};
       let axisVelocities = directionValues[data.direction];
       const bulletSpeed = 3.0;
@@ -125,7 +124,6 @@ module.exports = (io, server) => {
     socket.on('playerLeavesLobby', function () {
       defaultPlayers.push(socket.player)
       io.emit('removePlayerFromLobby', socket.player.id)
-      console.log(socket.player)
       removePlayer(socket.player.id)
       socket.player = null;
     })
