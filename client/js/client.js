@@ -122,7 +122,7 @@ Client.socket.on('allplayers', function(data){
     const base = locations.find(location => location.id === data[i].id)
     game.state.states.MainGame.addNewBase(base)
     game.state.states.MainGame.addNewPlayer(data[i].id, data[i].x, data[i].y, data[i].serverSideTime)
-  }
+  } 
 });
 
 Client.socket.on('remove', function(id){

@@ -1,3 +1,5 @@
+
+
 const bulletCollisionLayer = require('./collisionLayerData')
 module.exports = (io, server) => {
   //Map Variables
@@ -17,20 +19,20 @@ module.exports = (io, server) => {
   let defaultPlayers = [
     {
       id: 1,
-      x: 20,
-      y: 20
+      x: 135,
+      y: 120
     }, {
       id: 2,
-      x: 40,
-      y: 40
+      x: 1340,
+      y: 120
     }, {
       id: 3,
-      x: 80,
-      y: 80
+      x: 1340,
+      y: 1340
     }, {
       id: 4,
-      x: 60,
-      y: 60
+      x: 120,
+      y: 1340
     }
   ]
   const directionValues = {
@@ -53,17 +55,18 @@ module.exports = (io, server) => {
     socket.on('newplayer', function (name) {
       if (defaultPlayers.length) {
         io.emit()
-        socket.player = defaultPlayers.pop()
+        console.log(defaultPlayers)
+        socket.player = defaultPlayers.shift()
         socket.player.name = name
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
-        socket.player.direction = 'down'
-        socket.player.health = playerHealth
+        console.log(socket.player)
         io.emit('addPlayersToLobby', getAllPlayers())
       }
     });
 
     socket.on('startGame', function () {
+      console.log(socket.player, 'socket player before start game')
       io.emit('newGame')
       io.emit('gameHasStarted')
       server.gameInProgress = true

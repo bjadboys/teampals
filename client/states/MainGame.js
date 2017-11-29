@@ -88,9 +88,6 @@ export default class MainGame extends Phaser.State {
     this.ammoText.fixedToCamera = true;
     this.death = this.map.layers[2].data
     this.deathTiles = this.death.map( array => array.filter((element) => element.index !== -1))
-    this.game.world.bringToTop(this.ammoText)
-    this.game.world.bringToTop(this.healthText)
-
     this.firstWeapon = this.weaponsBJAD.create(100, 100, 'weapon')
     this.firstWeapon.id = 0
     this.firstWeapon.isWeapon = true
@@ -191,6 +188,9 @@ export default class MainGame extends Phaser.State {
 
   addNewPlayer(id, x, y, serverSideTime) {
     this.newPlayer = this.game.add.sprite(x, y, 'characters')
+    console.log(this)
+    this.addNewPlayer.direction = 'down'
+    this.addNewPlayer.health = playerHealth
     this.newPlayer.alive = true
     this.newPlayer.moving = false
     this.newPlayer.serverSideTime = serverSideTime
@@ -210,6 +210,7 @@ export default class MainGame extends Phaser.State {
   }
 
   addNewBase(base) {
+    console.log(base, 'here is a base')
     this.newBase = this.game.add.sprite(base.x, base.y, 'base')
     this.game.physics.arcade.enable(this.newBase)
     this.newBase.body.immovable = true
