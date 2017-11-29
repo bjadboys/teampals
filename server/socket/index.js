@@ -1,5 +1,14 @@
 const bulletCollisionLayer = require('./collisionLayerData')
 module.exports = (io, server) => {
+  //Map Variables
+  const tilePx = 32
+  const mapHeight = 48
+  const mapWidth = 48
+
+  //Gameplay Variables
+  const bulletSpeed = 3.0
+  const playerHealth = 100
+
   // Keep track of the last id assigned to a new player
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
   let bulletArray = [];
@@ -53,7 +62,7 @@ module.exports = (io, server) => {
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
         socket.player.direction = 'down'
-        socket.player.health = 100;
+        socket.player.health = playerHealth
         io.emit('addPlayersToLobby', getAllPlayers())
       }
     });
@@ -108,7 +117,7 @@ module.exports = (io, server) => {
       console.log('do i have weapon data', data.selectedWeapon)
       let newBullet = {};
       let axisVelocities = directionValues[data.direction];
-      const bulletSpeed = 3.0;
+      //const bulletSpeed = 3.0;
       newBullet.x = data.x;
       newBullet.y = data.y;
       newBullet.xv = data.xv ? data.xv * bulletSpeed : axisVelocities.x * bulletSpeed;
@@ -142,11 +151,11 @@ module.exports = (io, server) => {
       bulletArray[i].y += bulletArray[i].yv;
       let xPixels = bulletArray[i].x
       let yPixels = bulletArray[i].y
-      let xTile = Math.floor(xPixels / 32)
-      let yTile = Math.floor(yPixels / 32) * 48
-      let tile = bulletCollisionLayer[xTile + yTile]
+      let xTile = Math.floor(xPixels / tilePx)
+      let yTile = Math.floor(yPixels / tilePx) * mapHeight
+      let collisionTile = bulletCollisionLayer[xTile + yTile]
       // Remove bullet if it's off screen
-      if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || bulletArray[i].y > 1536 || bulletArray[i].x > 1536 || tile > 0) {
+      if (bulletArray[i].y < 0 || bulletArray[i].x < 0 || bulletArray[i].y > mapHeight * tilePx || bulletArray[i].x > mapWidth * tilePx || collisionTile) {
         bulletArray.splice(i, 1);
         i--;
       }
