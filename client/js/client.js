@@ -1,4 +1,3 @@
-
 import Game from '../game/'
 import socket from './socket'
 import store, {gameInProgressAction} from '../store/'
@@ -100,9 +99,9 @@ Client.playerPicksUpWeaponBJAD = function (player, weapon){
 }
 
 Client.socket.on('playerPickedUpWeapon', function(data){
-  let playerId = data.playerId
-  let weaponId = data.weaponId
-  game.state.states.MainGame.removeWeaponBJAD(weaponId)
+    let playerId = data.playerId
+    let weaponId = data.weaponId
+    game.state.states.MainGame.collectWeaponBJAD(playerId, weaponId)
 })
 
 Client.socket.on('stop-animation', function(data) {
@@ -130,7 +129,11 @@ Client.socket.on('remove', function(id){
   game.state.states.MainGame.removePlayer(id);
 });
 
-Client.socket.on('player-hit', function(id){
+Client.socket.on('player-hit', function(data){
+  game.state.states.MainGame.changeHealth(data.healthNum, data.id);
+});
+
+Client.socket.on('player-killed', function(id){
   game.state.states.MainGame.killPlayer(id);
 });
 
