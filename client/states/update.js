@@ -64,7 +64,7 @@ export default Client => function () {
       this.currentPlayer.body.velocity.x = -106;
       this.currentPlayer.direction = 'upLeft';
       this.currentPlayer.animations.play('upLeft');
-        if (this.currentPlayer.children[0]) {
+        if (this.currentPlayer.children.length) {
           this.currentPlayer.children.forEach(child => {child.angle = -135})
         }
     }
@@ -74,7 +74,7 @@ export default Client => function () {
       this.currentPlayer.body.velocity.x = 106;
       this.currentPlayer.direction = 'upRight';
       this.currentPlayer.animations.play('upRight');
-         if (this.currentPlayer.children[0]) {
+         if (this.currentPlayer.children.length) {
           this.currentPlayer.children.forEach(child => {child.angle = -45})
         }
     }
@@ -83,7 +83,7 @@ export default Client => function () {
       this.currentPlayer.body.velocity.y = 150;
       this.currentPlayer.direction = 'down';
       this.currentPlayer.animations.play('down');
-         if (this.currentPlayer.children[0]) {
+         if (this.currentPlayer.children.length) {
           this.currentPlayer.children.forEach(child => {child.angle = 90})
         }
     }
@@ -93,7 +93,7 @@ export default Client => function () {
       this.currentPlayer.body.velocity.x = -106;
       this.currentPlayer.direction = 'downLeft';
       this.currentPlayer.animations.play('downLeft');
-         if (this.currentPlayer.children[0]) {
+         if (this.currentPlayer.children.length) {
           this.currentPlayer.children.forEach(child => {child.angle = 135})
         }
     }
@@ -103,7 +103,7 @@ export default Client => function () {
       this.currentPlayer.body.velocity.x = 106;
       this.currentPlayer.direction = 'downRight';
       this.currentPlayer.animations.play('downRight');
-        if (this.currentPlayer.children[0]) {
+        if (this.currentPlayer.children.length) {
           this.currentPlayer.children.forEach(child => {child.angle = 45})
         }
     }
@@ -112,7 +112,7 @@ export default Client => function () {
       this.currentPlayer.body.velocity.x = 150;
       this.currentPlayer.direction = 'right';
       this.currentPlayer.animations.play('right');
-        if (this.currentPlayer.children[0]) {
+        if (this.currentPlayer.children.length) {
           this.currentPlayer.children.forEach(child => {child.angle = 0})
         }
     }
@@ -121,7 +121,7 @@ export default Client => function () {
       this.currentPlayer.body.velocity.x = -150;
       this.currentPlayer.direction = 'left';
       this.currentPlayer.animations.play('left');
-        if (this.currentPlayer.children[0]) {
+        if (this.currentPlayer.children.length) {
           this.currentPlayer.children.forEach(child => {child.angle = 180})
         }
     }
