@@ -57,6 +57,8 @@ module.exports = (io, server) => {
         console.log(defaultPlayers)
         socket.player = defaultPlayers.shift()
         socket.player.name = name
+        socket.player.direction = 'down'
+        socket.player.health = playerHealth
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
         console.log(socket.player)

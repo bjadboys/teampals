@@ -204,7 +204,7 @@ export default class MainGame extends Phaser.State {
     this.newPlayer.animations.add('upLeft', [12, 13, 14, 15, 16, 17], animationFrequency, true)
     this.newPlayer.animations.add('downLeft', [12, 13, 14, 15, 16, 17], animationFrequency, true)
     this.newPlayer.animations.add('up', [18, 19, 20, 21, 22, 23], animationFrequency, true)
-    this.playerMapBJAD[id] = this.newPlayer
+    this.playerMapBJAD[id] = this.newPlayer 
   }
 
   addNewBase(base) {
