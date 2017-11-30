@@ -8,8 +8,8 @@ module.exports = (io, server) => {
   const mapWidth = 48
 
   //Gameplay Variables
-  const bulletSpeed = 3.0
-  const playerHealth = 100000
+  let bulletSpeed = 2
+  const playerHealth = 100
   // Keep track of the last id assigned to a new player
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
   let bulletArray = [];
@@ -21,7 +21,7 @@ module.exports = (io, server) => {
       id: 1,
       x: 135,
       y: 120
-    }, {
+    }, { 
       id: 2,
       x: 1340,
       y: 120
