@@ -7,6 +7,7 @@ import updateMaker  from './update'
 //Throttle Speed Variables
 const hudWait = 125
 const wait = 30
+const deathWait = 500
 
 //Map Variables
 const tilePx = 32
@@ -23,8 +24,8 @@ const playerAnchorY = 0.5
 
 //Gameplay Variables
 const targetRange = 200
-const baseHealth = 1000
-const playerHealth = 100
+const baseHealth = 100000
+const playerHealth = 100000
 const playerAmmo = 0
 
 export default class MainGame extends Phaser.State {
@@ -42,10 +43,11 @@ export default class MainGame extends Phaser.State {
     this.stopAnimation = this.stopAnimation.bind(this)
     this.startAnimation = this.startAnimation.bind(this)
     this.changeHealth = this.changeHealth.bind(this)
+    this.deathLayerChangeHealth = throttle(this.deathLayerChangeHealth.bind(this), deathWait)
     this.pickUpBlockPhysicsBJAD = throttle(this.pickUpBlockPhysicsBJAD.bind(this), wait)
     this.dropBlockPhysicsBJAD = throttle(this.dropBlockPhysicsBJAD.bind(this), wait)
     this.dropBlockBJAD = this.dropBlockBJAD.bind(this)
-    this.isInDeathBJAD = this.isInDeathBJAD.bind(this)
+    this.isInDeathBJAD = throttle(this.isInDeathBJAD.bind(this), deathWait)
     this.dropBlockPhysicsBJAD = this.dropBlockPhysicsBJAD.bind(this)
     this.movementThrottle = throttle(this.movementThrottle.bind(this), wait)
     this.findPossibleTarget = throttle(this.findPossibleTarget.bind(this), wait)
@@ -87,12 +89,12 @@ export default class MainGame extends Phaser.State {
     this.ammoText.fixedToCamera = true;
     this.death = this.map.layers[2].data
     this.deathTiles = this.death.map( array => array.filter((element) => element.index !== -1))
-    this.firstWeapon = this.weaponsBJAD.create(100, 100, 'weapon')
-    this.firstWeapon.id = 0
-    this.firstWeapon.isWeapon = true
-    this.secondWeapon = this.weaponsBJAD.create(200, 200, 'weapon2')
-    this.secondWeapon.isWeapon = true
-    this.secondWeapon.id = 1
+    // this.firstWeapon = this.weaponsBJAD.create(100, 100, 'weapon')
+    // this.firstWeapon.id = 0
+    // this.firstWeapon.isWeapon = true
+    // this.secondWeapon = this.weaponsBJAD.create(200, 200, 'weapon2')
+    // this.secondWeapon.isWeapon = true
+    // this.secondWeapon.id = 1  
   }
 
   isInDeathBJAD(x, y){
@@ -208,7 +210,6 @@ export default class MainGame extends Phaser.State {
   }
 
   addNewBase(base) {
-    console.log(base, 'here is a base')
     this.newBase = this.game.add.sprite(base.x, base.y, 'base')
     this.game.physics.arcade.enable(this.newBase)
     this.newBase.body.immovable = true
@@ -220,7 +221,7 @@ export default class MainGame extends Phaser.State {
     this.currentPlayer = this.playerMapBJAD[id]
     this.currentPlayer.direction = 'down'
     this.currentPlayer.health = playerHealth
-    this.currentPlayer.ammo = playerAmmo
+    this.currentPlayer.ammo = 10
     this.currentPlayer.id = id
     this.currentPlayer.pointer = null
     this.currentPlayer.possibleTarget = null
@@ -233,6 +234,10 @@ export default class MainGame extends Phaser.State {
     this.currentPlayer.firing = false
     this.currentPlayer.holdToggle = false
     this.currentPlayer.selectedWeapon = null
+  }
+
+  deathLayerChangeHealth(healthNum, id) {
+    this.changeHealth(healthNum, id)
   }
 
   changeHealth(healthNum, id) {

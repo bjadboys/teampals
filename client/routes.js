@@ -16,7 +16,6 @@ export default class Routes extends Component {
       <Router history={history}>
           <Switch>
             <Route path="/" component={Lobby} />
-            <Route path='/game/' component={GameScreen} />
           </Switch>
       </Router>
     )

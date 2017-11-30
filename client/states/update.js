@@ -22,7 +22,7 @@ export default Client => function () {
     this.currentPlayer.body.velocity.y = 0;
 
     if (this.isInDeathBJAD(this.currentPlayer.position.x, this.currentPlayer.position.y) !== -1) {
-      //TODO: Damage player vs kill.
+      this.deathLayerChangeHealth(-15, this.currentPlayer.id)
     }
 
     this.movementThrottle();
@@ -146,7 +146,6 @@ export default Client => function () {
     if (this.pickUpButton.isDown && !this.currentPlayer.holdToggle) {
       this.currentPlayer.holdToggle = true
       const hasBlock = this.currentPlayer.children.find(item => item.isBlock)
-      console.log('trying to drop the block, what is children', this.currentPlayer.children)
       if (hasBlock) {
         this.dropBlockPhysicsBJAD();
       } else {
