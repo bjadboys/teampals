@@ -69,6 +69,7 @@ module.exports = (io, server) => {
         io.emit('newGame')
         io.emit('gameHasStarted')
         server.gameInProgress = true
+        io.emit('gameInProgress')
       }
     })
 

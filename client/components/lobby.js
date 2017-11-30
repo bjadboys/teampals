@@ -33,7 +33,10 @@ ClientLobby.startGame = function() {
 }
 
 ClientLobby.socket.on('gameHasStarted', function(){
+  const state = store.getState()
+  if (state.game.joined) {
     store.dispatch(startGameAction())
+  }
 })
 
 ClientLobby.socket.on('gameInProgress', function(){
@@ -92,7 +95,6 @@ class Lobby extends React.Component {
   }
 
   render () {
-    console.log(this.state)
     if (!this.props.localGame && !this.props.serverGame) {
       return (
       <div>

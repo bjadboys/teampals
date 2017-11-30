@@ -18,7 +18,7 @@ let game;
 Client.SEND_fire = function (position, direction, selectedWeapon, targetLocked, target) {
   console.log("fire func")
   const state = store.getState()
-  if (state.joined) {
+  if (state.game.joined) {
     console.log("actually emitting")
     let xv, xy = null;
     if (targetLocked) {
@@ -221,6 +221,7 @@ Client.socket.on('player-hit', function(data){
 });
 
 Client.socket.on('player-killed', function(id){
+    console.log("what")
   const state = store.getState()
   if (state.game.joined) {
 
@@ -230,10 +231,10 @@ Client.socket.on('player-killed', function(id){
 });
 
 Client.socket.on('bullets-update', function (RCVbulletArray) {
-  console.log("bullet listener")
+//   console.log("bullet listener")
   const state = store.getState()
   if (state.game.joined) {
-    console.log("the actual loop")
+    // console.log("the actual loop")
     for (var i = 0; i < RCVbulletArray.length; i++) {
       if (bulletArray[i] === undefined) {
         let bullet = game.add.sprite(RCVbulletArray[i].x, RCVbulletArray[i].y, 'bullet');
