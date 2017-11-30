@@ -1,8 +1,8 @@
 export default Client => function () {
 
-  let playerSpeed = 150;
+  let playerSpeed = 180;
   //Adjust Speed when locked on
-  if (this.currentPlayer && this.currentPlayer.targetLocked) playerSpeed = 0.80 * playerSpeed
+  if (this.currentPlayer && this.currentPlayer.targetLocked) playerSpeed = 0.70 * playerSpeed
 
   //physics added for blocks
   if (this.blocksBJAD.children.length) {
@@ -150,7 +150,7 @@ export default Client => function () {
         this.dropBlockPhysicsBJAD();
       } else {
         this.pickUpBlockPhysicsBJAD(true);
-      } 
+      }
     }
     if (!this.pickUpButton.isDown) {
       this.currentPlayer.holdToggle = false;
