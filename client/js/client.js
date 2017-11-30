@@ -66,7 +66,7 @@ Client.socket.on('newGame', function(){
     
     let timeoutId = setTimeout(function(){
         Client.socket.emit('setUpGame')
-    }, 1000)
+    }, 2000)
     store.dispatch(gameInProgressAction())
     
 })

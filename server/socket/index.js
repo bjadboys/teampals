@@ -9,7 +9,7 @@ module.exports = (io, server) => {
 
   //Gameplay Variables
   const bulletSpeed = 3.0
-  const playerHealth = 100
+  const playerHealth = 100000
   // Keep track of the last id assigned to a new player
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
   let bulletArray = [];
@@ -54,20 +54,17 @@ module.exports = (io, server) => {
     socket.on('newplayer', function (name) {
       if (defaultPlayers.length) {
         io.emit()
-        console.log(defaultPlayers)
         socket.player = defaultPlayers.shift()
         socket.player.name = name
         socket.player.direction = 'down'
         socket.player.health = playerHealth
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
-        console.log(socket.player)
         io.emit('addPlayersToLobby', getAllPlayers())
       }
     });
 
     socket.on('startGame', function () {
-      console.log(socket.player, 'socket player before start game')
       io.emit('newGame')
       io.emit('gameHasStarted')
       server.gameInProgress = true
@@ -162,7 +159,6 @@ module.exports = (io, server) => {
           if (playerArr[j].health > 0 && bulletArray[i] && bulletArray[i].id !== playerArr[j].id) {
             if (playerArr[j].x - 12 < bulletArray[i].x && playerArr[j].x + 12 > bulletArray[i].x) {
               if (playerArr[j].y - 7 < bulletArray[i].y && playerArr[j].y + 16 > bulletArray[i].y) {
-                console.log("hit")
                 playerArr[j].health += -10
                 if (playerArr[j].health <= 0) {
                   io.emit('player-killed', playerArr[j].id)
