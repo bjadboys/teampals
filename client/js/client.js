@@ -24,10 +24,10 @@ Client.SEND_fire = function (position, direction, selectedWeapon, targetLocked, 
       const dy = target.position.y - position.y;
       const distBtwn = Math.sqrt(Math.pow(dx, 2) + Math.pow(dy, 2));
       xv = dx / distBtwn;
-      xy = dy / distBtwn;
+      yv = dy / distBtwn;
     }
-  
-    Client.socket.emit('fire', { x: position.x + offsetX, y: position.y + offsetY, direction, selectedWeapon, xv, xy })
+
+    Client.socket.emit('fire', { x: position.x + offsetX, y: position.y + offsetY, direction, selectedWeapon, xv, yv })
 
   }
   //Calculate directional velocity for targeted player
@@ -69,24 +69,21 @@ Client.playerSmashCrate = function(player, block){
     if (state.game.joined) {
         Client.socket.emit('destroy-crate', block.id)
         game.state.states.MainGame.changeAmmo(10)
-        game.state.states.MainGame.changeHealth(20, player.id)
+        game.state.states.MainGame.changeHealth(10, player.id)
     }
 }
 
-Client.playerGainHealth = function(playerHealth){
+Client.playerChangeHealth = function(playerHealth){
     const state = store.getState()
     if (state.game.joined) {
-      Client.socket.emit('gain-health', playerHealth)
+      Client.socket.emit('change-health', playerHealth)
     }
 }
-
-
 
 Client.playerDropsBlockBJAD = function(playerId) {
   const state = store.getState()
   if (state.game.joined) {
     Client.socket.emit('block-dropped', playerId)
-
   }
 }
 
@@ -122,18 +119,14 @@ Client.socket.on('newGame', function(){
 Client.socket.on('addBlock', function(data){
   const state = store.getState()
   if (state.game.joined) {
-
-    game.state.states.MainGame.addBlockBJAD(data.id, data.x, data.y) 
-
+    game.state.states.MainGame.addBlockBJAD(data.id, data.x, data.y)
   }
-}) 
+})
 
 Client.socket.on('player-picked-up-block', function(data){
   const state = store.getState()
   if (state.game.joined) {
-
     game.state.states.MainGame.collectBlockBJAD(data.playerId, data.blockId)
-
   }
 })
 
@@ -143,7 +136,6 @@ Client.socket.on('allBlocks', function(data){
     data.forEach(block => {
       game.state.states.MainGame.addBlockBJAD(block.id, block.x, block.y)
     })
-
   }
 })
 
@@ -169,28 +161,22 @@ Client.playerPicksUpWeaponBJAD = function (player, weapon){
 Client.socket.on('playerPickedUpWeapon', function(data){
   const state = store.getState()
   if (state.game.joined) {
-
     let playerId = data.playerId
     let weaponId = data.weaponId
     game.state.states.MainGame.collectWeaponBJAD(playerId, weaponId)
-
   }
 })
 
 Client.socket.on('stop-animation', function(data) {
   const state = store.getState()
   if (state.game.joined) {
-
     game.state.states.MainGame.stopAnimation(data);
-
   }
 })
 
 Client.socket.on('yourID', function(data){
   const state = store.getState()
   if (state.game.joined) {
-
-
     game.state.states.MainGame.setCurrentPlayer(data);
   }
 });
@@ -198,8 +184,6 @@ Client.socket.on('yourID', function(data){
 Client.socket.on('newplayer', function(data){
   const state = store.getState()
   if (state.game.joined) {
-
-
     game.state.states.MainGame.addNewPlayer(data.id, data.x, data.y, data.serverSideTime);
   }
 });
@@ -212,9 +196,7 @@ Client.socket.on('allplayers', function(data){
       const base = locations.find(location => location.id === data[i].id)
       game.state.states.MainGame.addNewBase(base)
       game.state.states.MainGame.addNewPlayer(data[i].id, data[i].x, data[i].y, data[i].serverSideTime)
-    } 
-
-
+    }
   }
 });
 
@@ -230,8 +212,6 @@ Client.socket.on('remove', function(id){
 Client.socket.on('player-hit', function(data){
   const state = store.getState()
   if (state.game.joined) {
-
-
     game.state.states.MainGame.changeHealth(data.healthNum, data.id);
   }
 });
@@ -239,8 +219,6 @@ Client.socket.on('player-hit', function(data){
 Client.socket.on('player-killed', function(id){
   const state = store.getState()
   if (state.game.joined) {
-
-
     game.state.states.MainGame.killPlayer(id);
   }
 });
@@ -268,7 +246,6 @@ Client.socket.on('bullets-update', function (RCVbulletArray) {
       bulletArray.splice(i, 1);
       i--;
     }
-
   }
   // If there's not enough bullets on the client, create them
 });

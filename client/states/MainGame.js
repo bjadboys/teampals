@@ -24,7 +24,7 @@ const playerAnchorY = 0.5
 
 //Gameplay Variables
 const targetRange = 200
-const baseHealth = 100000
+const baseHealth = 5000
 const playerHealth = 100
 const playerAmmo = 0
 
@@ -95,7 +95,7 @@ export default class MainGame extends Phaser.State {
     // this.firstWeapon.isWeapon = true
     // this.secondWeapon = this.weaponsBJAD.create(200, 200, 'weapon2')
     // this.secondWeapon.isWeapon = true
-    // this.secondWeapon.id = 1  
+    // this.secondWeapon.id = 1
   }
 
   isInDeathBJAD(x, y){
@@ -131,15 +131,15 @@ export default class MainGame extends Phaser.State {
     }
   }
 
-    pickUpBlockPhysicsBJAD(bool) {
-      //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
-      //that they touch.
-      const func = bool ? Client.playerPicksUpBlockBJAD : Client.playerSmashCrate
-      const hasBlock = this.currentPlayer.children.find(item => item.isBlock)
-      if (!hasBlock) {
-        this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, func, null, this)
-      }
+  pickUpBlockPhysicsBJAD(bool) {
+    //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
+    //that they touch.
+    const func = bool ? Client.playerPicksUpBlockBJAD : Client.playerSmashCrate
+    const hasBlock = this.currentPlayer.children.find(item => item.isBlock)
+    if (!hasBlock) {
+      this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, func, null, this)
     }
+  }
 
   dropBlockPhysicsBJAD(){
     this.base = this.playerBaseBJAD[this.currentPlayer.id]
@@ -208,7 +208,7 @@ export default class MainGame extends Phaser.State {
     this.newPlayer.animations.add('upLeft', [12, 13, 14, 15, 16, 17], animationFrequency, true)
     this.newPlayer.animations.add('downLeft', [12, 13, 14, 15, 16, 17], animationFrequency, true)
     this.newPlayer.animations.add('up', [18, 19, 20, 21, 22, 23], animationFrequency, true)
-    this.playerMapBJAD[id] = this.newPlayer 
+    this.playerMapBJAD[id] = this.newPlayer
   }
 
   addNewBase(base) {
@@ -251,11 +251,11 @@ export default class MainGame extends Phaser.State {
       if (healthNum < 0) {
         this.game.camera.flash([0xde5242], [250])
         this.game.camera.shake([.01], [100])
-      } else { 
-        // update health in server
-        Client.playerGainHealth(this.currentPlayer.health)
+      } else {
         this.game.camera.flash([0xb3fc95])
       }
+      // update health in server
+      Client.playerChangeHealth(this.currentPlayer.health)
     }
   }
 
@@ -268,7 +268,7 @@ export default class MainGame extends Phaser.State {
   removePlayer(id) {
     this.playerMapBJAD[id].destroy()
     delete this.playerMapBJAD[id]
-  } 
+  }
 
   killPlayer(id) {
     this.player = this.playerMapBJAD[id]
