@@ -9,6 +9,7 @@ let offsetY = 0;
 let sendStopCalls = false;
 Client.socket = socket
 
+
 // Client.askNewPlayer = function(){
 //   Client.socket.emit('newplayer');
 // };
@@ -61,19 +62,24 @@ Client.socket.on('player-dropped-block', function (playerId) {
 //Client add on block at a time to the map.
 //TODO : duplicate blocks.
 Client.socket.on('newGame', function(){
-    game = new Game()
-    game.startGame();
-    
-    let timeoutId = setTimeout(function(){
-        Client.socket.emit('setUpGame')
-    }, 2000)
-    store.dispatch(gameInProgressAction())
-    
+  const state = store.getState()
+    console.log(state, 'this is state in newGame')
+    if (state.game.joined) {
+      game = new Game()
+      game.startGame();
+      let timeoutId = setTimeout(function(){
+          Client.socket.emit('setUpGame')
+      }, 2000)
+      store.dispatch(gameInProgressAction())
+    }
 })
 
 
 Client.socket.on('addBlock', function(data){
-  game.state.states.MainGame.addBlockBJAD(data.id, data.x, data.y)
+  const state = store.getState()
+  if (state.game.joined) { 
+    game.state.states.MainGame.addBlockBJAD(data.id, data.x, data.y) 
+  }
 })
 
 Client.socket.on('player-picked-up-block', function(data){
@@ -81,6 +87,7 @@ Client.socket.on('player-picked-up-block', function(data){
 })
 
 Client.socket.on('allBlocks', function(data){
+  
   data.forEach(block => {
     game.state.states.MainGame.addBlockBJAD(block.id, block.x, block.y)
   })

@@ -2,16 +2,16 @@ import React from 'react'
 import {TextField, RaisedButton} from 'material-ui'
 import socket from '../js/socket'
 import {connect} from 'react-redux'
-import store, {addPlayersAction, removePlayerAction, startGameAction, gameInProgressAction} from '../store/'
+import store, {addPlayersAction, removePlayerAction, startGameAction, gameInProgressAction, leftGameAction, joinedGameAction} from '../store/'
 import { withRouter } from 'react-router-dom'
-import GameScreen from './game'
+// import GameScreen from './game'
 
 const verbs = [' is ', ' fears only ', ' flights for ', ' runs toward ', ' spits at ', ' laughs at ']
 const nouns = ['nothing!', 'danger!', 'handguns!', 'live tigers!', ' broken bones!', 'fancy blouses!']
 
 const ClientLobby = {}
 ClientLobby.socket = socket
-
+const clientStore = store.getState()
 
 ClientLobby.removePlayerLobbyBJAD = function () {
   ClientLobby.socket.emit('playerLeavesLobby')
@@ -34,7 +34,7 @@ ClientLobby.startGame = function() {
 }
 
 ClientLobby.socket.on('gameHasStarted', function(){
-  store.dispatch(startGameAction())
+    store.dispatch(startGameAction())
 })
 
 ClientLobby.socket.on('gameInProgress', function(){
@@ -45,8 +45,7 @@ class Lobby extends React.Component {
   constructor(){
     super()
     this.state = {
-      name: '',
-      joined: false
+      name: ''
     }
     this.handleNameChange = this.handleNameChange.bind(this)
   } 
@@ -67,12 +66,12 @@ class Lobby extends React.Component {
   }
 
   joinGameButton() {
-    if(!this.state.joined) {
+    if (!this.props.joined) {
       return (<div>
                 <RaisedButton
                 label='join'
                 onClick={() => {
-                  this.setState({joined: !this.state.joined})
+                  this.props.handleJoinLobby()
                   ClientLobby.askNewPlayer(this.state.name)
                 }} />
               </div>)
@@ -81,7 +80,7 @@ class Lobby extends React.Component {
                 <RaisedButton
                 label='leave'
                 onClick={() => {
-                this.setState({ joined: !this.state.joined })
+                this.props.handleLeaveLobby()
                 ClientLobby.removePlayerLobbyBJAD()
           }} />
             </div>)
@@ -94,11 +93,12 @@ class Lobby extends React.Component {
   }
 
   render () {
+    console.log(this.state)
     if (!this.props.localGame && !this.props.serverGame) {
       return (
       <div>
           <TextField
-            disabled={this.state.joined}
+            disabled={this.props.joined}
             hintText="Hello."
             floatingLabelText="Name"
             onChange={(event) => {this.handleNameChange(event.target.value)}}
@@ -106,7 +106,7 @@ class Lobby extends React.Component {
           <div id='belowtextfield'>
           <div id='buttonHolder'>
           {this.joinGameButton()}
-          {this.state.joined && this.startGameButton()}
+          {this.props.joined && this.startGameButton()}
           </div>
           <div>
               <ul>
@@ -119,14 +119,18 @@ class Lobby extends React.Component {
           
       </div>
      )
-    } else if (this.props.localGame && this.props.serverGame) {
+    } else if (this.props.joined && this.props.localGame && this.props.serverGame) {
       return (
-        <GameScreen />
+        <div>
+        {/*<GameScreen />*/}
+        </div>
       )
-    } else if (!this.props.localGame && this.props.serverGame) {
+    } else if (this.props.serverGame && !this.props.joined) {
       return (
         <p>Game in progress. Please wait.</p>
       )
+    } else {
+      return (<div></div>)
     }
   }
 
@@ -135,15 +139,16 @@ class Lobby extends React.Component {
 const mapState = (state) => ({
   lobby: state.lobby,
   localGame: state.game.localGame,
-  serverGame: state.game.serverGame
+  serverGame: state.game.serverGame,
+  joined: state.game.joined
 })
 
 const mapDispatch = (dispatch) => ({
-  handleJoinLobby(id) {
-    dispatch(addPlayersAction(id))
+  handleJoinLobby() {
+    dispatch(joinedGameAction())
   },
-  handleLeaveLobby(id) {
-    dispatch(removePlayerAction(id))
+  handleLeaveLobby() {
+    dispatch(leftGameAction())
   }
 })
 
