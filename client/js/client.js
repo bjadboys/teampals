@@ -9,16 +9,12 @@ let offsetY = 0;
 let sendStopCalls = false;
 Client.socket = socket
 
-
-// Client.askNewPlayer = function(){
-//   Client.socket.emit('newplayer');
-// };
 let game;
 
 Client.SEND_fire = function (position, direction, selectedWeapon, targetLocked, target) {
   const state = store.getState()
   if (state.game.joined) {
-    let xv, xy = null;
+    let xv, yv = null;
     if (targetLocked) {
       const dx = target.position.x - position.x;
       const dy = target.position.y - position.y;
