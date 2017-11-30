@@ -16,10 +16,8 @@ Client.socket = socket
 let game;
 
 Client.SEND_fire = function (position, direction, selectedWeapon, targetLocked, target) {
-  console.log("fire func")
   const state = store.getState()
   if (state.game.joined) {
-    console.log("actually emitting")
     let xv, xy = null;
     if (targetLocked) {
       const dx = target.position.x - position.x;
@@ -53,7 +51,6 @@ Client.blockUsedBJAD = function(data) {
   const state = store.getState()
   if (state.game.joined) {
     Client.socket.emit('blockUsed', data)
-
   }
 }
 
@@ -64,9 +61,26 @@ Client.playerPicksUpBlockBJAD = function(player, block) {
     const playerId = player.id
     const blockId = block.id
     Client.socket.emit('block-picked-up', {playerId, blockId})
-
   }
 }
+
+Client.playerSmashCrate = function(player, block){
+    const state = store.getState()
+    if (state.game.joined) {
+        Client.socket.emit('destroy-crate', block.id)
+        game.state.states.MainGame.changeAmmo(10)
+        game.state.states.MainGame.changeHealth(20, player.id)
+    }
+}
+
+Client.playerGainHealth = function(playerHealth){
+    const state = store.getState()
+    if (state.game.joined) {
+      Client.socket.emit('gain-health', playerHealth)
+    }
+}
+
+
 
 Client.playerDropsBlockBJAD = function(playerId) {
   const state = store.getState()
@@ -79,9 +93,14 @@ Client.playerDropsBlockBJAD = function(playerId) {
 Client.socket.on('player-dropped-block', function (playerId) {
   const state = store.getState()
   if (state.game.joined) {
-
     game.state.states.MainGame.dropBlockBJAD(playerId)
+  }
+})
 
+Client.socket.on('crate-destroyed', function (crateID) {
+  const state = store.getState()
+  if (state.game.joined) {
+    game.state.states.MainGame.smashBlock(crateID)
   }
 })
 
@@ -131,9 +150,7 @@ Client.socket.on('allBlocks', function(data){
 Client.socket.on('replaceBlock', function(data){
   const state = store.getState()
   if (state.game.joined) {
-
     game.state.states.MainGame.removeBlockBJAD(data.playerId);
-
   }
 })
 
@@ -142,7 +159,6 @@ Client.socket.on('replaceBlock', function(data){
 Client.playerPicksUpWeaponBJAD = function (player, weapon){
   const state = store.getState()
   if (state.game.joined) {
-
     let playerId = player.id
     let weaponId = weapon.id
     Client.socket.emit('weaponPickedUp', {playerId, weaponId})
@@ -221,7 +237,6 @@ Client.socket.on('player-hit', function(data){
 });
 
 Client.socket.on('player-killed', function(id){
-    console.log("what")
   const state = store.getState()
   if (state.game.joined) {
 

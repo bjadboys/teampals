@@ -96,6 +96,10 @@ module.exports = (io, server) => {
       if (socket.player) io.emit('player-picked-up-block', data)
     })
 
+    socket.on('gain-health', function (health) {
+      if (socket.player) socket.player.health = health
+    })
+
     socket.on('blockUsed', function (data) {
       if (socket.player) {
         const newBlock = makeBlocks(1)
@@ -104,6 +108,15 @@ module.exports = (io, server) => {
         io.emit('replaceBlock', data)
       }
     })
+
+    socket.on('destroy-crate', function (crateID) {
+      if (socket.player) {
+        io.emit('crate-destroyed', crateID)
+        const newBlock = makeBlocks(1)
+        io.emit('allBlocks', newBlock)
+      }
+    })
+    
 
     socket.on('block-dropped', function (playerId) {
       if (socket.player) io.emit('player-dropped-block', playerId)
@@ -119,7 +132,6 @@ module.exports = (io, server) => {
 
     socket.on('fire', function (data) {
       if (socket.player) {
-        console.log("added bullet")
         let newBullet = {};
         let axisVelocities = directionValues[data.direction];
         //const bulletSpeed = 3.0;

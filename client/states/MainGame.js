@@ -25,7 +25,7 @@ const playerAnchorY = 0.5
 //Gameplay Variables
 const targetRange = 200
 const baseHealth = 100000
-const playerHealth = 100000
+const playerHealth = 100
 const playerAmmo = 0
 
 export default class MainGame extends Phaser.State {
@@ -77,6 +77,7 @@ export default class MainGame extends Phaser.State {
     //set up the keyboard for movement
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
+    this.smashButton = this.game.input.keyboard.addKey(Phaser.KeyCode.Z)
     this.pickUpButton = this.game.input.keyboard.addKey(Phaser.KeyCode.X)
     this.lockOnButton = this.game.input.keyboard.addKey(Phaser.KeyCode.C)
     this.blocksBJAD = this.add.group()
@@ -130,12 +131,13 @@ export default class MainGame extends Phaser.State {
     }
   }
 
-    pickUpBlockPhysicsBJAD() {
+    pickUpBlockPhysicsBJAD(bool) {
       //turns on the overlap pick up. Having this on all the time a player would automatically pick up any block
       //that they touch.
+      const func = bool ? Client.playerPicksUpBlockBJAD : Client.playerSmashCrate
       const hasBlock = this.currentPlayer.children.find(item => item.isBlock)
       if (!hasBlock) {
-        this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, Client.playerPicksUpBlockBJAD, null, this)
+        this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, func, null, this)
       }
     }
 
@@ -221,10 +223,11 @@ export default class MainGame extends Phaser.State {
     this.currentPlayer = this.playerMapBJAD[id]
     this.currentPlayer.direction = 'down'
     this.currentPlayer.health = playerHealth
-    this.currentPlayer.ammo = 10
+    this.currentPlayer.ammo = playerAmmo
     this.currentPlayer.id = id
     this.currentPlayer.pointer = null
     this.currentPlayer.possibleTarget = null
+    this.currentPlayer.smashToggle = false
     this.currentPlayer.lockOnToggle = false
     this.currentPlayer.targetLocked = false
     this.game.camera.follow(this.currentPlayer)
@@ -243,13 +246,23 @@ export default class MainGame extends Phaser.State {
   changeHealth(healthNum, id) {
     if (this.currentPlayer.id === id) {
       this.currentPlayer.health += healthNum
+      if (this.currentPlayer.health > 100) this.currentPlayer.health = 100;
+      if (this.currentPlayer.health < 0) this.currentPlayer.health = 0;
       if (healthNum < 0) {
         this.game.camera.flash([0xde5242], [250])
         this.game.camera.shake([.01], [100])
       } else { 
+        // update health in server
+        Client.playerGainHealth(this.currentPlayer.health)
         this.game.camera.flash([0xb3fc95])
       }
     }
+  }
+
+  changeAmmo(ammoNum){
+    this.currentPlayer.ammo += ammoNum
+    if (this.currentPlayer.ammo > 30) this.currentPlayer.ammo = 30;
+    if (this.currentPlayer.ammo < 0) this.currentPlayer.ammo = 0;
   }
 
   removePlayer(id) {
@@ -287,7 +300,11 @@ export default class MainGame extends Phaser.State {
     this.player = this.playerMapBJAD[playerId]
     this.usedBlock = this.player.removeChild(this.player.children[0])
     this.usedBlock.kill()
-    this.player.ammo += 10
+  }
+
+  smashBlock(blockID){
+    const smashedBlock = this.blocksBJAD.children.find(block => block.id === blockID)
+    smashedBlock.kill()
   }
 
   addBlockBJAD(id, x, y) {
