@@ -15,6 +15,7 @@ module.exports = (io, server) => {
   let bulletArray = [];
   let players = []
   server.gameInProgress = false
+  server.joined = false
   let defaultPlayers = [
     {
       id: 1,
@@ -46,8 +47,8 @@ module.exports = (io, server) => {
   }
   let mapBlocks = makeBlocks(10)
   io.on('connection', function (socket) {
-    
-    if (server.gameInProgress){
+
+    if (server.gameInProgress) {
       socket.emit('gameInProgress')
     }
 
@@ -63,63 +64,71 @@ module.exports = (io, server) => {
         io.emit('addPlayersToLobby', getAllPlayers())
       }
     });
-
     socket.on('startGame', function () {
-      io.emit('newGame')
-      io.emit('gameHasStarted')
-      server.gameInProgress = true
+      if (socket.player) {
+        io.emit('newGame')
+        io.emit('gameHasStarted')
+        server.gameInProgress = true
+      }
     })
 
     socket.on('setUpGame', function () {
-      io.emit('allBlocks', mapBlocks)
-      socket.emit('allplayers', getAllPlayers());
-      socket.emit('yourID', socket.player.id)
+      if (socket.player) {
+        io.emit('allBlocks', mapBlocks)
+        socket.emit('allplayers', getAllPlayers());
+        socket.emit('yourID', socket.player.id)
+      }
     })
 
     socket.on('update-position', function (data) {
-      if (socket.player.playerSideTime <= data.playerSideTime) {
+      if (socket.player && socket.player.playerSideTime <= data.playerSideTime) {
         socket.player.playerSideTime = data.playerSideTime;
         socket.player.serverSideTime = Date.now();
         socket.player.x = data.x;
         socket.player.y = data.y;
         socket.player.direction = data.direction
       }
-      socket.broadcast.emit('move', socket.player);
+      if (socket.player) socket.broadcast.emit('move', socket.player)
     });
 
     socket.on('block-picked-up', function (data) {
-      io.emit('player-picked-up-block', data)
+      if (socket.player) io.emit('player-picked-up-block', data)
     })
 
     socket.on('blockUsed', function (data) {
-      const newBlock = makeBlocks(1)
-      updateMapBlocks(data.blockId, newBlock[0])
-      io.emit('allBlocks', newBlock)
-      io.emit('replaceBlock', data)
+      if (socket.player) {
+        const newBlock = makeBlocks(1)
+        updateMapBlocks(data.blockId, newBlock[0])
+        io.emit('allBlocks', newBlock)
+        io.emit('replaceBlock', data)
+      }
     })
 
     socket.on('block-dropped', function (playerId) {
-      io.emit('player-dropped-block', playerId)
+      if (socket.player) io.emit('player-dropped-block', playerId)
     })
 
     socket.on('stopped-moving', function () {
-      socket.broadcast.emit('stop-animation', socket.player.id)
+      if (socket.player) socket.broadcast.emit('stop-animation', socket.player.id)
     })
 
-    socket.on('weaponPickedUp', function(data){
-      io.emit('playerPickedUpWeapon', data)
+    socket.on('weaponPickedUp', function (data) {
+      if (socket.player) io.emit('playerPickedUpWeapon', data)
     })
 
     socket.on('fire', function (data) {
-      let newBullet = {};
-      let axisVelocities = directionValues[data.direction];
-      //const bulletSpeed = 3.0;
-      newBullet.x = data.x;
-      newBullet.y = data.y;
-      newBullet.xv = data.xv ? data.xv * bulletSpeed : axisVelocities.x * bulletSpeed;
-      newBullet.yv = data.xy ? data.xy * bulletSpeed : axisVelocities.y * bulletSpeed;
-      newBullet.id = socket.player.id;
-      bulletArray.push(newBullet);
+      if (socket.player) {
+        console.log("added bullet")
+        let newBullet = {};
+        let axisVelocities = directionValues[data.direction];
+        //const bulletSpeed = 3.0;
+        newBullet.x = data.x;
+        newBullet.y = data.y;
+        newBullet.xv = data.xv ? data.xv * bulletSpeed : axisVelocities.x * bulletSpeed;
+        newBullet.yv = data.xy ? data.xy * bulletSpeed : axisVelocities.y * bulletSpeed;
+        newBullet.id = socket.player.id;
+        bulletArray.push(newBullet);
+      }
     });
 
     socket.on('disconnect', function () {
@@ -155,21 +164,21 @@ module.exports = (io, server) => {
         i--;
       }
       let playerArr = players;
-        for (let j = 0; j < playerArr.length; j++) {
-          if (playerArr[j].health > 0 && bulletArray[i] && bulletArray[i].id !== playerArr[j].id) {
-            if (playerArr[j].x - 12 < bulletArray[i].x && playerArr[j].x + 12 > bulletArray[i].x) {
-              if (playerArr[j].y - 7 < bulletArray[i].y && playerArr[j].y + 16 > bulletArray[i].y) {
-                playerArr[j].health += -10
-                if (playerArr[j].health <= 0) {
-                  io.emit('player-killed', playerArr[j].id)
-                }
-                io.emit('player-hit', { id: playerArr[j].id, healthNum: -10 });
-                bulletArray.splice(i, 1);
-                i--;
+      for (let j = 0; j < playerArr.length; j++) {
+        if (playerArr[j].health > 0 && bulletArray[i] && bulletArray[i].id !== playerArr[j].id) {
+          if (playerArr[j].x - 12 < bulletArray[i].x && playerArr[j].x + 12 > bulletArray[i].x) {
+            if (playerArr[j].y - 7 < bulletArray[i].y && playerArr[j].y + 16 > bulletArray[i].y) {
+              playerArr[j].health += -10
+              if (playerArr[j].health <= 0) {
+                io.emit('player-killed', playerArr[j].id)
               }
+              io.emit('player-hit', { id: playerArr[j].id, healthNum: -10 });
+              bulletArray.splice(i, 1);
+              i--;
             }
           }
         }
+      }
     }
     // Send updated bullets
     io.emit('bullets-update', bulletArray)

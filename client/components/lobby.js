@@ -11,7 +11,6 @@ const nouns = ['nothing!', 'danger!', 'handguns!', 'live tigers!', ' broken bone
 
 const ClientLobby = {}
 ClientLobby.socket = socket
-const clientStore = store.getState()
 
 ClientLobby.removePlayerLobbyBJAD = function () {
   ClientLobby.socket.emit('playerLeavesLobby')
