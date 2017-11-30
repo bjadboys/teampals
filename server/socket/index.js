@@ -111,7 +111,9 @@ module.exports = (io, server) => {
 
     socket.on('destroy-crate', function (crateID) {
       if (socket.player) {
-       io.emit('crate-destroyed', crateID)
+        io.emit('crate-destroyed', crateID)
+        const newBlock = makeBlocks(1)
+        io.emit('allBlocks', newBlock)
       }
     })
     

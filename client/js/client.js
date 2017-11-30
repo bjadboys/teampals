@@ -16,10 +16,8 @@ Client.socket = socket
 let game;
 
 Client.SEND_fire = function (position, direction, selectedWeapon, targetLocked, target) {
-  console.log("fire func")
   const state = store.getState()
   if (state.game.joined) {
-    console.log("actually emitting")
     let xv, xy = null;
     if (targetLocked) {
       const dx = target.position.x - position.x;
@@ -70,6 +68,7 @@ Client.playerSmashCrate = function(player, block){
     const state = store.getState()
     if (state.game.joined) {
         Client.socket.emit('destroy-crate', block.id)
+        game.state.states.MainGame.changeAmmo(10)
         game.state.states.MainGame.changeHealth(20, player.id)
     }
 }
@@ -238,7 +237,6 @@ Client.socket.on('player-hit', function(data){
 });
 
 Client.socket.on('player-killed', function(id){
-    console.log("what")
   const state = store.getState()
   if (state.game.joined) {
 

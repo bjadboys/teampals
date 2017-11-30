@@ -223,10 +223,11 @@ export default class MainGame extends Phaser.State {
     this.currentPlayer = this.playerMapBJAD[id]
     this.currentPlayer.direction = 'down'
     this.currentPlayer.health = playerHealth
-    this.currentPlayer.ammo = 10
+    this.currentPlayer.ammo = playerAmmo
     this.currentPlayer.id = id
     this.currentPlayer.pointer = null
     this.currentPlayer.possibleTarget = null
+    this.currentPlayer.smashToggle = false
     this.currentPlayer.lockOnToggle = false
     this.currentPlayer.targetLocked = false
     this.game.camera.follow(this.currentPlayer)
@@ -256,6 +257,12 @@ export default class MainGame extends Phaser.State {
         this.game.camera.flash([0xb3fc95])
       }
     }
+  }
+
+  changeAmmo(ammoNum){
+    this.currentPlayer.ammo += ammoNum
+    if (this.currentPlayer.ammo > 30) this.currentPlayer.ammo = 30;
+    if (this.currentPlayer.ammo < 0) this.currentPlayer.ammo = 0;
   }
 
   removePlayer(id) {

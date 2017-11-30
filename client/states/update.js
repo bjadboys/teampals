@@ -132,10 +132,10 @@ export default Client => function () {
     if (!moving) {
       this.currentPlayer.animations.stop()
     }
-    if (this.fireButton.isDown && /*this.currentPlayer.ammo > 0 &&*/ !this.currentPlayer.firing
+    if (this.fireButton.isDown && this.currentPlayer.ammo > 0 && !this.currentPlayer.firing
       && !this.currentPlayer.children.find(item => item.isBlock)) {
-
       this.currentPlayer.firing = true
+      this.changeAmmo(-1)
       Client.SEND_fire(this.currentPlayer.position, this.currentPlayer.direction, this.currentPlayer.selectedWeapon, this.currentPlayer.targetLocked, this.currentPlayer.possibleTarget);
 
       // Cannot shoot if you're holding something
@@ -155,8 +155,12 @@ export default Client => function () {
     if (!this.pickUpButton.isDown) {
       this.currentPlayer.holdToggle = false;
     }
-    if (this.smashButton.isDown) {
+    if (!this.currentPlayer.smashToggle && this.smashButton.isDown) {
+      this.currentPlayer.smashToggle = true;
       this.pickUpBlockPhysicsBJAD(false);
+    }
+    if (!this.smashButton.isDown) {
+      this.currentPlayer.smashToggle = false;
     }
   }
 }
