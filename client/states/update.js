@@ -149,11 +149,14 @@ export default Client => function () {
       if (hasBlock) {
         this.dropBlockPhysicsBJAD();
       } else {
-        this.pickUpBlockPhysicsBJAD();
+        this.pickUpBlockPhysicsBJAD(true);
       } 
     }
     if (!this.pickUpButton.isDown) {
       this.currentPlayer.holdToggle = false;
+    }
+    if (this.smashButton.isDown) {
+      this.pickUpBlockPhysicsBJAD(false);
     }
   }
 }
