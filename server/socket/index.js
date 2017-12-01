@@ -63,7 +63,8 @@ module.exports = (io, server) => {
         socket.player.serverSideTime = Date.now()
         io.emit('addPlayersToLobby', getAllPlayers())
       }
-    });
+    })
+
     socket.on('startGame', function () {
       if (socket.player) {
         io.emit('newGame')
@@ -96,8 +97,13 @@ module.exports = (io, server) => {
       if (socket.player) io.emit('player-picked-up-block', data)
     })
 
-    socket.on('gain-health', function (health) {
-      if (socket.player) socket.player.health = health
+    socket.on('change-health', function (health) {
+      if (socket.player) {
+        socket.player.health = health
+        if (socket.player.health <= 0) {
+          io.emit('player-killed', socket.player.id)
+        }
+      }
     })
 
     socket.on('blockUsed', function (data) {
@@ -116,7 +122,6 @@ module.exports = (io, server) => {
         io.emit('allBlocks', newBlock)
       }
     })
-    
 
     socket.on('block-dropped', function (playerId) {
       if (socket.player) io.emit('player-dropped-block', playerId)
@@ -138,7 +143,7 @@ module.exports = (io, server) => {
         newBullet.x = data.x;
         newBullet.y = data.y;
         newBullet.xv = data.xv ? data.xv * bulletSpeed : axisVelocities.x * bulletSpeed;
-        newBullet.yv = data.xy ? data.xy * bulletSpeed : axisVelocities.y * bulletSpeed;
+        newBullet.yv = data.yv ? data.yv * bulletSpeed : axisVelocities.y * bulletSpeed;
         newBullet.id = socket.player.id;
         bulletArray.push(newBullet);
       }
