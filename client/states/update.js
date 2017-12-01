@@ -22,7 +22,7 @@ export default Client => function () {
     this.currentPlayer.body.velocity.y = 0;
 
     if (this.isInDeathBJAD(this.currentPlayer.position.x, this.currentPlayer.position.y) !== -1) {
-      this.deathLayerChangeHealth(-15, this.currentPlayer.id)
+      this.deathLayerChangeHealth(-5, this.currentPlayer.id)
     }
 
     this.movementThrottle();

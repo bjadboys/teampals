@@ -273,15 +273,20 @@ export default class MainGame extends Phaser.State {
 
   killPlayer(id) {
     this.player = this.playerMapBJAD[id]
+    const x = this.player.position.x
+    const y = this.player.position.y
+    this.deadPlayer = this.game.add.sprite(x, y, 'deathPoof')
+    this.deadPlayer.animations.add('die', [0, 1, 2, 3, 4, 5], 10, false, true)
     if (this.player.children.length) {
       this.dropBlockBJAD(id)
     }
     this.player.kill();
+    this.deadPlayer.animations.play('die')
     if (this.currentPlayer.id === id && !this.currentPlayer.alive && this.currentPlayer.pointer){
       this.currentPlayer.pointer.destroy();
       this.currentPlayer.pointer = null;
     }
-  }
+  } 
 
   movePlayer(id, x, y, serverSideTime, direction) {
     this.player = this.playerMapBJAD[id]

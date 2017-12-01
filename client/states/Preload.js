@@ -15,6 +15,7 @@ export default class Preload extends Phaser.State {
     this.load.image('bullet', '../../assets/sprites/bullet.png')
     this.load.spritesheet('characters', '../../assets/sprites/Character1/Char_1_Run.png', 32, 32)
     this.load.spritesheet('block', '../../assets/sprites/block.png', 24, 24)
+    this.load.spritesheet('deathPoof', '../../assets/sprites/Death_Poof.png', 32, 32)
     this.load.image('hollowPointer', '../../assets/sprites/pointerHollow.png', 32, 32)
     this.load.image('solidPointer', '../../assets/sprites/pointerSolid.png', 32, 32)
     this.load.image('base', '../../assets/sprites/base.png')

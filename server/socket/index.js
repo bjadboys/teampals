@@ -8,7 +8,7 @@ module.exports = (io, server) => {
   const mapWidth = 70
 
   //Gameplay Variables
-  let bulletSpeed = 2
+  let bulletSpeed = 3.75
   const playerHealth = 100
   // Keep track of the last id assigned to a new player
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
@@ -45,7 +45,7 @@ module.exports = (io, server) => {
     upRight: { x: 0.707, y: -0.707 },
     downRight: { x: 0.707, y: 0.707 },
   }
-  let mapBlocks = makeBlocks(4)
+  let mapBlocks = makeBlocks(20) 
   io.on('connection', function (socket) {
 
     if (server.gameInProgress) {
@@ -79,7 +79,7 @@ module.exports = (io, server) => {
         io.emit('allBlocks', mapBlocks)
         socket.emit('allplayers', getAllPlayers());
         socket.emit('yourID', socket.player.id)
-      }
+      } 
     })
 
     socket.on('update-position', function (data) {
@@ -89,7 +89,7 @@ module.exports = (io, server) => {
         socket.player.x = data.x;
         socket.player.y = data.y;
         socket.player.direction = data.direction
-      }
+      } 
       if (socket.player) socket.broadcast.emit('move', socket.player)
     });
 
