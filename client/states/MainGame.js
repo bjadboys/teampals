@@ -11,8 +11,8 @@ const deathWait = 500
 
 //Map Variables
 const tilePx = 32
-const mapHeight = 48
-const mapWidth = 48
+const mapHeight = 70
+const mapWidth = 70
 //Sprite Animation Variables
 const animationFrequency = 10
 const pointerOffset = 15
@@ -62,7 +62,8 @@ export default class MainGame extends Phaser.State {
     this.playerMapBJAD = {}
     this.playerBaseBJAD = {}
     this.map = this.game.add.tilemap('map')
-    this.map.addTilesetImage('terrain', 'tileset')
+    this.map.addTilesetImage('terrain')
+    this.map.addTilesetImage('Tiles')
 
     this.layerGrass = this.map.createLayer('grass')
     this.layerCollision = this.map.createLayer('collision')
@@ -88,7 +89,7 @@ export default class MainGame extends Phaser.State {
     this.ammoText = this.game.add.text(250, 5, 'AMMO: ')
     this.healthText.fixedToCamera = true;
     this.ammoText.fixedToCamera = true;
-    this.death = this.map.layers[2].data
+    this.death = this.map.layers[4].data
     this.deathTiles = this.death.map( array => array.filter((element) => element.index !== -1))
     // this.firstWeapon = this.weaponsBJAD.create(100, 100, 'weapon')
     // this.firstWeapon.id = 0
@@ -147,7 +148,7 @@ export default class MainGame extends Phaser.State {
       const playerId = this.currentPlayer.id
       const blockId = this.currentPlayer.children[0].id
       Client.blockUsedBJAD({playerId, blockId})
-    } else {
+    } else {  
       Client.playerDropsBlockBJAD(this.currentPlayer.id)
     }
   }

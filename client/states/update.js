@@ -1,6 +1,6 @@
 export default Client => function () {
 
-  let playerSpeed = 180;
+  let playerSpeed = 200;
   //Adjust Speed when locked on
   if (this.currentPlayer && this.currentPlayer.targetLocked) playerSpeed = 0.70 * playerSpeed
 
