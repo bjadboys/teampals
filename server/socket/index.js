@@ -4,8 +4,8 @@ const bulletCollisionLayer = require('./collisionLayerData')
 module.exports = (io, server) => {
   //Map Variables
   const tilePx = 32
-  const mapHeight = 48
-  const mapWidth = 48
+  const mapHeight = 70
+  const mapWidth = 70
 
   //Gameplay Variables
   let bulletSpeed = 2
@@ -19,20 +19,20 @@ module.exports = (io, server) => {
   let defaultPlayers = [
     {
       id: 1,
-      x: 135,
-      y: 120
+      x: 700,
+      y: 700
     }, { 
       id: 2,
-      x: 1340,
-      y: 120
+      x: 1550,
+      y: 700
     }, {
       id: 3,
-      x: 1340,
-      y: 1340
+      x: 1550,
+      y: 1550
     }, {
       id: 4,
-      x: 120,
-      y: 1340
+      x: 1550,
+      y: 700
     }
   ]
   const directionValues = {
@@ -45,7 +45,7 @@ module.exports = (io, server) => {
     upRight: { x: 0.707, y: -0.707 },
     downRight: { x: 0.707, y: 0.707 },
   }
-  let mapBlocks = makeBlocks(10)
+  let mapBlocks = makeBlocks(4)
   io.on('connection', function (socket) {
 
     if (server.gameInProgress) {
@@ -205,8 +205,8 @@ module.exports = (io, server) => {
     for (let i = 0; i < num; i++) {
       const initializedBlock = {
         id: server.lastBlockIdBJAD++,
-        x: randomInt(500, 800),
-        y: randomInt(500, 800)
+        x: randomInt(840, 1400),
+        y: randomInt(840, 1400)
       }
       madeBlocks.push(initializedBlock)
     }

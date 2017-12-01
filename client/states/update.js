@@ -141,6 +141,8 @@ export default Client => function () {
       // Cannot shoot if you're holding something
     }
     if (!this.fireButton.isDown) {
+      console.log(this.currentPlayer.x, 'x')
+      console.log(this.currentPlayer.y, 'y')
       this.currentPlayer.firing = false;
     }
     if (this.pickUpButton.isDown && !this.currentPlayer.holdToggle) {

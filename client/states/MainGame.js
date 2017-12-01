@@ -11,8 +11,8 @@ const deathWait = 500
 
 //Map Variables
 const tilePx = 32
-const mapHeight = 48
-const mapWidth = 48
+const mapHeight = 70
+const mapWidth = 70
 //Sprite Animation Variables
 const animationFrequency = 10
 const pointerOffset = 15
@@ -62,8 +62,8 @@ export default class MainGame extends Phaser.State {
     this.playerMapBJAD = {}
     this.playerBaseBJAD = {}
     this.map = this.game.add.tilemap('map')
-    this.map.addTilesetImage('terrain', 'tileset')
-    this.map.addTilesetImage('Tiles', 'tileset')
+    this.map.addTilesetImage('terrain')
+    this.map.addTilesetImage('Tiles')
 
     this.layerGrass = this.map.createLayer('grass')
     this.layerCollision = this.map.createLayer('collision')

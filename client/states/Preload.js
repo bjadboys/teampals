@@ -10,8 +10,8 @@ export default class Preload extends Phaser.State {
   preload() {
     //this is loading all the graphics the game need
     this.load.tilemap('map', '../../assets/map/resourcePals.json', null, Phaser.Tilemap.TILED_JSON);
-    this.load.spritesheet('tileset', '../../assets/map/Tiles.png', 32, 32)
-    this.load.spritesheet('tileset', '../../assets/map/terrain.png', 32, 32);
+    this.load.image('Tiles', '../../assets/map/Tiles.png', 32, 32)
+    this.load.image('terrain', '../../assets/map/terrain.png', 32, 32);
     this.load.image('bullet', '../../assets/sprites/bullet.png')
     this.load.spritesheet('characters', '../../assets/sprites/Character1/Char_1_Run.png', 32, 32)
     this.load.spritesheet('block', '../../assets/sprites/block.png', 24, 24)

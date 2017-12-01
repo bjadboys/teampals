@@ -207,7 +207,7 @@ Client.socket.on('newplayer', function(data){
 Client.socket.on('allplayers', function(data){
   const state = store.getState()
   if (state.game.joined) {
-    const locations = [{id: 1, x: 135, y: 120}, {id: 2, x: 1340, y: 120}, {id: 3, x: 1340, y: 1340}, {id: 4, x: 120, y: 1340}]
+    const locations = [{id: 1, x: 550, y: 550}, {id: 2, x: 1650, y: 550}, {id: 3, x: 1650, y: 1650}, {id: 4, x: 1650, y: 550}]
     for (var i = 0; i < data.length; i++){
       const base = locations.find(location => location.id === data[i].id)
       game.state.states.MainGame.addNewBase(base)
