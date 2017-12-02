@@ -1,4 +1,3 @@
-const LiveReloadPlugin = require('webpack-livereload-plugin')
 const isDev = process.env.NODE_ENV === 'development'
 
 var path = require('path')
