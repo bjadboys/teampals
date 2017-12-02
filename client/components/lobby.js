@@ -4,7 +4,7 @@ import socket from '../js/socket'
 import {connect} from 'react-redux'
 import store, {addPlayersAction, removePlayerAction, startGameAction, gameInProgressAction, leftGameAction, joinedGameAction} from '../store/'
 import { withRouter } from 'react-router-dom'
-// import GameScreen from './game'
+import GameScreen from './game'
 
 const verbs = [' is ', ' fears only ', ' flights for ', ' runs toward ', ' spits at ', ' laughs at ']
 const nouns = ['nothing!', 'danger!', 'handguns!', 'live tigers!', ' broken bones!', 'fancy blouses!']
@@ -123,7 +123,7 @@ class Lobby extends React.Component {
     } else if (this.props.joined && this.props.localGame && this.props.serverGame) {
       return (
         <div>
-        {/*<GameScreen />*/}
+          <GameScreen />
         </div>
       )
     } else if (this.props.serverGame && !this.props.joined) {

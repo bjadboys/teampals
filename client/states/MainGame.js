@@ -4,6 +4,17 @@ import {throttle} from 'lodash'
 import Client from '../js/client'
 import updateMaker  from './update'
 
+import store, { gameOverAction, resetLobbyAction } from '../store/'
+import socket from '../js/socket'
+
+const ClientGameOver = {}
+ClientGameOver.socket = socket
+
+ClientGameOver.resetServer = function () {
+  ClientGameOver.socket.emit('gameOverReset')
+
+}
+
 const charObj = {
   1: 'wizard',
   2: 'skeleton',
@@ -59,6 +70,7 @@ export default class MainGame extends Phaser.State {
     this.movementThrottle = throttle(this.movementThrottle.bind(this), wait)
     this.findPossibleTarget = throttle(this.findPossibleTarget.bind(this), wait)
     this.hudThrottle = throttle(this.hudThrottle.bind(this), hudWait)
+    this.isNotLoading = false;
   }
 
   //here we create everything we need for the game.
@@ -220,7 +232,10 @@ export default class MainGame extends Phaser.State {
     this.newPlayer.animations.add('downLeft', [12, 13, 14, 15, 16, 17], animationFrequency, true)
     this.newPlayer.animations.add('up', [18, 19, 20, 21, 22, 23], animationFrequency, true)
     this.playerMapBJAD[id] = this.newPlayer
-  }
+    console.log(this.playerMapBJAD)
+    this.isNotLoading = Object.keys(this.playerMapBJAD).length > 1
+    console.log(this.isLoading)
+  } 
 
   addNewBase(base) {
     this.newBase = this.game.add.sprite(base.x, base.y, 'base')
@@ -287,15 +302,20 @@ export default class MainGame extends Phaser.State {
 
   killPlayer(id) {
     this.player = this.playerMapBJAD[id]
+    const x = this.player.position.x
+    const y = this.player.position.y
+    this.deadPlayer = this.game.add.sprite(x, y, 'deathPoof')
+    this.deadPlayer.animations.add('die', [0, 1, 2, 3, 4, 5], 10, false, true)
     if (this.player.children.length) {
       this.dropBlockBJAD(id)
     }
     this.player.kill();
+    this.deadPlayer.animations.play('die')
     if (this.currentPlayer.id === id && !this.currentPlayer.alive && this.currentPlayer.pointer){
       this.currentPlayer.pointer.destroy();
       this.currentPlayer.pointer = null;
     }
-  }
+  } 
 
   movePlayer(id, x, y, serverSideTime, direction) {
     this.player = this.playerMapBJAD[id]
@@ -396,6 +416,15 @@ export default class MainGame extends Phaser.State {
       }
       this.currentPlayer.possibleTarget = null;
       this.currentPlayer.pointer = null;
+    }
+  }
+
+  render(){
+    if (this.isNotLoading && Object.keys(this.playerMapBJAD).filter(id => this.playerMapBJAD[id].alive === true).length < 2){
+      store.dispatch(resetLobbyAction())
+      store.dispatch(gameOverAction())
+      ClientGameOver.resetServer()
+      this.game.destroy()
     }
   }
 }
