@@ -88,7 +88,7 @@ export default class MainGame extends Phaser.State {
     this.layerCollision = this.map.createLayer('collision')
     this.game.physics.arcade.enable(this.layerCollision)
     //TODO: Confirm inputs below which .... 48? 32?
-    this.map.setCollisionBetween(0, 48 * 32, true, this.layerCollision)
+    this.map.setCollisionBetween(0, mapHeight * 32, true, this.layerCollision)
 
     for (let i = 0; i < this.map.layers.length; i++) {
       this.layer = this.map.createLayer(i)
