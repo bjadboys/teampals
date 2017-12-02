@@ -4,6 +4,13 @@ import {throttle} from 'lodash'
 import Client from '../js/client'
 import updateMaker  from './update'
 
+const charObj = {
+  1: 'wizard',
+  2: 'skeleton',
+  3: 'goblin',
+  4: 'oldMan'
+}
+
 //Throttle Speed Variables
 const hudWait = 125
 const wait = 30
@@ -195,9 +202,8 @@ export default class MainGame extends Phaser.State {
   }
 
   addNewPlayer(id, x, y, serverSideTime) {
-    this.newPlayer = this.game.add.sprite(x, y, 'characters')
+    this.newPlayer = this.game.add.sprite(x, y, charObj[id])
     this.newPlayer.direction = 'down'
-    //this.newPlayer.health = playerHealth
     this.newPlayer.alive = true
     this.newPlayer.moving = false
     this.newPlayer.serverSideTime = serverSideTime
@@ -226,7 +232,6 @@ export default class MainGame extends Phaser.State {
 
   setCurrentPlayer(id) {
     this.currentPlayer = this.playerMapBJAD[id]
-    //this.currentPlayer.direction = 'down'
     this.currentPlayer.health = playerHealth
     this.currentPlayer.ammo = playerAmmo
     this.currentPlayer.level = 0
