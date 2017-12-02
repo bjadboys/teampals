@@ -1,7 +1,7 @@
 {
-  "name": "boilermaker",
+  "name": "resourcepals",
   "version": "1.0.0",
-  "description": "Some boilerplate code to get you started - get shakin'!",
+  "description": "A top down resource gathering multiplayer shooter inspired by Team Buddies",
   "engines": {
     "node": ">= 7.0.0"
   },
