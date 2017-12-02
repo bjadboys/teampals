@@ -6,7 +6,8 @@ module.exports = (io, server) => {
   const mapWidth = 70
 
   //Gameplay Variables
-  let bulletSpeed = 3.75
+  let bulletSpeed = 3
+  let bulletSpeedUpgradePercentage = 0.4
   const playerHealth = 100
   // Keep track of the last id assigned to a new player
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
@@ -15,6 +16,7 @@ module.exports = (io, server) => {
   server.gameInProgress = false
   server.joined = false
   let defaultPlayers = makeDefaultPlayers()
+  
   const directionValues = {
     up: { x: 0, y: -1.0 },
     down: { x: 0, y: 1.0 },
@@ -47,6 +49,7 @@ module.exports = (io, server) => {
         socket.player.name = name
         socket.player.direction = 'down'
         socket.player.health = playerHealth
+        socket.player.level = 0
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
         io.emit('addPlayersToLobby', getAllPlayers())
@@ -94,6 +97,13 @@ module.exports = (io, server) => {
       }
     })
 
+    socket.on('upgrade-level', function () {
+      if (socket.player) {
+        socket.player.level++
+        socket.emit('level-change', socket.player.level)
+      }
+    })
+
     socket.on('blockUsed', function (data) {
       if (socket.player) {
         const newBlock = makeBlocks(1)
@@ -127,11 +137,12 @@ module.exports = (io, server) => {
       if (socket.player) {
         let newBullet = {};
         let axisVelocities = directionValues[data.direction];
-        //const bulletSpeed = 3.0;
+
+        let currentBulletSpeed = bulletSpeed + (bulletSpeedUpgradePercentage * socket.player.level);
         newBullet.x = data.x;
         newBullet.y = data.y;
-        newBullet.xv = data.xv ? data.xv * bulletSpeed : axisVelocities.x * bulletSpeed;
-        newBullet.yv = data.yv ? data.yv * bulletSpeed : axisVelocities.y * bulletSpeed;
+        newBullet.xv = data.xv ? data.xv * currentBulletSpeed : axisVelocities.x * currentBulletSpeed;
+        newBullet.yv = data.yv ? data.yv * currentBulletSpeed : axisVelocities.y * currentBulletSpeed;
         newBullet.id = socket.player.id;
         bulletArray.push(newBullet);
       }
@@ -222,8 +233,8 @@ module.exports = (io, server) => {
         y: 1550
       }, {
         id: 4,
-        x: 1550,
-        y: 700
+        x: 700,
+        y: 1550
       }
     ]
     return defaultPlayersArray
