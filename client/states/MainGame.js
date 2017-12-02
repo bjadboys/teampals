@@ -87,8 +87,10 @@ export default class MainGame extends Phaser.State {
     this.weaponsBJAD.enableBody = true
     this.healthText = this.game.add.text(5, 5, 'HEALTH: ')
     this.ammoText = this.game.add.text(250, 5, 'AMMO: ')
+    this.levelText = this.game.add.text(480, 5, 'LEVEL: ')
     this.healthText.fixedToCamera = true;
     this.ammoText.fixedToCamera = true;
+    this.levelText.fixedToCamera = true;
     this.death = this.map.layers[4].data
     this.deathTiles = this.death.map( array => array.filter((element) => element.index !== -1))
     // this.firstWeapon = this.weaponsBJAD.create(100, 100, 'weapon')
@@ -148,7 +150,8 @@ export default class MainGame extends Phaser.State {
       const playerId = this.currentPlayer.id
       const blockId = this.currentPlayer.children[0].id
       Client.blockUsedBJAD({playerId, blockId})
-    } else {  
+      Client.playerChangeLevel()
+    } else {
       Client.playerDropsBlockBJAD(this.currentPlayer.id)
     }
   }
@@ -179,6 +182,7 @@ export default class MainGame extends Phaser.State {
   hudThrottle(){
     this.healthText.setText(`HEALTH: ${this.currentPlayer.health}`)
     this.ammoText.setText(`AMMO: ${this.currentPlayer.ammo}`)
+    this.levelText.setText(`LEVEL: ${this.currentPlayer.level + 1}`)
   }
 
   movementThrottle(){
@@ -193,7 +197,7 @@ export default class MainGame extends Phaser.State {
   addNewPlayer(id, x, y, serverSideTime) {
     this.newPlayer = this.game.add.sprite(x, y, 'characters')
     this.newPlayer.direction = 'down'
-    this.newPlayer.health = playerHealth
+    //this.newPlayer.health = playerHealth
     this.newPlayer.alive = true
     this.newPlayer.moving = false
     this.newPlayer.serverSideTime = serverSideTime
@@ -222,9 +226,10 @@ export default class MainGame extends Phaser.State {
 
   setCurrentPlayer(id) {
     this.currentPlayer = this.playerMapBJAD[id]
-    this.currentPlayer.direction = 'down'
+    //this.currentPlayer.direction = 'down'
     this.currentPlayer.health = playerHealth
     this.currentPlayer.ammo = playerAmmo
+    this.currentPlayer.level = 0
     this.currentPlayer.id = id
     this.currentPlayer.pointer = null
     this.currentPlayer.possibleTarget = null
@@ -264,6 +269,10 @@ export default class MainGame extends Phaser.State {
     this.currentPlayer.ammo += ammoNum
     if (this.currentPlayer.ammo > 30) this.currentPlayer.ammo = 30;
     if (this.currentPlayer.ammo < 0) this.currentPlayer.ammo = 0;
+  }
+
+  changeLevel(level) {
+    this.currentPlayer.level = level
   }
 
   removePlayer(id) {

@@ -76,6 +76,20 @@ Client.playerChangeHealth = function(playerHealth){
     }
 }
 
+Client.playerChangeLevel = function(){
+  const state = store.getState()
+  if (state.game.joined) {
+    Client.socket.emit('upgrade-level')
+  }
+}
+
+Client.socket.on('level-change', function(level){
+  const state = store.getState()
+  if (state.game.joined) {
+    game.state.states.MainGame.changeLevel(level)
+  }
+})
+
 Client.playerDropsBlockBJAD = function(playerId) {
   const state = store.getState()
   if (state.game.joined) {
