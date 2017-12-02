@@ -6,6 +6,8 @@ const compression = require('compression')
 const session = require('express-session')
 const passport = require('passport')
 const SequelizeStore = require('connect-session-sequelize')(session.Store)
+const db = require('./db')
+const sessionStore = new SequelizeStore({db})
 const PORT = process.env.PORT || 8080
 const app = express()
 const socketio = require('socket.io')
@@ -21,7 +23,12 @@ module.exports = app
  */
 if (process.env.NODE_ENV !== 'production') require('../secrets')
 
-
+// passport registration
+passport.serializeUser((user, done) => done(null, user.id))
+passport.deserializeUser((id, done) =>
+  db.models.user.findById(id)
+    .then(user => done(null, user))
+    .catch(done))
 
 const createApp = () => {
   // logging middleware
@@ -84,17 +91,13 @@ const startListening = () => {
   require('./socket')(io, server)
 }
 
-
+// const syncDb = () => db.sync()
 
 // This evaluates as true when this file is run directly from the command line,
 // i.e. when we say 'node server/index.js' (or 'nodemon server/index.js', or 'nodemon server', etc)
 // It will evaluate false when this module is required by another module - for example,
 // if we wanted to require our app in a test spec
-if (require.main === module) {
-  sessionStore.sync()
-    .then(syncDb)
-    .then(createApp)
-    .then(startListening)
-} else {
+
   createApp()
-}
+  startListening()
+
