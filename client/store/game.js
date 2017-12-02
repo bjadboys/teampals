@@ -2,6 +2,7 @@ const START_GAME = 'START_GAME'
 const GAME_IN_PROGRESS = 'GAME_IN_PROGRESS'
 const JOINED_GAME = 'JOINED_GAME'
 const LEFT_GAME = 'LEFT_GAME'
+const GAME_OVER = "GAME_OVER"
 /**
  * INITIAL STATE
  */
@@ -13,6 +14,7 @@ export const startGameAction = () => ({ type: START_GAME })
 export const gameInProgressAction = () => ({type: GAME_IN_PROGRESS})
 export const joinedGameAction = () => ({type: JOINED_GAME})
 export const leftGameAction = () => ({type: LEFT_GAME})
+export const gameOverAction = () => ({type: GAME_OVER})
 /**
  * THUNK CREATORS
  */
@@ -34,6 +36,11 @@ export default function (state = initialState, action) {
       return newState
     case START_GAME:
       newState.localGame = true
+      return newState
+    case GAME_OVER:
+      newState.localGame = false
+      newState.serverGame = false
+      newState.joined = false
       return newState
     default:
       return state

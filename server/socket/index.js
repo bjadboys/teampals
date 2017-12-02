@@ -1,5 +1,3 @@
-
-
 const bulletCollisionLayer = require('./collisionLayerData')
 module.exports = (io, server) => {
   //Map Variables
@@ -16,25 +14,7 @@ module.exports = (io, server) => {
   let players = []
   server.gameInProgress = false
   server.joined = false
-  let defaultPlayers = [
-    {
-      id: 1,
-      x: 700,
-      y: 700
-    }, { 
-      id: 2,
-      x: 1550,
-      y: 700
-    }, {
-      id: 3,
-      x: 1550,
-      y: 1550
-    }, {
-      id: 4,
-      x: 1550,
-      y: 700
-    }
-  ]
+  let defaultPlayers = makeDefaultPlayers()
   const directionValues = {
     up: { x: 0, y: -1.0 },
     down: { x: 0, y: 1.0 },
@@ -48,13 +28,21 @@ module.exports = (io, server) => {
   let mapBlocks = makeBlocks(20) 
   io.on('connection', function (socket) {
 
+    socket.on('gameOverReset', function(){
+      server.gameInProgress = false;
+      defaultPlayers = makeDefaultPlayers()
+      players = []
+      io.emit('removePlayerFromLobby', socket.player.id)
+      socket.player = null
+      mapBlocks = makeBlocks(20)
+    })
+
     if (server.gameInProgress) {
       socket.emit('gameInProgress')
     }
 
     socket.on('newplayer', function (name) {
       if (defaultPlayers.length) {
-        io.emit()
         socket.player = defaultPlayers.shift()
         socket.player.name = name
         socket.player.direction = 'down'
@@ -216,6 +204,29 @@ module.exports = (io, server) => {
       madeBlocks.push(initializedBlock)
     }
     return madeBlocks
+  }
+
+  function makeDefaultPlayers () {
+    const defaultPlayersArray = [
+      {
+        id: 1,
+        x: 700,
+        y: 700
+      }, {
+        id: 2,
+        x: 1550,
+        y: 700
+      }, {
+        id: 3,
+        x: 1550,
+        y: 1550
+      }, {
+        id: 4,
+        x: 1550,
+        y: 700
+      }
+    ]
+    return defaultPlayersArray
   }
 
   function removePlayer(id) {
