@@ -1,4 +1,3 @@
-
 const isDev = process.env.NODE_ENV === 'development'
 var path = require('path')
 var webpack = require('webpack')

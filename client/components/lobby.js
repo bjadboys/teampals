@@ -8,6 +8,8 @@ import GameScreen from './game'
 
 const verbs = [' is ', ' fears only ', ' flights for ', ' runs toward ', ' spits at ', ' laughs at ']
 const nouns = ['nothing!', 'danger!', 'handguns!', 'live tigers!', ' broken bones!', 'fancy blouses!']
+const gameVerb = () => verbs[Math.floor(Math.random() * verbs.length)] 
+const gameNoun = () => nouns[Math.floor(Math.random() * nouns.length)]
 
 const ClientLobby = {}
 ClientLobby.socket = socket
@@ -97,7 +99,12 @@ class Lobby extends React.Component {
   render () {
     if (!this.props.localGame && !this.props.serverGame) {
       return (
-      <div>
+      <div id='lobbydiv'>
+      <div id='central'>
+      <div id='masthead'>
+        <h1>RESOURCE PALS</h1>
+      </div>
+      <div id='inputdiv'>
           <TextField
             disabled={this.props.joined}
             hintText="Hello."
@@ -112,12 +119,27 @@ class Lobby extends React.Component {
           <div>
               <ul>
                 {this.props.lobby.length && this.props.lobby.map(player => {
-                    return <li key={player.id}>{player.name}{verbs[Math.floor(Math.random() * verbs.length)]}{nouns[Math.floor(Math.random() * nouns.length)]}</li>
+                      return <li key={player.id}>{player.name}{gameVerb()}{gameNoun()}</li>
                 })}
               </ul>
           </div>
           </div>
           
+      </div>
+      <div id='controls'>
+      <h2>How to Play</h2>
+      <p>Break crates open for health and ammo!</p>
+      <p>Drop crates in your base to level your pal!</p>
+      <p>Shoot other Pals before they shoot you!</p>
+      <p>Last Pal Standing Wins!</p>
+      <h2>Controls</h2>
+      <p>Move with arrow keys!</p>
+      <p>Use Z to break open crates!</p>
+      <p>Use X to pick up and drop crates!</p>
+      <p>USE C to lock onto nearby target!</p>
+      <p>Use SPACEBAR to fire!</p>
+      </div>
+      </div>
       </div>
      )
     } else if (this.props.joined && this.props.localGame && this.props.serverGame) {
