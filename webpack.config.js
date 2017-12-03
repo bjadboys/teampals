@@ -1,10 +1,7 @@
-const isDev = process.env.NODE_ENV === 'development'
 
+const isDev = process.env.NODE_ENV === 'development'
 var path = require('path')
 var webpack = require('webpack')
-// var HtmlWebpackPlugin = require('html-webpack-plugin')
-// var BrowserSyncPlugin = require('browser-sync-webpack-plugin')
-
 var phaserModule = path.join(__dirname, '/node_modules/phaser-ce/')
 var phaser = path.join(phaserModule, 'build/custom/phaser-split.js')
 var pixi = path.join(phaserModule, 'build/custom/pixi.js')

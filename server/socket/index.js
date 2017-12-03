@@ -34,8 +34,10 @@ module.exports = (io, server) => {
       server.gameInProgress = false;
       defaultPlayers = makeDefaultPlayers()
       players = []
-      io.emit('removePlayerFromLobby', socket.player.id)
-      socket.player = null
+      if (socket.player) {
+        io.emit('removePlayerFromLobby', socket.player.id)
+        socket.player = null
+      }
       mapBlocks = makeBlocks(20)
     })
 
@@ -57,7 +59,7 @@ module.exports = (io, server) => {
     })
 
     socket.on('startGame', function () {
-      if (socket.player) {
+      if (socket.player && !server.gameInProgress) {
         io.emit('newGame')
         io.emit('gameHasStarted')
         server.gameInProgress = true
