@@ -12,7 +12,7 @@ const muiTheme = getMuiTheme({
   palette: {
     textColor: '#B2391E',
   },
-  fontFamily: 'PixelCowboy',
+  fontFamily: 'Slackey',
   appBar: {
     height: 50,
   },

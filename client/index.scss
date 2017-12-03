@@ -1,6 +1,5 @@
 body {
-  font-family: "PixelCowboy" !important;
-  src: url("./fonts/PixelCowboy.otf") format('otf')
+  font-family: 'Slackey', cursive; 
 
   a {
     text-decoration: none;
@@ -26,7 +25,29 @@ body {
   flex-direction: row;
 }
 
+#masthead {
+  font-family: 'Slackey', cursive;
+}
+
+#lobbydiv{
+  display: flex;
+  justify-content: center;
+  align-content: center;
+}
+
+
+
+#central {
+  display: flex;
+  flex-direction: column
+}
+
 .belowTextField {
   display: flex;
   flex-direction: column;
+}
+
+#controls {
+  font-family: 'Slackey', cursive;
+
 }

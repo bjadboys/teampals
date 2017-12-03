@@ -1,16 +1,7 @@
-<<<<<<< HEAD
-
-=======
->>>>>>> master
 const isDev = process.env.NODE_ENV === 'development'
 
 var path = require('path')
 var webpack = require('webpack')
-<<<<<<< HEAD
-=======
-// var HtmlWebpackPlugin = require('html-webpack-plugin')
-// var BrowserSyncPlugin = require('browser-sync-webpack-plugin')
->>>>>>> master
 
 var phaserModule = path.join(__dirname, '/node_modules/phaser-ce/')
 var phaser = path.join(phaserModule, 'build/custom/phaser-split.js')
