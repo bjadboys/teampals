@@ -12,7 +12,6 @@ ClientGameOver.socket = socket
 
 ClientGameOver.resetServer = function () {
   ClientGameOver.socket.emit('gameOverReset')
-
 }
 
 const charObj = {
@@ -31,6 +30,7 @@ const deathWait = 500
 const tilePx = 32
 const mapHeight = 70
 const mapWidth = 70
+
 //Sprite Animation Variables
 const animationFrequency = 10
 const pointerOffset = 15
@@ -87,7 +87,7 @@ export default class MainGame extends Phaser.State {
     this.layerGrass = this.map.createLayer('grass')
     this.layerCollision = this.map.createLayer('collision')
     this.game.physics.arcade.enable(this.layerCollision)
-    //TODO: Confirm inputs below which .... 48? 32?
+    //TODO: Confirm inputs below which .... mapHeight or mapWidth ???
     this.map.setCollisionBetween(0, mapHeight * 32, true, this.layerCollision)
 
     for (let i = 0; i < this.map.layers.length; i++) {
@@ -201,7 +201,7 @@ export default class MainGame extends Phaser.State {
   hudThrottle(){
     this.healthText.setText(`HEALTH: ${this.currentPlayer.health}`)
     this.ammoText.setText(`AMMO: ${this.currentPlayer.ammo}`)
-    this.levelText.setText(`LEVEL: ${this.currentPlayer.level + 1}`)
+    this.levelText.setText(`LEVEL: ${this.currentPlayer.level}`)
   }
 
   movementThrottle(){
@@ -235,7 +235,7 @@ export default class MainGame extends Phaser.State {
     console.log(this.playerMapBJAD)
     this.isNotLoading = Object.keys(this.playerMapBJAD).length > 1
     console.log(this.isLoading)
-  } 
+  }
 
   addNewBase(base) {
     this.newBase = this.game.add.sprite(base.x, base.y, 'base')
@@ -305,7 +305,7 @@ export default class MainGame extends Phaser.State {
     const x = this.player.position.x
     const y = this.player.position.y
     this.deadPlayer = this.game.add.sprite(x, y, 'deathPoof')
-    this.deadPlayer.animations.add('die', [0, 1, 2, 3, 4, 5], 10, false, true)
+    this.deadPlayer.animations.add('die', [0, 1, 2, 3, 4, 5], animationFrequency, false, true)
     if (this.player.children.length) {
       this.dropBlockBJAD(id)
     }
@@ -315,7 +315,7 @@ export default class MainGame extends Phaser.State {
       this.currentPlayer.pointer.destroy();
       this.currentPlayer.pointer = null;
     }
-  } 
+  }
 
   movePlayer(id, x, y, serverSideTime, direction) {
     this.player = this.playerMapBJAD[id]
@@ -399,6 +399,7 @@ export default class MainGame extends Phaser.State {
         }
       }
     })
+
     if (closest.length){
       let targetID = closest[1];
       this.currentPlayer.possibleTarget = allPlayersObj[targetID];

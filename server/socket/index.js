@@ -1,4 +1,5 @@
 const bulletCollisionLayer = require('./collisionLayerData')
+
 module.exports = (io, server) => {
   //Map Variables
   const tilePx = 32
@@ -6,17 +7,17 @@ module.exports = (io, server) => {
   const mapWidth = 70
 
   //Gameplay Variables
-  let bulletSpeed = 3
-  let bulletSpeedUpgradePercentage = 0.4
+  let bulletSpeed = 3.5
+  let bulletSpeedUpgradePercentage = 0.75
   const playerHealth = 100
-  // Keep track of the last id assigned to a new player
+
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
   let bulletArray = [];
   let players = []
   server.gameInProgress = false
   server.joined = false
   let defaultPlayers = makeDefaultPlayers()
-  
+
   const directionValues = {
     up: { x: 0, y: -1.0 },
     down: { x: 0, y: 1.0 },
@@ -27,7 +28,7 @@ module.exports = (io, server) => {
     upRight: { x: 0.707, y: -0.707 },
     downRight: { x: 0.707, y: 0.707 },
   }
-  let mapBlocks = makeBlocks(20) 
+  let mapBlocks = makeBlocks(20)
   io.on('connection', function (socket) {
 
     socket.on('gameOverReset', function(){
@@ -52,6 +53,7 @@ module.exports = (io, server) => {
         socket.player.direction = 'down'
         socket.player.health = playerHealth
         socket.player.level = 0
+        socket.player.blockCounter = 0
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
         io.emit('addPlayersToLobby', getAllPlayers())
@@ -72,7 +74,7 @@ module.exports = (io, server) => {
         io.emit('allBlocks', mapBlocks)
         socket.emit('allplayers', getAllPlayers());
         socket.emit('yourID', socket.player.id)
-      } 
+      }
     })
 
     socket.on('update-position', function (data) {
@@ -82,7 +84,7 @@ module.exports = (io, server) => {
         socket.player.x = data.x;
         socket.player.y = data.y;
         socket.player.direction = data.direction
-      } 
+      }
       if (socket.player) socket.broadcast.emit('move', socket.player)
     });
 
@@ -101,8 +103,12 @@ module.exports = (io, server) => {
 
     socket.on('upgrade-level', function () {
       if (socket.player) {
-        socket.player.level++
-        socket.emit('level-change', socket.player.level)
+        socket.player.blockCounter++
+        if (socket.player.blockCounter > socket.player.level) {
+          socket.player.blockCounter = 0
+          socket.player.level++
+          socket.emit('level-change', socket.player.level)
+        }
       }
     })
 
@@ -139,7 +145,6 @@ module.exports = (io, server) => {
       if (socket.player) {
         let newBullet = {};
         let axisVelocities = directionValues[data.direction];
-
         let currentBulletSpeed = bulletSpeed + (bulletSpeedUpgradePercentage * socket.player.level);
         newBullet.x = data.x;
         newBullet.y = data.y;
