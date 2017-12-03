@@ -8,8 +8,8 @@ import GameScreen from './game'
 
 const verbs = [' is ', ' fears only ', ' flights for ', ' runs toward ', ' spits at ', ' laughs at ']
 const nouns = ['nothing!', 'danger!', 'handguns!', 'live tigers!', ' broken bones!', 'fancy blouses!']
-const gameVerb = verbs[Math.floor(Math.random() * verbs.length)] 
-const gameNoun = nouns[Math.floor(Math.random() * nouns.length)]
+const gameVerb = () => verbs[Math.floor(Math.random() * verbs.length)] 
+const gameNoun = () => nouns[Math.floor(Math.random() * nouns.length)]
 
 const ClientLobby = {}
 ClientLobby.socket = socket
@@ -119,7 +119,7 @@ class Lobby extends React.Component {
           <div>
               <ul>
                 {this.props.lobby.length && this.props.lobby.map(player => {
-                      return <li key={player.id}>{player.name}{gameVerb}{gameNoun}</li>
+                      return <li key={player.id}>{player.name}{gameVerb()}{gameNoun()}</li>
                 })}
               </ul>
           </div>
@@ -128,16 +128,16 @@ class Lobby extends React.Component {
       </div>
       <div id='controls'>
       <h2>How to Play</h2>
-      <p>Break crates open for health and ammo</p>
-      <p>Drop crates in your base to level your pal</p>
+      <p>Break crates open for health and ammo!</p>
+      <p>Drop crates in your base to level your pal!</p>
       <p>Shoot other Pals before they shoot you!</p>
       <p>Last Pal Standing Wins!</p>
       <h2>Controls</h2>
-      <p>move with arrow keys!</p>
-      <p>Z to break open crates</p>
-      <p>X to pick up and drop crates</p>
-      <p>C to lock onto nearby target</p>
-      <p>SPACEBAR to fire</p>
+      <p>Move with arrow keys!</p>
+      <p>Use Z to break open crates!</p>
+      <p>Use X to pick up and drop crates!</p>
+      <p>USE C to lock onto nearby target!</p>
+      <p>Use SPACEBAR to fire!</p>
       </div>
       </div>
       </div>
