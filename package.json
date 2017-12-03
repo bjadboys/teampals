@@ -1,7 +1,7 @@
 {
-  "name": "boilermaker",
+  "name": "resourcepals",
   "version": "1.0.0",
-  "description": "Some boilerplate code to get you started - get shakin'!",
+  "description": "A top down resource gathering multiplayer shooter inspired by Team Buddies",
   "engines": {
     "node": ">= 7.0.0"
   },
@@ -82,7 +82,6 @@
     "sass-loader": "^6.0.0",
     "style-loader": "^0.13.1",
     "supertest": "^3.0.0",
-    "webpack": "^3.4.1",
-    "webpack-livereload-plugin": "^1.0.0"
+    "webpack": "^3.4.1"
   }
 }
