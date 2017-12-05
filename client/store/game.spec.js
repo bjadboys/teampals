@@ -1,9 +1,7 @@
 /* global describe beforeEach afterEach it */
 
 import {expect} from 'chai'
-import {me, logout} from './user'
 import axios from 'axios'
-import MockAdapter from 'axios-mock-adapter'
 import configureMockStore from 'redux-mock-store'
 import thunkMiddleware from 'redux-thunk'
 import history from '../history'
@@ -13,17 +11,14 @@ const mockStore = configureMockStore(middlewares)
 
 describe('thunk creators', () => {
   let store
-  let mockAxios
 
-  const initialState = {user: {}}
+  const initialState = {localGame: false, serverGame: false, joined: false, lobbyFull: false}
 
   beforeEach(() => {
-    mockAxios = new MockAdapter(axios)
     store = mockStore(initialState)
   })
 
   afterEach(() => {
-    mockAxios.restore()
     store.clearActions()
   })
 

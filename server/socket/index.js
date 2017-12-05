@@ -182,10 +182,8 @@ module.exports = (io, server) => {
 
     socket.on('playerLeavesLobby', function () {
       io.emit('removePlayerFromLobby', socket.player.id)
-      console.log(socket.player, 'player Leaves Lobby')
       players = removePlayer(socket.player.id)
       socket.player = null;
-      console.log(players, 'players')
     })
 
   });
@@ -244,7 +242,6 @@ module.exports = (io, server) => {
   }
 
   function removePlayer(id) {
-    console.log('remove player', id)
     return players.filter(player => player.id !== id)
   }
 
