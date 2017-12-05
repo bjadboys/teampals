@@ -22,11 +22,10 @@ describe('thunk creators', () => {
     store.clearActions()
   })
 
-  describe('me', () => {
-    it('eventually dispatches the GET USER action', () => {
+  describe('Game store', () => {
+    it('marks a player as joined when they join a game', () => {
       const fakeUser = {email: 'Cody'}
-      mockAxios.onGet('/auth/me').replyOnce(200, fakeUser)
-      return store.dispatch(me())
+      return store.dispatch()
         .then(() => {
           const actions = store.getActions()
           expect(actions[0].type).to.be.equal('GET_USER')
