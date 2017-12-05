@@ -95,7 +95,8 @@ class Lobby extends React.Component {
   handleNameChange(input) {
     this.setState({name: input})
   }
-
+//todo: make a create game button if there are no open created games on the server.
+//created games should have a timer.
   render () {
     if (!this.props.localGame && !this.props.serverGame) {
       return (
