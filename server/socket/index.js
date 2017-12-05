@@ -1,3 +1,4 @@
+const R = require('ramda')
 const bulletCollisionLayer = require('./collisionLayerData')
 
 module.exports = (io, server) => {
@@ -16,7 +17,23 @@ module.exports = (io, server) => {
   let players = []
   server.gameInProgress = false
   server.joined = false
-  let defaultPlayers = makeDefaultPlayers()
+  const defaultPlayers = [{
+    id: 1,
+    x: 700,
+    y: 700
+  }, {
+      id: 2,
+      x: 1550,
+      y: 700
+    }, {
+      id: 3,
+      x: 1550,
+      y: 1550
+    }, {
+      id: 4,
+      x: 700,
+      y: 1550
+    }]
 
   const directionValues = {
     up: { x: 0, y: -1.0 },
@@ -29,11 +46,10 @@ module.exports = (io, server) => {
     downRight: { x: 0.707, y: 0.707 },
   }
   let mapBlocks = makeBlocks(20)
-  io.on('connection', function (socket) {
 
+  io.on('connection', function (socket) {
     socket.on('gameOverReset', function(){
       server.gameInProgress = false;
-      defaultPlayers = makeDefaultPlayers()
       players = []
       if (socket.player) {
         io.emit('removePlayerFromLobby', socket.player.id)
@@ -47,8 +63,9 @@ module.exports = (io, server) => {
     }
 
     socket.on('newplayer', function (name) {
-      if (defaultPlayers.length) {
-        socket.player = defaultPlayers.shift()
+      const available = findAvailablePlayerIds(players)
+      if (available) {
+        socket.player = R.clone(available)
         socket.player.name = name
         socket.player.direction = 'down'
         socket.player.health = playerHealth
@@ -57,6 +74,8 @@ module.exports = (io, server) => {
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
         io.emit('addPlayersToLobby', getAllPlayers())
+      } else {
+        socket.emit('lobbyFull')
       }
     })
 
@@ -157,16 +176,16 @@ module.exports = (io, server) => {
 
     socket.on('disconnect', function () {
       if (socket.player) {
-
         io.emit('remove', socket.player.id);
       }
     });
 
     socket.on('playerLeavesLobby', function () {
-      defaultPlayers.push(socket.player)
       io.emit('removePlayerFromLobby', socket.player.id)
-      removePlayer(socket.player.id)
+      console.log(socket.player, 'player Leaves Lobby')
+      players = removePlayer(socket.player.id)
       socket.player = null;
+      console.log(players, 'players')
     })
 
   });
@@ -224,31 +243,9 @@ module.exports = (io, server) => {
     return madeBlocks
   }
 
-  function makeDefaultPlayers () {
-    const defaultPlayersArray = [
-      {
-        id: 1,
-        x: 700,
-        y: 700
-      }, {
-        id: 2,
-        x: 1550,
-        y: 700
-      }, {
-        id: 3,
-        x: 1550,
-        y: 1550
-      }, {
-        id: 4,
-        x: 700,
-        y: 1550
-      }
-    ]
-    return defaultPlayersArray
-  }
-
   function removePlayer(id) {
-    return players.filter(player => player.id === id)
+    console.log('remove player', id)
+    return players.filter(player => player.id !== id)
   }
 
   function getAllPlayers() {
@@ -263,6 +260,28 @@ module.exports = (io, server) => {
   function randomInt(low, high) {
     return Math.floor(Math.random() * (high - low) + low);
   }
+
+  function findAvailablePlayerIds(playersArray){
+    const playersObj = {
+      1: true,
+      2: true,
+      3: true,
+      4: true
+    }
+    playersArray.forEach(player => {playersObj[player.id] = false})
+    return getAvailablePlayer(playersObj);
+  }
+
+  function getAvailablePlayer(playersObj) {
+    const availableId = Object.keys(playersObj).find(id => {
+      return playersObj[id]
+    })
+    return defaultPlayers.find(player => {
+      return player.id === Number(availableId)
+    })
+  }
+
+
 
   function updateMapBlocks(blockId, newBlock) {
     mapBlocks = mapBlocks.map(block => {
