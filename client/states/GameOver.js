@@ -11,7 +11,6 @@ ClientGameOver.resetServer = function () {
 
 export default class GameOver extends Phaser.State {
   init() {
-    console.log(this)
     store.dispatch(resetLobbyAction())
     store.dispatch(gameOverAction())
     ClientGameOver.resetServer()

@@ -181,6 +181,8 @@ module.exports = (io, server) => {
       if (socket.player) {
         io.emit('player-killed', socket.player.id)
         io.emit('remove', socket.player.id);
+        players = removePlayer(socket.player.id)
+        socket.player = null
       }
     });
 

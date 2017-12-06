@@ -88,7 +88,6 @@ export default class MainGame extends Phaser.State {
     this.layerGrass = this.map.createLayer('grass')
     this.layerCollision = this.map.createLayer('collision')
     this.game.physics.arcade.enable(this.layerCollision)
-    //TODO: Confirm inputs below which .... mapHeight or mapWidth ???
     this.map.setCollisionBetween(0, mapHeight * 32, true, this.layerCollision)
 
     for (let i = 0; i < this.map.layers.length; i++) {
@@ -193,7 +192,7 @@ export default class MainGame extends Phaser.State {
       ejectedWeapon.y = this.player.y + 50
       this.weaponsBJAD.addChild(ejectedWeapon)
     }
-    let collectedWeapon = this.weaponsBJAD.children.find(weapon => weapon.id == weaponId)
+    let collectedWeapon = this.weaponsBJAD.children.find(weapon => weapon.id === weaponId)
     collectedWeapon.x = 0
     collectedWeapon.y = 0
     this.player.addChild(collectedWeapon)
@@ -233,9 +232,7 @@ export default class MainGame extends Phaser.State {
     this.newPlayer.animations.add('downLeft', [12, 13, 14, 15, 16, 17], animationFrequency, true)
     this.newPlayer.animations.add('up', [18, 19, 20, 21, 22, 23], animationFrequency, true)
     this.playerMapBJAD[id] = this.newPlayer
-    console.log(this.playerMapBJAD)
     this.isNotLoading = Object.keys(this.playerMapBJAD).length > 1
-    console.log(this.isLoading)
   }
 
   addNewBase(base) {
