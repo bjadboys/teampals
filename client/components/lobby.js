@@ -139,14 +139,14 @@ class Lobby extends React.Component {
 //todo: make a create game button if there are no open created games on the server.
 //created games should have a timer.
   render () {
-    if (!this.props.localGame && !this.props.serverGame) {
+    if (!this.props.localGame) {
       return (
       <div id='lobbydiv'>
       <div id='central'>
       <div id='masthead'>
         <h1>RESOURCE PALS</h1>
       </div>
-      {!this.props.localGame && !this.props.serverGame && !this.props.lobbyFull && this.gameJoinComponent()}
+      {!this.props.serverGame && !this.props.lobbyFull && this.gameJoinComponent()}
       {this.props.lobbyFull && this.lobbyFullComponent()}
       {this.props.serverGame && !this.props.joined && this.gameInProgressComponent()}
       {}
