@@ -27,8 +27,7 @@ describe('Game', () => {
     it('should return false if a player has left the lobby', () => {
       expect(gameReducer(joinedState, {type: actionTypesForTesting.LEFT_GAME})).toEqual(initialState)
     })
-
-    
+  
     it('should return serverGame true if a game is in progress', () => {
       expect(gameReducer(initialState, {type: actionTypesForTesting.GAME_IN_PROGRESS})).toEqual(gameInProgressState)
     })
@@ -41,6 +40,4 @@ describe('Game', () => {
       expect(gameReducer(localGameState, {type: actionTypesForTesting.GAME_OVER})).toEqual(initialState)
     })
   })
-
-
 })

@@ -3,9 +3,9 @@ import {cloneDeep} from 'lodash'
 /**
  * ACTION TYPES
  */
-const ADD_PLAYERS = 'ADD_PLAYERS'
-const REMOVE_PLAYER = 'REMOVE_PLAYER'
-const RESET_LOBBY = 'RESET_LOBBY'
+export const ADD_PLAYERS = 'ADD_PLAYERS'
+export const REMOVE_PLAYER = 'REMOVE_PLAYER'
+export const RESET_LOBBY = 'RESET_LOBBY'
 
 /**
  * INITIAL STATE
