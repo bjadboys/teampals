@@ -7,10 +7,8 @@ class GameScreen extends React.Component {
   }
 
   render() {
-    console.log('game rendered')
-    return(
-      <div id='gameDiv'>
-      </div>
+    return (
+      <div id="gameDiv" />
     )
   }
 }
