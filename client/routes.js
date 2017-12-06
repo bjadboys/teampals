@@ -3,7 +3,7 @@ import {Router} from 'react-router'
 import {Route, Switch} from 'react-router-dom'
 import history from './history'
 
-import {Lobby, GameScreen} from './components/'
+import {Lobby} from './components/'
 
 /**
  * COMPONENT

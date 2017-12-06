@@ -6,7 +6,6 @@ import store from './store'
 import Routes from './routes'
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme'
-import "./fonts/PixelCowboy.otf"
 
 const muiTheme = getMuiTheme({
   palette: {
