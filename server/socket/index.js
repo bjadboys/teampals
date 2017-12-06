@@ -6,7 +6,8 @@ module.exports = (io, server) => {
   const tilePx = 32
   const mapHeight = 70
   const mapWidth = 70
-
+  let gameTimer = null
+  const idleGameTime = 1000000
   //Gameplay Variables
   let bulletSpeed = 3.5
   let bulletSpeedUpgradePercentage = 0.75
@@ -21,7 +22,7 @@ module.exports = (io, server) => {
     id: 1,
     x: 700,
     y: 700
-  }, {
+    }, {
       id: 2,
       x: 1550,
       y: 700
@@ -49,13 +50,7 @@ module.exports = (io, server) => {
 
   io.on('connection', function (socket) {
     socket.on('gameOverReset', function(){
-      server.gameInProgress = false;
-      players = []
-      if (socket.player) {
-        io.emit('removePlayerFromLobby', socket.player.id)
-        socket.player = null
-      }
-      mapBlocks = makeBlocks(20)
+      resetGameFunc(socket)
     })
 
     if (server.gameInProgress) {
@@ -85,6 +80,14 @@ module.exports = (io, server) => {
         io.emit('gameHasStarted')
         server.gameInProgress = true
         io.emit('gameInProgress')
+        if (!gameTimer) {
+          gameTimer = setTimeout(function() {
+            getAllPlayers().forEach(player => {
+              io.emit('player-killed', player.id)
+            })
+            resetGameFunc(socket)
+          }, idleGameTime)
+        }
       }
     })
 
@@ -176,6 +179,7 @@ module.exports = (io, server) => {
 
     socket.on('disconnect', function () {
       if (socket.player) {
+        io.emit('player-killed', socket.player.id)
         io.emit('remove', socket.player.id);
       }
     });
@@ -279,6 +283,20 @@ module.exports = (io, server) => {
   }
 
 
+
+  function resetGameFunc(socket){
+    server.gameInProgress = false;
+    players = []
+    if (socket.player) {
+      io.emit('removePlayerFromLobby', socket.player.id)
+      socket.player = null
+    }
+    mapBlocks = makeBlocks(20)
+    if (gameTimer) {
+      clearTimeout(gameTimer)
+      gameTimer = null;
+    }
+  }
 
   function updateMapBlocks(blockId, newBlock) {
     mapBlocks = mapBlocks.map(block => {
