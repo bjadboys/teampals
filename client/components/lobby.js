@@ -2,7 +2,7 @@ import React from 'react'
 import {TextField, RaisedButton} from 'material-ui'
 import socket from '../js/socket'
 import {connect} from 'react-redux'
-import store, {addPlayersAction, removePlayerAction, startGameAction, gameInProgressAction, leftGameAction, joinedGameAction} from '../store/'
+import store, {addPlayersAction, lobbyFullAction, removePlayerAction, startGameAction, gameInProgressAction, leftGameAction, joinedGameAction} from '../store/'
 import { withRouter } from 'react-router-dom'
 import GameScreen from './game'
 
@@ -41,6 +41,11 @@ ClientLobby.socket.on('gameHasStarted', function(){
   }
 })
 
+ClientLobby.socket.on('lobbyFull', function(){
+  store.dispatch(lobbyFullAction())
+  store.dispatch(leftGameAction())
+})
+
 ClientLobby.socket.on('gameInProgress', function(){
   store.dispatch(gameInProgressAction())
 })
@@ -52,6 +57,9 @@ class Lobby extends React.Component {
       name: ''
     }
     this.handleNameChange = this.handleNameChange.bind(this)
+    this.lobbyFullComponent = this.lobbyFullComponent.bind(this)
+    this.gameInProgressComponent = this.gameInProgressComponent.bind(this)
+    this.gameJoinComponent = this.gameJoinComponent.bind(this)
   } 
 
   startGameButton() {
@@ -90,12 +98,46 @@ class Lobby extends React.Component {
             </div>)
     }
   }
+
+  lobbyFullComponent(){
+    return(<p>Lobby's full!</p>)
+  }
+
+  gameInProgressComponent(){
+    return(<p>Game in progress!</p>)
+  }
+
+  gameJoinComponent(){
+    return (<div id='inputdiv'>
+      <TextField
+        disabled={this.props.joined}
+        hintText="Hello."
+        floatingLabelText="Name"
+        onChange={(event) => { this.handleNameChange(event.target.value) }}
+      />
+      <div id='belowtextfield'>
+        <div id='buttonHolder'>
+          {this.joinGameButton()}
+          {this.props.joined && this.startGameButton()}
+        </div>
+        <div>
+          <ul>
+            {this.props.lobby.length && this.props.lobby.map(player => {
+              return <li key={player.id}>{player.name}{gameVerb()}{gameNoun()}</li>
+            })}
+          </ul>
+        </div>
+      </div>
+
+    </div>)
+  }
   
 
   handleNameChange(input) {
     this.setState({name: input})
   }
-
+//todo: make a create game button if there are no open created games on the server.
+//created games should have a timer.
   render () {
     if (!this.props.localGame && !this.props.serverGame) {
       return (
@@ -104,28 +146,10 @@ class Lobby extends React.Component {
       <div id='masthead'>
         <h1>RESOURCE PALS</h1>
       </div>
-      <div id='inputdiv'>
-          <TextField
-            disabled={this.props.joined}
-            hintText="Hello."
-            floatingLabelText="Name"
-            onChange={(event) => {this.handleNameChange(event.target.value)}}
-          />
-          <div id='belowtextfield'>
-          <div id='buttonHolder'>
-          {this.joinGameButton()}
-          {this.props.joined && this.startGameButton()}
-          </div>
-          <div>
-              <ul>
-                {this.props.lobby.length && this.props.lobby.map(player => {
-                      return <li key={player.id}>{player.name}{gameVerb()}{gameNoun()}</li>
-                })}
-              </ul>
-          </div>
-          </div>
-          
-      </div>
+      {!this.props.localGame && !this.props.serverGame && !this.props.lobbyFull && this.gameJoinComponent()}
+      {this.props.lobbyFull && this.lobbyFullComponent()}
+      {this.props.serverGame && !this.props.joined && this.gameInProgressComponent()}
+      {}
       <div id='controls'>
       <h2>How to Play</h2>
       <p>Break crates open for health and ammo!</p>
@@ -148,10 +172,6 @@ class Lobby extends React.Component {
           <GameScreen />
         </div>
       )
-    } else if (this.props.serverGame && !this.props.joined) {
-      return (
-        <p>Game in progress. Please wait.</p>
-      )
     } else {
       return (<div></div>)
     }
@@ -163,7 +183,8 @@ const mapState = (state) => ({
   lobby: state.lobby,
   localGame: state.game.localGame,
   serverGame: state.game.serverGame,
-  joined: state.game.joined
+  joined: state.game.joined,
+  lobbyFull: state.game.lobbyFull
 })
 
 const mapDispatch = (dispatch) => ({
