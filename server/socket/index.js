@@ -41,8 +41,8 @@ module.exports = (io, server) => {
     down: { x: 0, y: 1.0 },
     left: { x: -1.0, y: 0 },
     right: { x: 1.0, y: 0 },
-    upLeft: { x: -0.707, y: -.707 },
-    downLeft: { x: -.707, y: 0.707 },
+    upLeft: { x: -0.707, y: -0.707 },
+    downLeft: { x: -0.707, y: 0.707 },
     upRight: { x: 0.707, y: -0.707 },
     downRight: { x: 0.707, y: 0.707 },
   }
@@ -281,7 +281,6 @@ module.exports = (io, server) => {
       return player.id === Number(availableId)
     })
   }
-
 
 
   function resetGameFunc(socket){

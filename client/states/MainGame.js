@@ -277,7 +277,7 @@ export default class MainGame extends Phaser.State {
       if (this.currentPlayer.health < 0) this.currentPlayer.health = 0;
       if (healthNum < 0) {
         this.game.camera.flash([0xde5242], [250])
-        this.game.camera.shake([.01], [100])
+        this.game.camera.shake([0.01], [100])
       } else {
         this.game.camera.flash([0xb3fc95])
       }
