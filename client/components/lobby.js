@@ -100,7 +100,7 @@ class Lobby extends React.Component {
   }
 
   lobbyFullComponent(){
-    return(<p>Fuck, dude! Lobby's full!</p>)
+    return(<p>Lobby's full!</p>)
   }
 
   gameInProgressComponent(){
