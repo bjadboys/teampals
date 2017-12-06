@@ -8,7 +8,7 @@ import GameScreen from './game'
 
 const verbs = [' is ', ' fears only ', ' flights for ', ' runs toward ', ' spits at ', ' laughs at ']
 const nouns = ['nothing!', 'danger!', 'handguns!', 'live tigers!', ' broken bones!', 'fancy blouses!']
-const gameVerb = () => verbs[Math.floor(Math.random() * verbs.length)] 
+const gameVerb = () => verbs[Math.floor(Math.random() * verbs.length)]
 const gameNoun = () => nouns[Math.floor(Math.random() * nouns.length)]
 
 const ClientLobby = {}
@@ -60,7 +60,7 @@ class Lobby extends React.Component {
     this.lobbyFullComponent = this.lobbyFullComponent.bind(this)
     this.gameInProgressComponent = this.gameInProgressComponent.bind(this)
     this.gameJoinComponent = this.gameJoinComponent.bind(this)
-  } 
+  }
 
   startGameButton() {
     return (
@@ -68,7 +68,7 @@ class Lobby extends React.Component {
         <RaisedButton
             disabled={this.props.lobby.length < 2 || this.props.lobby.length > 4}
             label={this.props.lobby.length > 1 ? 'start game' : 'wait for players'}
-            onClick={()=> {
+            onClick={() => {
               ClientLobby.startGame()
             }} //TODO: create socket connection. Add to lobby array.
             />
@@ -81,7 +81,7 @@ class Lobby extends React.Component {
     if (!this.props.joined) {
       return (<div>
                 <RaisedButton
-                label='join'
+                label="join"
                 onClick={() => {
                   this.props.handleJoinLobby()
                   ClientLobby.askNewPlayer(this.state.name)
@@ -90,7 +90,7 @@ class Lobby extends React.Component {
     } else {
       return (<div>
                 <RaisedButton
-                label='leave'
+                label="leave"
                 onClick={() => {
                 this.props.handleLeaveLobby()
                 ClientLobby.removePlayerLobbyBJAD()
@@ -100,23 +100,23 @@ class Lobby extends React.Component {
   }
 
   lobbyFullComponent(){
-    return(<p>Lobby's full!</p>)
+    return (<p>Lobby's full!</p>)
   }
 
   gameInProgressComponent(){
-    return(<p>Game in progress!</p>)
+    return (<p>Game in progress!</p>)
   }
 
   gameJoinComponent(){
-    return (<div id='inputdiv'>
+    return (<div id="inputdiv">
       <TextField
         disabled={this.props.joined}
         hintText="Hello."
         floatingLabelText="Name"
         onChange={(event) => { this.handleNameChange(event.target.value) }}
       />
-      <div id='belowtextfield'>
-        <div id='buttonHolder'>
+      <div id="belowtextfield">
+        <div id="buttonHolder">
           {this.joinGameButton()}
           {this.props.joined && this.startGameButton()}
         </div>
@@ -131,7 +131,7 @@ class Lobby extends React.Component {
 
     </div>)
   }
-  
+
 
   handleNameChange(input) {
     this.setState({name: input})
@@ -141,16 +141,16 @@ class Lobby extends React.Component {
   render () {
     if (!this.props.localGame) {
       return (
-      <div id='lobbydiv'>
-      <div id='central'>
-      <div id='masthead'>
+      <div id="lobbydiv">
+      <div id="central">
+      <div id="masthead">
         <h1>RESOURCE PALS</h1>
       </div>
       {!this.props.serverGame && !this.props.lobbyFull && this.gameJoinComponent()}
       {this.props.lobbyFull && this.lobbyFullComponent()}
       {this.props.serverGame && !this.props.joined && this.gameInProgressComponent()}
       {}
-      <div id='controls'>
+      <div id="controls">
       <h2>How to Play</h2>
       <p>Break crates open for health and ammo!</p>
       <p>Drop crates in your base to level your pal!</p>
@@ -173,7 +173,7 @@ class Lobby extends React.Component {
         </div>
       )
     } else {
-      return (<div></div>)
+      return (<div />)
     }
   }
 
