@@ -10,7 +10,7 @@ module.exports = (io, server) => {
   const idleGameTime = 1000000
   //Gameplay Variables
   let bulletSpeed = 3.5
-  let bulletSpeedUpgradePercentage = 0.75
+  let bulletSpeedUpgradePercentage = 1.2
   const playerHealth = 100
 
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
