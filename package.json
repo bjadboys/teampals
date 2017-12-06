@@ -16,7 +16,8 @@
     "start": "node server",
     "start-dev": "npm run build-client-watch & npm run start-server",
     "start-server": "NODE_ENV=development nodemon server -e html,js,scss --ignore public",
-    "test": "NODE_ENV='test' DATABASE_URL='postgres://localhost:5432/boilermaker-test' mocha ./server/**/*.spec.js ./server/**/**/*.spec.js ./client/**/*.spec.js --compilers js:babel-register"
+    "test": "mocha ./server/**/*.spec.js ./server/**/**/*.spec.js --compilers js:babel-register",
+    "test-store": "jest ./client/store/*.spec.js"
   },
   "author": "",
   "license": "ISC",
@@ -30,6 +31,7 @@
     "express-session": "^1.15.1",
     "font-loader": "^0.1.2",
     "history": "^4.6.3",
+    "jest": "^21.2.1",
     "lodash": "^4.17.4",
     "material-ui": "^0.19.4",
     "morgan": "^1.8.1",
