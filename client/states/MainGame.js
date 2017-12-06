@@ -71,6 +71,7 @@ export default class MainGame extends Phaser.State {
     this.findPossibleTarget = throttle(this.findPossibleTarget.bind(this), wait)
     this.hudThrottle = throttle(this.hudThrottle.bind(this), hudWait)
     this.isNotLoading = false;
+    this.gameOver = false
   }
 
   //here we create everything we need for the game.
@@ -421,7 +422,15 @@ export default class MainGame extends Phaser.State {
   }
 
   render(){
-    if (this.isNotLoading && Object.keys(this.playerMapBJAD).filter(id => this.playerMapBJAD[id].alive === true).length < 2){
+    if (this.isNotLoading && Object.keys(this.playerMapBJAD).filter(id => this.playerMapBJAD[id].alive === true).length < 2 && !this.gameOver) {
+      this.gameOverText = this.game.add.text(250, 250, 'Game Over!')
+      this.gameOverText.fixedToCamera = true;
+      const own = this
+      setTimeout(function(){
+        own.gameOver = true
+      }, 3000)
+    }
+    if (this.gameOver){
       store.dispatch(resetLobbyAction())
       store.dispatch(gameOverAction())
       ClientGameOver.resetServer()

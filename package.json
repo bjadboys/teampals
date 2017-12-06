@@ -49,6 +49,7 @@
     "pg-hstore": "^2.3.2",
     "phaser-ce": "^2.9.2",
     "prop-types": "^15.5.8",
+    "ramda": "^0.25.0",
     "react": "^16.0.0",
     "react-dom": "^16.0.0",
     "react-redux": "^5.0.2",
