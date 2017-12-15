@@ -1,11 +1,12 @@
 import Phaser from 'phaser'
 import {throttle} from 'lodash'
-
+import { connect } from 'react-redux'
 import Client from '../js/client'
 import updateMaker  from './update'
 
 import store, { gameOverAction, resetLobbyAction } from '../store/'
 import socket from '../js/socket'
+
 
 const ClientGameOver = {}
 ClientGameOver.socket = socket
@@ -52,6 +53,7 @@ export default class MainGame extends Phaser.State {
     Phaser.Component.Core.skipTypeChecks = true
   }
 
+ 
   init() {
     this.stage.disableVisibilityChange = true
     this.addNewPlayer = this.addNewPlayer.bind(this)
@@ -97,10 +99,15 @@ export default class MainGame extends Phaser.State {
     this.layer.inputEnabled = true;
     //set up the keyboard for movement
     this.cursors = this.game.input.keyboard.createCursorKeys()
-    this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
-    this.smashButton = this.game.input.keyboard.addKey(Phaser.KeyCode.Z)
-    this.pickUpButton = this.game.input.keyboard.addKey(Phaser.KeyCode.X)
-    this.lockOnButton = this.game.input.keyboard.addKey(Phaser.KeyCode.C)
+    this.storeState = store.getState()
+    // this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)          
+    // this.smashButton = this.game.input.keyboard.addKey(Phaser.KeyCode.Z) 
+    // this.pickUpButton = this.game.input.keyboard.addKey(Phaser.KeyCode.X)
+    // this.lockOnButton = this.game.input.keyboard.addKey(Phaser.KeyCode.C)
+    this.fireButton = this.game.input.keyboard.addKey(this.storeState.keys.fire.charCodeAt(0))
+    this.smashButton = this.game.input.keyboard.addKey(this.storeState.keys.smash.charCodeAt(0))
+    this.pickUpButton = this.game.input.keyboard.addKey(this.storeState.keys.pickUp.charCodeAt(0))
+    this.lockOnButton = this.game.input.keyboard.addKey(this.storeState.keys.lockOn.charCodeAt(0))
     this.blocksBJAD = this.add.group()
     this.blocksBJAD.enableBody = true
     this.weaponsBJAD = this.add.group()
@@ -119,6 +126,7 @@ export default class MainGame extends Phaser.State {
     // this.secondWeapon = this.weaponsBJAD.create(200, 200, 'weapon2')
     // this.secondWeapon.isWeapon = true
     // this.secondWeapon.id = 1
+    
   }
 
   isInDeathBJAD(x, y){
@@ -440,3 +448,9 @@ export default class MainGame extends Phaser.State {
 }
 
 MainGame.prototype.update = updateMaker(Client)
+
+// const mapState = (state) => ({
+//    inputKeys: state.options
+// })
+//  console.log(this.props.inputKeys) 
+// export default connect(mapState, null)(MainGame)
