@@ -1,12 +1,12 @@
 import Phaser from 'phaser'
 import {throttle} from 'lodash'
-import { connect } from 'react-redux'
+
 import Client from '../js/client'
 import updateMaker  from './update'
 
 import store, { gameOverAction, resetLobbyAction } from '../store/'
 import socket from '../js/socket'
-
+const keys = store.getState().keys
 
 const ClientGameOver = {}
 ClientGameOver.socket = socket
@@ -53,7 +53,6 @@ export default class MainGame extends Phaser.State {
     Phaser.Component.Core.skipTypeChecks = true
   }
 
- 
   init() {
     this.stage.disableVisibilityChange = true
     this.addNewPlayer = this.addNewPlayer.bind(this)
@@ -90,7 +89,6 @@ export default class MainGame extends Phaser.State {
     this.layerGrass = this.map.createLayer('grass')
     this.layerCollision = this.map.createLayer('collision')
     this.game.physics.arcade.enable(this.layerCollision)
-    //TODO: Confirm inputs below which .... mapHeight or mapWidth ???
     this.map.setCollisionBetween(0, mapHeight * 32, true, this.layerCollision)
 
     for (let i = 0; i < this.map.layers.length; i++) {
@@ -99,15 +97,12 @@ export default class MainGame extends Phaser.State {
     this.layer.inputEnabled = true;
     //set up the keyboard for movement
     this.cursors = this.game.input.keyboard.createCursorKeys()
-    this.storeState = store.getState()
-    // this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)          
-    // this.smashButton = this.game.input.keyboard.addKey(Phaser.KeyCode.Z) 
-    // this.pickUpButton = this.game.input.keyboard.addKey(Phaser.KeyCode.X)
-    // this.lockOnButton = this.game.input.keyboard.addKey(Phaser.KeyCode.C)
-    this.fireButton = this.game.input.keyboard.addKey(this.storeState.keys.fire.charCodeAt(0))
-    this.smashButton = this.game.input.keyboard.addKey(this.storeState.keys.smash.charCodeAt(0))
-    this.pickUpButton = this.game.input.keyboard.addKey(this.storeState.keys.pickUp.charCodeAt(0))
-    this.lockOnButton = this.game.input.keyboard.addKey(this.storeState.keys.lockOn.charCodeAt(0))
+    this.keyBindings = store.getState().keys
+    console.log(this.keyBindings)
+    this.fireButton = this.game.input.keyboard.addKey(this.keyBindings.fire)
+    this.smashButton = this.game.input.keyboard.addKey(this.keyBindings.smash)
+    this.pickUpButton = this.game.input.keyboard.addKey(this.keyBindings.pickup)
+    this.lockOnButton = this.game.input.keyboard.addKey(this.keyBindings.lockOn)
     this.blocksBJAD = this.add.group()
     this.blocksBJAD.enableBody = true
     this.weaponsBJAD = this.add.group()
@@ -126,7 +121,6 @@ export default class MainGame extends Phaser.State {
     // this.secondWeapon = this.weaponsBJAD.create(200, 200, 'weapon2')
     // this.secondWeapon.isWeapon = true
     // this.secondWeapon.id = 1
-    
   }
 
   isInDeathBJAD(x, y){
@@ -201,7 +195,7 @@ export default class MainGame extends Phaser.State {
       ejectedWeapon.y = this.player.y + 50
       this.weaponsBJAD.addChild(ejectedWeapon)
     }
-    let collectedWeapon = this.weaponsBJAD.children.find(weapon => weapon.id == weaponId)
+    let collectedWeapon = this.weaponsBJAD.children.find(weapon => weapon.id === weaponId)
     collectedWeapon.x = 0
     collectedWeapon.y = 0
     this.player.addChild(collectedWeapon)
@@ -241,9 +235,7 @@ export default class MainGame extends Phaser.State {
     this.newPlayer.animations.add('downLeft', [12, 13, 14, 15, 16, 17], animationFrequency, true)
     this.newPlayer.animations.add('up', [18, 19, 20, 21, 22, 23], animationFrequency, true)
     this.playerMapBJAD[id] = this.newPlayer
-    console.log(this.playerMapBJAD)
     this.isNotLoading = Object.keys(this.playerMapBJAD).length > 1
-    console.log(this.isLoading)
   }
 
   addNewBase(base) {
@@ -285,7 +277,7 @@ export default class MainGame extends Phaser.State {
       if (this.currentPlayer.health < 0) this.currentPlayer.health = 0;
       if (healthNum < 0) {
         this.game.camera.flash([0xde5242], [250])
-        this.game.camera.shake([.01], [100])
+        this.game.camera.shake([0.01], [100])
       } else {
         this.game.camera.flash([0xb3fc95])
       }
