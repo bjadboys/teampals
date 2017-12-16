@@ -440,9 +440,3 @@ export default class MainGame extends Phaser.State {
 }
 
 MainGame.prototype.update = updateMaker(Client)
-
-// const mapState = (state) => ({
-//    inputKeys: state.options
-// })
-//  console.log(this.props.inputKeys) 
-// export default connect(mapState, null)(MainGame)
