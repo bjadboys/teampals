@@ -20,6 +20,7 @@ export default class Game extends Phaser.Game {
   }
   startGame(){
     this.state.start('Boot')
+    console.log('game started, woo!')
   }
 
 }

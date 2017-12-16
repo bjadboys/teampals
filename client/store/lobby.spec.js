@@ -2,7 +2,7 @@ import * as lobby from './lobby'
 
 describe('actions', () => {
   it('addPlayers action should create an action to add players to lobby', () => {
-    const players = [{playerID: 1}, {playerID: 2}]
+    const players = [{playerID:1},{playerID:2}] 
     const expectedAction = {
       type: lobby.ADD_PLAYERS,
       payload: players
@@ -34,28 +34,28 @@ describe('Lobby reducer', () => {
   })
 
   it('should handle ADD_PLAYERS', () => {
-    const players = [{id: 1}, {id: 2}]
+    const players = [{id:1},{id:2}] 
     expect(
       lobby.default([], {
         type: lobby.ADD_PLAYERS,
         payload: players
       })
-    ).toEqual([{id: 1}, {id: 2}])
+    ).toEqual([{id:1},{id:2}])
   })
 
   it('should handle REMOVE_PLAYER', () => {
     const playerID = 1
     expect(
-      lobby.default([{id: 1}, {id: 2}], {
+      lobby.default([{id:1},{id:2}], {
         type: lobby.REMOVE_PLAYER,
         payload: playerID
       })
-    ).toEqual([{id: 2}])
+    ).toEqual([{id:2}])
   })
 
   it('should handle RESET_LOBBY', () => {
     expect(
-      lobby.default([{id: 1}, {id: 2}], {
+      lobby.default([{id:1},{id:2}], {
         type: lobby.RESET_LOBBY,
       })
     ).toEqual([])

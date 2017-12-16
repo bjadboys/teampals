@@ -10,7 +10,7 @@ module.exports = (io, server) => {
   const idleGameTime = 1000000
   //Gameplay Variables
   let bulletSpeed = 3.5
-  let bulletSpeedUpgradePercentage = 1.2
+  let bulletSpeedUpgradePercentage = 0.75
   const playerHealth = 100
 
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
@@ -41,8 +41,8 @@ module.exports = (io, server) => {
     down: { x: 0, y: 1.0 },
     left: { x: -1.0, y: 0 },
     right: { x: 1.0, y: 0 },
-    upLeft: { x: -0.707, y: -0.707 },
-    downLeft: { x: -0.707, y: 0.707 },
+    upLeft: { x: -0.707, y: -.707 },
+    downLeft: { x: -.707, y: 0.707 },
     upRight: { x: 0.707, y: -0.707 },
     downRight: { x: 0.707, y: 0.707 },
   }
@@ -181,8 +181,6 @@ module.exports = (io, server) => {
       if (socket.player) {
         io.emit('player-killed', socket.player.id)
         io.emit('remove', socket.player.id);
-        players = removePlayer(socket.player.id)
-        socket.player = null
       }
     });
 
@@ -283,6 +281,7 @@ module.exports = (io, server) => {
       return player.id === Number(availableId)
     })
   }
+
 
 
   function resetGameFunc(socket){

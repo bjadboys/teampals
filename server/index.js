@@ -22,8 +22,8 @@ const createApp = () => {
   // compression middleware
   app.use(compression())
 
-
-  console.log(path.join(__dirname, '..', 'public'))
+  
+  console.log(path.join(__dirname,'..', 'public'))
   app.use(express.static(path.join(__dirname, '..', 'public')))
    .use((req, res, next) => {
     if (path.extname(req.path).length) {

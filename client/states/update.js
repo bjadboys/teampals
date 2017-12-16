@@ -2,7 +2,7 @@ export default Client => function () {
 
   let playerSpeed = 200;
   //Adjust Speed when locked on
-  if ((this.currentPlayer && this.currentPlayer.targetLocked) || (this.currentPlayer && this.currentPlayer.children.find(item => item.isBlock)) ) playerSpeed = 0.70 * playerSpeed
+  if (this.currentPlayer && this.currentPlayer.targetLocked) playerSpeed = 0.70 * playerSpeed
 
   //physics added for blocks
   if (this.blocksBJAD.children.length) {
