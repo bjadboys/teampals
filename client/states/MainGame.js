@@ -6,6 +6,7 @@ import updateMaker  from './update'
 
 import store, { gameOverAction, resetLobbyAction } from '../store/'
 import socket from '../js/socket'
+const keys = store.getState().keys
 
 const ClientGameOver = {}
 ClientGameOver.socket = socket
@@ -96,10 +97,12 @@ export default class MainGame extends Phaser.State {
     this.layer.inputEnabled = true;
     //set up the keyboard for movement
     this.cursors = this.game.input.keyboard.createCursorKeys()
-    this.fireButton = this.game.input.keyboard.addKey(Phaser.KeyCode.SPACEBAR)
-    this.smashButton = this.game.input.keyboard.addKey(Phaser.KeyCode.Z)
-    this.pickUpButton = this.game.input.keyboard.addKey(Phaser.KeyCode.X)
-    this.lockOnButton = this.game.input.keyboard.addKey(Phaser.KeyCode.C)
+    this.keyBindings = store.getState().keys
+    console.log(this.keyBindings)
+    this.fireButton = this.game.input.keyboard.addKey(this.keyBindings.fire)
+    this.smashButton = this.game.input.keyboard.addKey(this.keyBindings.smash)
+    this.pickUpButton = this.game.input.keyboard.addKey(this.keyBindings.pickup)
+    this.lockOnButton = this.game.input.keyboard.addKey(this.keyBindings.lockOn)
     this.blocksBJAD = this.add.group()
     this.blocksBJAD.enableBody = true
     this.weaponsBJAD = this.add.group()
