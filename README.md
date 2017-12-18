@@ -15,7 +15,7 @@ To play the game go to www.resourcepals.com. To install locally
 
 ### Prerequisites
 
-We're using node 8.6. Not sure how far back in node will work. 
+We're using node 8.6. Not sure how far back in node it will work. 
 
 ```
 https://nodejs.org/en/
@@ -31,12 +31,6 @@ yarn start-dev
 ```
 
 to go: localhost:8080
-
-```
-until finished
-```
-
-End with an example of getting some data out of the system or using it for a little demo
 
 ## Running the tests
 
