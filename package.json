@@ -16,8 +16,9 @@
     "start": "node server",
     "start-dev": "npm run build-client-watch & npm run start-server",
     "start-server": "NODE_ENV=development nodemon server -e html,js,scss --ignore public",
-    "test": "mocha ./server/**/*.spec.js ./server/**/**/*.spec.js --compilers js:babel-register",
-    "test-store": "jest ./client/store/*.spec.js"
+    "test-server": "mocha ./server/**/*.spec.js ./server/**/**/*.spec.js --compilers js:babel-register",
+    "test-store": "jest ./client/store/*.spec.js",
+    "test": "npm run test-server & npm run test-store"
   },
   "author": "",
   "license": "ISC",
