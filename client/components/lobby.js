@@ -239,6 +239,7 @@ class Lobby extends React.Component {
       <p>Use X to pick up and drop crates!</p>
       <p>USE C to lock onto nearby target!</p>
       <p>Use SPACEBAR to fire!</p>
+      <a href='https://github.com/bjadboys/teampals'><i id='icon' className="fab fa-github-square" /></a>
       </div>
             <div>
               <RaisedButton label="Options" onClick={this.handleOpen} />
