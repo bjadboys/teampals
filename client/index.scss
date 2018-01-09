@@ -1,10 +1,6 @@
 body {
   font-family: 'Slackey', cursive; 
 
-  a {
-    text-decoration: none;
-  }
-
   label {
     display: block;
   }
@@ -35,7 +31,10 @@ body {
   align-content: center;
 }
 
+// a {
+//   text-decoration-color: white;
 
+// }
 
 #central {
   display: flex;
@@ -55,5 +54,76 @@ body {
 
 #controls {
   font-family: 'Slackey', cursive;
+
+}
+
+.container {
+  margin: auto;
+  margin-top: 5em;
+}
+
+.navContainer {
+  height: 100vh;
+  width: 20vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.navLobby {
+  height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F37748; //FCB251
+
+}
+
+.navTutorial {
+  height: 50vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #067BC2;
+}
+
+.headers {
+  font-size: 5em;
+  color: white;
+  text-shadow: 1px 3px 3px black,
+  0 0 .5em black,
+  0 0 0.2em black;
+}
+
+.containerRow {
+  display: flex;
+}
+
+.navs {
+  color: white;
+  text-decoration: none;
+  font-size: 3em;
+  text-shadow: 2px 2px rgb(0, 0, 0);
+  transform: rotate(-0.25turn)
+}
+
+.navs:active {
+  transform: rotate(-.15turn)
+
+}
+
+.containerLob {
+  background-color: #FC9611;
+  width: 80vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.containerTut {
+  background-color: #84BCDA;
+  width: 80vw;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 
 }

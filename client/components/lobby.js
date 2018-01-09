@@ -77,7 +77,7 @@ class Lobby extends React.Component {
     this.handleSmashChange = this.handleSmashChange.bind(this)
     this.handlePickupChange = this.handlePickupChange.bind(this)
     this.handleLockOnChange = this.handleLockOnChange.bind(this)
-  
+
   }
 
   startGameButton() {
@@ -126,8 +126,9 @@ class Lobby extends React.Component {
   }
 
   gameJoinComponent(){
+    const ready = this.props.lobby.length !== 0
     return (<div id="inputdiv">
-      <TextField
+      <input type='text'
         disabled={this.props.joined}
         hintText="Hello."
         floatingLabelText="Name"
@@ -140,7 +141,7 @@ class Lobby extends React.Component {
         </div>
         <div>
           <ul>
-            {this.props.lobby.length && this.props.lobby.map(player => {
+            {ready && this.props.lobby.map(player => {
               return <li key={player.id}>{player.name}{gameVerb()}{gameNoun()}</li>
             })}
           </ul>
@@ -239,7 +240,7 @@ class Lobby extends React.Component {
       <p>Use X to pick up and drop crates!</p>
       <p>USE C to lock onto nearby target!</p>
       <p>Use SPACEBAR to fire!</p>
-      <a href='https://github.com/bjadboys/teampals'><i id='icon' className="fab fa-github-square" /></a>
+      <a href="https://github.com/bjadboys/teampals"><i id="icon" className="fab fa-github-square" /></a>
       </div>
             <div>
               <RaisedButton label="Options" onClick={this.handleOpen} />
@@ -253,13 +254,13 @@ class Lobby extends React.Component {
                 Don't forget to save your options
           <br />
                 <form>
-                  Change fire: <input onChange={this.handleFireChange} placeholder="SpaceBar"></input>
+                  Change fire: <input onChange={this.handleFireChange} placeholder="SpaceBar" />
                   <br />
-                  Change smash: <input onChange={this.handleSmashChange} placeholder="Z"></input>
+                  Change smash: <input onChange={this.handleSmashChange} placeholder="Z" />
                   <br />
-                  Change pickup: <input onChange={this.handlePickupChange} placeholder="X"></input>
+                  Change pickup: <input onChange={this.handlePickupChange} placeholder="X" />
                   <br />
-                  Change lockOn: <input onChange={this.handleLockOnChange} placeholder="C"></input>
+                  Change lockOn: <input onChange={this.handleLockOnChange} placeholder="C" />
                   <br />
                 </form>
               </Dialog>
