@@ -1,16 +1,13 @@
 body {
-  font-family: 'Slackey', cursive; 
+  font-family: 'Slackey', cursive;
   margin: 0;
-
   label {
     display: block;
   }
-
   nav a {
     display: inline-block;
     margin: 1em;
   }
-
   form div {
     margin: 1em;
     display: inline-block;
@@ -26,7 +23,7 @@ body {
   font-family: 'Slackey', cursive;
 }
 
-#lobbydiv{
+#lobbydiv {
   display: flex;
   justify-content: center;
   align-content: center;
@@ -34,9 +31,7 @@ body {
 
 // a {
 //   text-decoration-color: white;
-
 // }
-
 #central {
   display: flex;
   flex-direction: column
@@ -52,10 +47,8 @@ body {
   width: auto;
 }
 
-
 #controls {
   font-family: 'Slackey', cursive;
-
 }
 
 .container {
@@ -76,7 +69,6 @@ body {
   align-items: center;
   justify-content: center;
   background-color: #F37748; //FCB251
-
 }
 
 .navTutorial {
@@ -95,18 +87,16 @@ body {
   background-color: #651285;
 }
 
-
 .headers {
   margin: 0;
   color: white;
-  text-shadow: 1px 3px 3px black,
-  0 0 .5em black,
-  0 0 0.2em black;
+  text-shadow: 1px 3px 3px black, 0 0 .5em black, 0 0 0.2em black;
 }
 
 h1 {
   font-size: 5em;
 }
+
 h2 {
   font-size: 3em;
 }
@@ -119,35 +109,33 @@ h2 {
   display: flex;
   align-items: center;
   justify-content: center;
-  height:20vw;
+  height: 20vw;
   color: white;
   text-decoration: none;
   font-size: 3em;
-  text-shadow: 2px 2px rgb(0, 0, 0);
-  // transform: rotate(-0.25turn)
+  text-shadow: 2px 2px rgb(0, 0, 0); // transform: rotate(-0.25turn)
 }
 
 .tutorialLink {
   display: flex;
   align-items: center;
   justify-content: center;
-  height:20vw;
+  height: 20vw;
   color: white;
   text-decoration: none;
   font-size: 3em;
-  text-shadow: 2px 2px rgb(0, 0, 0);
-  // transform: rotate(-0.25turn)
+  text-shadow: 2px 2px rgb(0, 0, 0); // transform: rotate(-0.25turn)
 }
+
 .settingsLink {
   display: flex;
   align-items: center;
   justify-content: center;
-  height:20vw;
+  height: 20vw;
   color: white;
   text-decoration: none;
   font-size: 3em;
-  text-shadow: 2px 2px rgb(0, 0, 0);
-  // transform: rotate(-0.25turn)
+  text-shadow: 2px 2px rgb(0, 0, 0); // transform: rotate(-0.25turn)
 }
 
 .tutorialLink:active {
@@ -165,17 +153,14 @@ h2 {
 .containerLob {
   background-color: #FC9611;
   width: 80vw;
-  height: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
-
 }
 
 .containerTut {
   background-color: #84BCDA;
   width: 80vw;
-  height: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -184,8 +169,20 @@ h2 {
 .containerSet {
   background-color: #A04EBF;
   width: 80vw;
-  height: 100vw;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
+
+@media only screen and (min-device-width: 375px) and (max-device-width: 667px) {
+  .lobbyLink {
+    transform: rotate(-0.25turn)
+  }
+  .settingsLink {
+    transform: rotate(-0.25turn)
+  }
+  .tutorialLink {
+    transform: rotate(-0.25turn)
+  }
+}
+
