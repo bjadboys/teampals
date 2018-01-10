@@ -1,5 +1,6 @@
 body {
   font-family: 'Slackey', cursive; 
+  margin: 0;
 
   label {
     display: block;
@@ -70,7 +71,7 @@ body {
 }
 
 .navLobby {
-  height: 50vh;
+  height: 33.333vh;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -79,51 +80,112 @@ body {
 }
 
 .navTutorial {
-  height: 50vh;
+  height: 33.333vh;
   display: flex;
   align-items: center;
   justify-content: center;
   background-color: #067BC2;
 }
 
+.navSettings {
+  height: 33.333vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #651285;
+}
+
+
 .headers {
-  font-size: 5em;
+  margin: 0;
   color: white;
   text-shadow: 1px 3px 3px black,
   0 0 .5em black,
   0 0 0.2em black;
 }
 
+h1 {
+  font-size: 5em;
+}
+h2 {
+  font-size: 3em;
+}
+
 .containerRow {
   display: flex;
 }
 
-.navs {
+.lobbyLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height:20vw;
   color: white;
   text-decoration: none;
   font-size: 3em;
   text-shadow: 2px 2px rgb(0, 0, 0);
-  transform: rotate(-0.25turn)
+  // transform: rotate(-0.25turn)
 }
 
-.navs:active {
-  transform: rotate(-.15turn)
+.tutorialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height:20vw;
+  color: white;
+  text-decoration: none;
+  font-size: 3em;
+  text-shadow: 2px 2px rgb(0, 0, 0);
+  // transform: rotate(-0.25turn)
+}
+.settingsLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height:20vw;
+  color: white;
+  text-decoration: none;
+  font-size: 3em;
+  text-shadow: 2px 2px rgb(0, 0, 0);
+  // transform: rotate(-0.25turn)
+}
 
+.tutorialLink:active {
+  transform: rotate(-.15turn)
+}
+
+.lobbyLink:active {
+  transform: rotate(-.15turn)
+}
+
+.settingsLink:active {
+  transform: rotate(-.15turn)
 }
 
 .containerLob {
   background-color: #FC9611;
   width: 80vw;
+  height: 100vw;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+
 }
 
 .containerTut {
   background-color: #84BCDA;
   width: 80vw;
+  height: 100vw;
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: center;
+}
 
+.containerSet {
+  background-color: #A04EBF;
+  width: 80vw;
+  height: 100vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }

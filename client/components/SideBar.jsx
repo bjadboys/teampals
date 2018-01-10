@@ -1,46 +1,73 @@
 import React, {Component} from 'react'
-import {NavLink} from 'react-router-dom'
+import {withRouter, NavLink} from 'react-router-dom'
 
-export default class SideBar extends Component {
-  constructor() {
-    super()
-    this.state = {
-      tutorial: true
-    }
-    this.handleClick = this.handleClick.bind(this)
-    this.lobby = this.lobby.bind(this)
-    this.tutorial = this.tutorial.bind(this)
+class SideBar extends Component {
+  constructor(props) {
+    super(props)
   }
 
   lobby() {
     return (
       <div className="navLobby">
         <NavLink
-          onClick={()=>{this.handleClick(false)}} 
-          className='navs' to="/lobby">Lobby</NavLink>
+          className='lobbyLink' to="/lobby"
+          >Lobby
+        </NavLink>
       </div>
     )
-  }
-
-  handleClick(bool) {
-    this.setState({tutorial: bool})
   }
 
   tutorial(){
     return (
       <div className="navTutorial">
-        <NavLink onClick={() => {this.handleClick(true)}} className='navs' to="/tutorial">Tutorial</NavLink>
+        <NavLink 
+          className='tutorialLink' to="/tutorial"
+          >Tutorial
+        </NavLink>
       </div>
     )
   }
 
+  settings(){
+    return (
+      <div className="navSettings">
+        <NavLink 
+          className='settingsLink' to="/settings"
+          >Settings
+        </NavLink>
+      </div>
+    )
+  }
 
   render(){
-    return (
-      <div className="navContainer">
-        {this.state.tutorial ? this.tutorial() : this.lobby()}
-        {this.state.tutorial ? this.lobby() : this.tutorial()}}
-      </div>
-    )
+    console.log(this.props)
+    if(this.props.location.pathname === "/tutorial"){
+      return (
+        <div className="navContainer">
+          {this.tutorial()}
+          {this.lobby()}
+          {this.settings()}
+        </div>
+      )
+    }
+    else if(this.props.location.pathname === "/settings"){
+      return (
+        <div className="navContainer">
+          {this.settings()}
+          {this.tutorial()}
+          {this.lobby()}
+        </div>
+      )
+    } else {
+      return (
+        <div className="navContainer">
+          {this.lobby()}
+          {this.settings()} 
+          {this.tutorial()}
+        </div>
+      )
+    }   
   }
 }
+
+export default withRouter(SideBar)
