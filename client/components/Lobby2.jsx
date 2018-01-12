@@ -44,10 +44,17 @@ class Lobby extends React.Component {
                 <input className='inputField'type='text'
                     // disabled={this.props.joined}
                     placeholder = "Name"
+                    maxlength="13"
                     onChange={(event) => { this.handleNameChange(event.target.value) }}
                 />
             </div>)
     }
 }
 
-export default connect()(Lobby)
+const mapState = (state) => ({
+    lobby: state.lobby,
+    joined: state.game.joined,
+    lobbyFull: state.game.lobbyFull
+  })
+  
+export default connect(mapState)(Lobby)

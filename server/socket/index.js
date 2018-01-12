@@ -14,8 +14,9 @@ module.exports = (io, server) => {
   const playerHealth = 100
 
   server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
-  let bulletArray = [];
+  let bulletArray = []
   let players = []
+  let freeCharacterIDs = [1,2,3,4]
   server.gameInProgress = false
   server.joined = false
   const defaultPlayers = [{
@@ -55,6 +56,8 @@ module.exports = (io, server) => {
 
     if (server.gameInProgress) {
       socket.emit('gameInProgress')
+    } else {
+      socket.emit('addPlayersToLobby', getAllPlayers())
     }
 
     socket.on('newplayer', function (name) {
