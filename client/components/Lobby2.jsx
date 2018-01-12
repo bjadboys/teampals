@@ -23,12 +23,7 @@ class Lobby extends React.Component {
     constructor() {
         super()
         this.state = {
-            name: '',
-            open: false,
-            inputFire: 'SPACEBAR',
-            inputSmash: 'Z',
-            inputPickup: 'X',
-            inputLockOn: 'C'
+            name: ''
         }
         this.handleNameChange = this.handleNameChange.bind(this)
     }
@@ -38,7 +33,6 @@ class Lobby extends React.Component {
     }
 
     render() {
-        console.log("here")
         return (
             <div className='containerLob'>
                 <h1 className='headers'>
