@@ -2,10 +2,52 @@ import React, {Component} from 'react'
 import SideBar from './SideBar.jsx'
 import {Switch, Route, BrowserRouter} from 'react-router-dom'
 
+import socket from '../js/socket'
+
 import Lobby from './Lobby2.jsx'
 import Tutorial from './Tutorial.jsx'
 import Settings from './Settings.jsx'
 
+const ClientLobby = {}
+ClientLobby.socket = socket
+
+// Local Lobby specific actions
+ClientLobby.askNewPlayer = function (name) {
+  ClientLobby.socket.emit('newplayer', name);
+};
+
+ClientLobby.startGame = function() {
+  ClientLobby.socket.emit('startGame')
+}
+
+// General Lobby actions
+ClientLobby.removePlayerLobbyBJAD = function () {
+  ClientLobby.socket.emit('playerLeavesLobby')
+}
+
+ClientLobby.socket.on('addPlayersToLobby', function(data){
+  store.dispatch(addPlayersAction(data))
+})
+
+ClientLobby.socket.on('removePlayerFromLobby', function(data){
+  store.dispatch(removePlayerAction(data))
+})
+
+ClientLobby.socket.on('gameHasStarted', function(){
+  const state = store.getState()
+  if (state.game.joined) {
+    store.dispatch(startGameAction())
+  }
+})
+
+ClientLobby.socket.on('lobbyFull', function(){
+  store.dispatch(lobbyFullAction())
+  store.dispatch(leftGameAction())
+})
+
+ClientLobby.socket.on('gameInProgress', function(){
+  store.dispatch(gameInProgressAction())
+})
 
 class Home extends Component {
 
@@ -26,10 +68,4 @@ class Home extends Component {
 
 }
 
-const HomeWrapper = () => {
-  return (<BrowserRouter>
-    <Home />
-  </BrowserRouter>)
-}
-
-export default HomeWrapper
+export default Home
