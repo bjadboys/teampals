@@ -1,6 +1,7 @@
 import React, {Component} from 'react'
 import SideBar from './SideBar.jsx'
 import {Switch, Route, BrowserRouter} from 'react-router-dom'
+import {connect} from 'react-redux'
 
 import socket from '../js/socket'
 
@@ -11,20 +12,7 @@ import Settings from './Settings.jsx'
 const ClientLobby = {}
 ClientLobby.socket = socket
 
-// Local Lobby specific actions
-ClientLobby.askNewPlayer = function (name) {
-  ClientLobby.socket.emit('newplayer', name);
-};
-
-ClientLobby.startGame = function() {
-  ClientLobby.socket.emit('startGame')
-}
-
 // General Lobby actions
-ClientLobby.removePlayerLobbyBJAD = function () {
-  ClientLobby.socket.emit('playerLeavesLobby')
-}
-
 ClientLobby.socket.on('addPlayersToLobby', function(data){
   store.dispatch(addPlayersAction(data))
 })
@@ -62,10 +50,28 @@ class Home extends Component {
             <Route path='/settings' component={Settings} />
           </Switch>
       </div>
-
     )
   }
-
 }
 
-export default Home
+const mapState = (state) => ({
+  lobby: state.lobby,
+  localGame: state.game.localGame,
+  serverGame: state.game.serverGame,
+  joined: state.game.joined,
+  lobbyFull: state.game.lobbyFull
+})
+
+const mapDispatch = (dispatch) => ({
+  handleJoinLobby() {
+    dispatch(joinedGameAction())
+  },
+  handleLeaveLobby() {
+    dispatch(leftGameAction())
+  },
+  handleSubmit(keys) {
+    dispatch(getKeysAction(keys))
+  }
+})
+
+export default connect(mapState, mapDispatch)(Home)

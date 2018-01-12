@@ -17,6 +17,19 @@ body {
   }
 }
 
+.inputField {
+    font-family: 'Slackey', cursive; 
+    font-size: 2em;
+    color: white;
+    text-shadow: 1px 1px rgb(0, 0, 0);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #F37748;
+    width: 275px;
+    outline: none;
+    padding: 0px 0px 0px 0px;
+}
+
 #buttonHolder {
   display: flex;
   flex-direction: row;
