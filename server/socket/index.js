@@ -17,7 +17,6 @@ module.exports = (io, server) => {
   //Gamestate variables
   let bulletArray = []
   let players = []
-  let freeCharacterIDs = [1,2,3,4]
   server.gameInProgress = false
   server.joined = false
   const defaultPlayers = [{
