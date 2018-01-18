@@ -12,8 +12,9 @@ module.exports = (io, server) => {
   let bulletSpeed = 3.5
   let bulletSpeedUpgradePercentage = 1.2
   const playerHealth = 100
-
-  server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
+  //Keep track of last id assigned to block
+  server.lastBlockIdBJAD = 0; 
+  //Gamestate variables
   let bulletArray = []
   let players = []
   let freeCharacterIDs = [1,2,3,4]
