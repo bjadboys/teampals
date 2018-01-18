@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import store, {leftGameAction, joinedGameAction} from '../store/'
+import store, {leftGameAction, joinedGameAction, changeNameAction, changeSpriteAction} from '../store/'
 
 
 import socket from '../js/socket'
@@ -25,15 +25,10 @@ ClientLobby.removePlayerLobbyBJAD = function () {
 class Lobby extends React.Component {
     constructor() {
         super()
-        this.state = {
-            name: ''
-        }
-        this.handleNameChange = this.handleNameChange.bind(this)
+        // this.props.handleNameChange = this.handleNameChange.bind(this)
     }
 
-    handleNameChange(input) {
-        this.setState({name: input})
-    }
+
 
     joinGameButton() {
         if (!this.props.joined) {
@@ -41,7 +36,7 @@ class Lobby extends React.Component {
                     <button
                     onClick={() => {
                       this.props.handleJoinLobby()
-                      ClientLobby.askNewPlayer(this.state.name)
+                      ClientLobby.askNewPlayer(this.props.playerName)
                     }} >Join</button>
                   </div>)
         } else {
@@ -87,7 +82,8 @@ class Lobby extends React.Component {
                     disabled={this.props.joined}
                     placeholder = "Name"
                     maxLength="13"
-                    onChange={(event) => { this.handleNameChange(event.target.value) }}
+                    value = {this.props.playerName}
+                    onChange={(event) => { this.props.handleNameChange(event.target.value) }}
                 />
                 {this.joinGameButton()}
 
@@ -98,7 +94,8 @@ class Lobby extends React.Component {
 const mapState = (state) => ({
     lobby: state.lobby,
     joined: state.game.joined,
-    lobbyFull: state.game.lobbyFull
+    lobbyFull: state.game.lobbyFull,
+    playerName: state.player.name
 })
 
 const mapDispatch = (dispatch) => ({
@@ -107,8 +104,10 @@ const mapDispatch = (dispatch) => ({
     },
     handleLeaveLobby() {
         dispatch(leftGameAction())
+    },
+    handleNameChange(input){
+        dispatch(changeNameAction(input))
     }
 })
-
   
 export default connect(mapState,mapDispatch)(Lobby)
