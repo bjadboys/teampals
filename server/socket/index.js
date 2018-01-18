@@ -187,6 +187,7 @@ module.exports = (io, server) => {
         players = removePlayer(socket.player.id)
         socket.player = null
       }
+      io.emit('addPlayersToLobby', getAllPlayers())
     });
 
     socket.on('playerLeavesLobby', function () {

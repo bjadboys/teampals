@@ -77,7 +77,7 @@ class Lobby extends React.Component {
                 <h2 className='headers'>
                     Lobby!
                 </h2>
-                {freeSpriteIDsArr.length ? freeSpriteIDsArr.map(id=> (<div key={id}>{id}</div>)): <div>no free sprites</div>}
+                {freeSpriteIDsArr.length ? freeSpriteIDsArr.map(id=> (<div key={id}>{id}</div>)): <div>Lobby Full</div>}
                 <input className='inputField'type='text'
                     disabled={this.props.joined}
                     placeholder = "Name"
