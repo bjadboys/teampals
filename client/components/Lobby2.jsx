@@ -1,6 +1,6 @@
 import React from 'react'
 import {connect} from 'react-redux'
-import store, {leftGameAction, joinedGameAction, changeNameAction, changeSpriteAction} from '../store/'
+import store, {leftGameAction, changeNameAction, changeSpriteAction} from '../store/'
 
 
 import socket from '../js/socket'
@@ -26,12 +26,17 @@ class Lobby extends React.Component {
     constructor() {
         super()
     }
+    disableCheck(){
+        if(this.props.playerName.length === 0 || this.props.playerSprite === 0) return true
+        else return false
+    }
     joinGameButton() {
+        let disabled = this.disableCheck()
         if (!this.props.joined) {
           return (<div>
                     <button
+                    disabled={disabled}
                     onClick={() => {
-                      this.props.handleJoinLobby()
                       ClientLobby.askNewPlayer({name: this.props.playerName, spriteID:this.props.playerSprite})
                     }} >Join</button>
                   </div>)
@@ -51,7 +56,6 @@ class Lobby extends React.Component {
         lobby.forEach(player=>{
             takenIdArr.push(player.id)
         })
-        console.log(takenIdArr)
         return takenIdArr
     }
 
@@ -64,7 +68,6 @@ class Lobby extends React.Component {
 
     render() {
         const freeSpriteIDsArr = this.freeSpriteIDs(this.getTakenIDs(this.props.lobby))
-        console.log(this.props.playerSprite)
         return (
             <div className='containerLob'>
                 <h1 className='headers'>
@@ -103,9 +106,6 @@ const mapState = (state) => ({
 })
 
 const mapDispatch = (dispatch) => ({
-    handleJoinLobby() {
-        dispatch(joinedGameAction())
-    },
     handleLeaveLobby() {
         dispatch(leftGameAction())
     },

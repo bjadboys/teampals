@@ -72,8 +72,10 @@ module.exports = (io, server) => {
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
         io.emit('addPlayersToLobby', getAllPlayers())
-        console.log("YO",players)
-      } 
+        socket.emit('joinedGame')
+      } else {
+        socket.emit('faliedJoin')
+      }
     })
 
     socket.on('startGame', function () {

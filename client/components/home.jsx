@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import SideBar from './SideBar.jsx'
 import {Switch, Route, BrowserRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
-import store, { getKeysAction, addPlayersAction, lobbyFullAction, removePlayerAction, startGameAction, gameInProgressAction, leftGameAction, joinedGameAction} from '../store/'
+import store, { getKeysAction, addPlayersAction, lobbyFullAction, removePlayerAction, startGameAction, gameInProgressAction, leftGameAction, joinedGameAction, changeSpriteAction} from '../store/'
 
 
 import socket from '../js/socket'
@@ -17,6 +17,14 @@ ClientLobby.socket = socket
 // General Lobby actions
 ClientLobby.socket.on('addPlayersToLobby', function(data){
   store.dispatch(addPlayersAction(data))
+})
+
+ClientLobby.socket.on('joinedGame', function(){
+  store.dispatch(joinedGameAction())
+})
+
+ClientLobby.socket.on('failedJoin', function(){
+  store.dispatch(changeSpriteAction(0))
 })
 
 ClientLobby.socket.on('removePlayerFromLobby', function(data){
