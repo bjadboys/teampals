@@ -60,11 +60,12 @@ module.exports = (io, server) => {
       socket.emit('addPlayersToLobby', getAllPlayers())
     }
 
-    socket.on('newplayer', function (name) {
+    socket.on('newplayer', function (potentialPlayer) {
       const available = findAvailablePlayerIds(players)
-      if (available) {
-        socket.player = R.clone(available)
-        socket.player.name = name
+      console.log(available)
+      if (available[potentialPlayer.spriteID]) {
+        socket.player = R.clone(defaultPlayers[potentialPlayer.spriteID])
+        socket.player.name = potentialPlayer.name
         socket.player.direction = 'down'
         socket.player.health = playerHealth
         socket.player.level = 0
@@ -72,9 +73,7 @@ module.exports = (io, server) => {
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
         io.emit('addPlayersToLobby', getAllPlayers())
-      } else {
-        socket.emit('lobbyFull')
-      }
+      } 
     })
 
     socket.on('startGame', function () {
@@ -276,17 +275,17 @@ module.exports = (io, server) => {
       4: true
     }
     playersArray.forEach(player => {playersObj[player.id] = false})
-    return getAvailablePlayer(playersObj);
+    return playersObj
   }
-
-  function getAvailablePlayer(playersObj) {
-    const availableId = Object.keys(playersObj).find(id => {
-      return playersObj[id]
-    })
-    return defaultPlayers.find(player => {
-      return player.id === Number(availableId)
-    })
-  }
+// No longer necessary
+  // function getAvailablePlayer(playersObj) {
+  //   const availableId = Object.keys(playersObj).find(id => {
+  //     return playersObj[id]
+  //   })
+  //   return defaultPlayers.find(player => {
+  //     return player.id === Number(availableId)
+  //   })
+  // }
 
 
   function resetGameFunc(socket){
