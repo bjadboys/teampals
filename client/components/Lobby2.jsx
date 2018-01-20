@@ -66,6 +66,11 @@ class Lobby extends React.Component {
         })
     }
 
+    buttonStyler(key,playerSprite){
+        if(key === playerSprite) return {backgroundColor: "blue"}
+        else return {backgroundColor: "white"}
+    }
+
     render() {
         const freeSpriteIDsArr = this.freeSpriteIDs(this.getTakenIDs(this.props.lobby))
         return (
@@ -77,16 +82,18 @@ class Lobby extends React.Component {
                     Lobby!
                 </h2>
                 {freeSpriteIDsArr.length ? 
-                    <select
-                        value = {this.props.playerSprite}
-                        onChange = {event => this.props.handleSpriteChange(event.target.value)}
-                    >
-                        <option value={0}>None</option>
-                        {freeSpriteIDsArr.map(id=> (<option key={id} value={(id)}>{id}</option>))}
-                    </select>
+                    freeSpriteIDsArr.map(id=> (<button 
+                            style={this.buttonStyler(id,this.props.playerSprite)}
+                            disabled = {this.props.joined}
+                            onClick = {(event)=>{
+                                this.props.handleSpriteChange(id)}}
+                            key={id} 
+                            >
+                        {id}
+                        </button>))
                     : <div>Lobby Full</div>}
                 <input className='inputField'type='text'
-                    disabled={this.props.joined}
+                    disabled = {this.props.joined}
                     placeholder = "Name"
                     maxLength="13"
                     value = {this.props.playerName}
