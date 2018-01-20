@@ -25,18 +25,14 @@ ClientLobby.removePlayerLobbyBJAD = function () {
 class Lobby extends React.Component {
     constructor() {
         super()
-        // this.props.handleNameChange = this.handleNameChange.bind(this)
     }
-
-
-
     joinGameButton() {
         if (!this.props.joined) {
           return (<div>
                     <button
                     onClick={() => {
                       this.props.handleJoinLobby()
-                      ClientLobby.askNewPlayer(this.props.playerName)
+                      ClientLobby.askNewPlayer({name: this.props.playerName, spriteID:this.props.playerSprite})
                     }} >Join</button>
                   </div>)
         } else {
@@ -68,7 +64,7 @@ class Lobby extends React.Component {
 
     render() {
         const freeSpriteIDsArr = this.freeSpriteIDs(this.getTakenIDs(this.props.lobby))
-        console.log(freeSpriteIDsArr)
+        console.log(this.props.playerSprite)
         return (
             <div className='containerLob'>
                 <h1 className='headers'>
@@ -77,7 +73,15 @@ class Lobby extends React.Component {
                 <h2 className='headers'>
                     Lobby!
                 </h2>
-                {freeSpriteIDsArr.length ? freeSpriteIDsArr.map(id=> (<div key={id}>{id}</div>)): <div>Lobby Full</div>}
+                {freeSpriteIDsArr.length ? 
+                    <select
+                        value = {this.props.playerSprite}
+                        onChange = {event => this.props.handleSpriteChange(event.target.value)}
+                    >
+                        <option value={0}>None</option>
+                        {freeSpriteIDsArr.map(id=> (<option key={id} value={(id)}>{id}</option>))}
+                    </select>
+                    : <div>Lobby Full</div>}
                 <input className='inputField'type='text'
                     disabled={this.props.joined}
                     placeholder = "Name"
@@ -94,8 +98,8 @@ class Lobby extends React.Component {
 const mapState = (state) => ({
     lobby: state.lobby,
     joined: state.game.joined,
-    lobbyFull: state.game.lobbyFull,
-    playerName: state.player.name
+    playerName: state.player.name,
+    playerSprite: state.player.sprite
 })
 
 const mapDispatch = (dispatch) => ({
@@ -107,6 +111,9 @@ const mapDispatch = (dispatch) => ({
     },
     handleNameChange(input){
         dispatch(changeNameAction(input))
+    },
+    handleSpriteChange(spriteID){
+        dispatch(changeSpriteAction(Number(spriteID)))
     }
 })
   

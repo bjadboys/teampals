@@ -62,9 +62,8 @@ module.exports = (io, server) => {
 
     socket.on('newplayer', function (potentialPlayer) {
       const available = findAvailablePlayerIds(players)
-      console.log(available)
       if (available[potentialPlayer.spriteID]) {
-        socket.player = R.clone(defaultPlayers[potentialPlayer.spriteID])
+        socket.player = R.clone(defaultPlayers[potentialPlayer.spriteID-1])
         socket.player.name = potentialPlayer.name
         socket.player.direction = 'down'
         socket.player.health = playerHealth
@@ -73,6 +72,7 @@ module.exports = (io, server) => {
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
         io.emit('addPlayersToLobby', getAllPlayers())
+        console.log("YO",players)
       } 
     })
 
