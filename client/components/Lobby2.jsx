@@ -65,12 +65,15 @@ class Lobby extends React.Component {
 
     buttonStyler(key,playerSprite){
         if(key === playerSprite) return {backgroundColor: "blue"}
-        else return {backgroundColor: "white"}
+        // else return {backgroundColor: "white"}
+    }
+
+    joinedPlayerStyler(key,playerSprite){
+        if(key === playerSprite) return {border: "double"}
     }
 
     render() {
         const freeSpriteIDsArr = this.freeSpriteIDs(this.getTakenIDs(this.props.lobby))
-        console.log(this.props.lobby)
         return (
             <div className='containerLob'>
                 <h1 className='headers'>
@@ -86,7 +89,9 @@ class Lobby extends React.Component {
                         {this.props.lobby.map(player=>(
                             <div 
                                 className="joinedPlayer"
-                                key={player.id}>
+                                key={player.id}
+                                style={this.joinedPlayerStyler(player.id,this.props.playerSprite)}
+                                >
                                 Yo!<br/>
                                 {player.id}<br/>
                                 {player.name}
