@@ -4,7 +4,7 @@ const JOINED_GAME = 'JOINED_GAME'
 const LEFT_GAME = 'LEFT_GAME'
 const GAME_OVER = 'GAME_OVER'
 
-export const actionTypesForTesting = {START_GAME, GAME_IN_PROGRESS, JOINED_GAME, LEFT_GAME, GAME_OVER, LOBBY_FULL}
+export const actionTypesForTesting = {START_GAME, GAME_IN_PROGRESS, JOINED_GAME, LEFT_GAME, GAME_OVER}
 /**
  * INITIAL STATE
  */
@@ -20,7 +20,7 @@ export const gameOverAction = () => ({type: GAME_OVER})
 /**
  * THUNK CREATORS
  */
-const initialState = {localGame: false, serverGame: false, joined: false, lobbyFull: false}
+const initialState = {localGame: false, serverGame: false, joined: false }
 /**
  * REDUCER
  */
@@ -43,7 +43,6 @@ export default function (state = initialState, action) {
       newState.localGame = false
       newState.serverGame = false
       newState.joined = false
-      newState.lobbyFull = false
       return newState
     default:
       return state

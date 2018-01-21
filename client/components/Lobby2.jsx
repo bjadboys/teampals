@@ -23,9 +23,6 @@ ClientLobby.removePlayerLobbyBJAD = function () {
 }
 
 class Lobby extends React.Component {
-    constructor() {
-        super()
-    }
     disableCheck(){
         if(this.props.playerName.length === 0 || this.props.playerSprite === 0) return true
         else return false
@@ -72,8 +69,8 @@ class Lobby extends React.Component {
     }
 
     render() {
-        console.log(this.props.lobby)
         const freeSpriteIDsArr = this.freeSpriteIDs(this.getTakenIDs(this.props.lobby))
+        console.log(this.props.lobby)
         return (
             <div className='containerLob'>
                 <h1 className='headers'>
@@ -82,24 +79,48 @@ class Lobby extends React.Component {
                 <h2 className='headers'>
                     Lobby!
                 </h2>
-                {freeSpriteIDsArr.length ? 
-                    freeSpriteIDsArr.map(id=> (<button 
-                            style={this.buttonStyler(id,this.props.playerSprite)}
-                            disabled = {this.props.joined}
-                            onClick = {(event)=>{
-                                this.props.handleSpriteChange(id)}}
-                            key={id} 
-                            >
-                        {id}
-                        </button>))
-                    : <div>Lobby Full</div>}
-                <input className='inputField'type='text'
-                    disabled = {this.props.joined}
-                    placeholder = "Name"
-                    maxLength="13"
-                    value = {this.props.playerName}
-                    onChange={(event) => { this.props.handleNameChange(event.target.value) }}
-                />
+                {this.props.lobby.length ?
+                <div className="playerHolder">
+                    <h3>Joined Players</h3>
+                    <div className="playerLobby">
+                        {this.props.lobby.map(player=>(
+                            <div 
+                                className="joinedPlayer"
+                                key={player.id}>
+                                Yo!<br/>
+                                {player.id}<br/>
+                                {player.name}
+                            </div>
+                        ))}
+                    </div>
+                </div>
+                :null}
+                {freeSpriteIDsArr.length && !this.props.joined ? 
+                    <div className="characterHolder">
+                        <h3>Available Characters</h3>
+                        {/* Turn buttons into sprite images or GIFs */}
+                        <div className="availableCharacters">
+                            {freeSpriteIDsArr.map(id=> (<button 
+                                    style={this.buttonStyler(id,this.props.playerSprite)}
+                                    disabled = {this.props.joined}
+                                    onClick = {(event)=>{
+                                        this.props.handleSpriteChange(id)}}
+                                    key={id} 
+                                    >
+                                {id}
+                                </button>))}
+                        </div>
+                    </div>
+                    : null}
+                {!this.props.joined ?
+                    <input className='inputField'type='text'
+                        disabled = {this.props.joined}
+                        placeholder = "Name"
+                        maxLength="13"
+                        value = {this.props.playerName}
+                        onChange={(event) => { this.props.handleNameChange(event.target.value) }}
+                    />
+                :null}
                 {this.joinGameButton()}
 
             </div>)

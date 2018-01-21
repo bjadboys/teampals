@@ -17,6 +17,47 @@ body {
   }
 }
 
+.characterHolder {
+  display: flex;
+  flex-direction: column;
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border-color: #F37748;
+  border-style: outset;
+  width: 50vw;
+}
+
+.availableCharacters {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.playerHolder {
+  display: flex;
+  flex-direction: column;
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border-color: #F37748;
+  border-style: outset;
+  width: 50vw;
+}
+
+.playerLobby {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.joinedPlayer {
+  border-style: solid;
+  border-color: #F37748;
+}
+
 .inputField {
     font-family: 'Slackey', cursive; 
     font-size: 2em;
@@ -45,11 +86,6 @@ body {
   align-content: center;
 }
 
-// a {
-//   text-decoration-color: white;
-
-// }
-
 #central {
   display: flex;
   flex-direction: column
@@ -68,7 +104,6 @@ body {
 
 #controls {
   font-family: 'Slackey', cursive;
-
 }
 
 .container {
@@ -122,6 +157,12 @@ h1 {
 }
 h2 {
   font-size: 3em;
+}
+h3 {
+  font-size: 1.5em;
+  margin: 0;
+  color: white;
+  text-shadow: 2px 2px rgb(0, 0, 0);
 }
 
 .containerRow {

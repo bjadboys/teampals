@@ -46,7 +46,7 @@ ClientLobby.socket.on('gameInProgress', function(){
 class Home extends Component {
 
   render(){
-    return(
+    if (!this.props.localGame) return(
       <div className="containerRow">
         <SideBar />
           <Switch>
