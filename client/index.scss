@@ -71,6 +71,13 @@ body {
     padding: 0px 0px 0px 0px;
 }
 
+.lobbyActions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 30vw;
+}
+
 #buttonHolder {
   display: flex;
   flex-direction: row;

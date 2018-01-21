@@ -3,7 +3,7 @@ import SideBar from './SideBar.jsx'
 import {Switch, Route, BrowserRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
 import store, { getKeysAction, addPlayersAction, removePlayerAction, startGameAction, gameInProgressAction, leftGameAction, joinedGameAction, changeSpriteAction} from '../store/'
-
+import GameScreen from './game'
 
 import socket from '../js/socket'
 
@@ -38,7 +38,6 @@ ClientLobby.socket.on('gameHasStarted', function(){
   }
 })
 
-
 ClientLobby.socket.on('gameInProgress', function(){
   store.dispatch(gameInProgressAction())
 })
@@ -56,8 +55,16 @@ class Home extends Component {
             <Route path='/settings' component={Settings} />
           </Switch>
       </div>
-    )
-  }
+    ) 
+    else if (this.props.joined && this.props.localGame && this.props.serverGame) {
+      return (
+        <div>
+          <GameScreen />
+        </div>
+      )
+    }
+    else return null
+  } 
 }
 
 const mapState = (state) => ({
