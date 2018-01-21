@@ -2,7 +2,7 @@ import React, {Component} from 'react'
 import SideBar from './SideBar.jsx'
 import {Switch, Route, BrowserRouter} from 'react-router-dom'
 import {connect} from 'react-redux'
-import store, { getKeysAction, addPlayersAction, lobbyFullAction, removePlayerAction, startGameAction, gameInProgressAction, leftGameAction, joinedGameAction, changeSpriteAction} from '../store/'
+import store, { getKeysAction, addPlayersAction, removePlayerAction, startGameAction, gameInProgressAction, leftGameAction, joinedGameAction, changeSpriteAction} from '../store/'
 
 
 import socket from '../js/socket'
@@ -38,10 +38,6 @@ ClientLobby.socket.on('gameHasStarted', function(){
   }
 })
 
-ClientLobby.socket.on('lobbyFull', function(){
-  store.dispatch(lobbyFullAction())
-  store.dispatch(leftGameAction())
-})
 
 ClientLobby.socket.on('gameInProgress', function(){
   store.dispatch(gameInProgressAction())
@@ -69,7 +65,6 @@ const mapState = (state) => ({
   localGame: state.game.localGame,
   serverGame: state.game.serverGame,
   joined: state.game.joined,
-  lobbyFull: state.game.lobbyFull
 })
 
 const mapDispatch = (dispatch) => ({

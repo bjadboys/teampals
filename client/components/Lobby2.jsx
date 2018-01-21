@@ -72,6 +72,7 @@ class Lobby extends React.Component {
     }
 
     render() {
+        console.log(this.props.lobby)
         const freeSpriteIDsArr = this.freeSpriteIDs(this.getTakenIDs(this.props.lobby))
         return (
             <div className='containerLob'>

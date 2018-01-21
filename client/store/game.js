@@ -3,7 +3,6 @@ const GAME_IN_PROGRESS = 'GAME_IN_PROGRESS'
 const JOINED_GAME = 'JOINED_GAME'
 const LEFT_GAME = 'LEFT_GAME'
 const GAME_OVER = 'GAME_OVER'
-const LOBBY_FULL = 'LOBBY_FULL'
 
 export const actionTypesForTesting = {START_GAME, GAME_IN_PROGRESS, JOINED_GAME, LEFT_GAME, GAME_OVER, LOBBY_FULL}
 /**
@@ -18,7 +17,6 @@ export const gameInProgressAction = () => ({type: GAME_IN_PROGRESS})
 export const joinedGameAction = () => ({type: JOINED_GAME})
 export const leftGameAction = () => ({type: LEFT_GAME})
 export const gameOverAction = () => ({type: GAME_OVER})
-export const lobbyFullAction = () => ({type: LOBBY_FULL})
 /**
  * THUNK CREATORS
  */
@@ -37,9 +35,6 @@ export default function (state = initialState, action) {
       return newState
     case GAME_IN_PROGRESS:
       newState.serverGame = true
-      return newState
-    case LOBBY_FULL:
-      newState.lobbyFull = true;
       return newState
     case START_GAME:
       newState.localGame = true
