@@ -90,7 +90,6 @@ class Lobby extends React.Component {
 
     render() {
         const freeSpriteIDsArr = this.freeSpriteIDs(this.getTakenIDs(this.props.lobby))
-        console.log(this.props.serverGame)
         return (
             <div className='containerLob'>
                 <h1 className='headers'>
@@ -100,7 +99,7 @@ class Lobby extends React.Component {
                     Lobby!
                 </h2>
                 {!this.props.serverGame ?
-                    <div>
+                    <div className="lobbySubContainer">
                         {
                             this.props.lobby.length ?
                                 <div className="playerHolder">
@@ -156,6 +155,7 @@ class Lobby extends React.Component {
                         </div>
                     </div>
                     : <div>Game in progress</div>}
+                <a className="githubLink" href="https://github.com/bjadboys/teampals"><i id="icon" className="fab fa-github-square" /></a>
             </div>)
     }
 }
