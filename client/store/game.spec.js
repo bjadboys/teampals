@@ -3,12 +3,11 @@ import gameReducer, {actionTypesForTesting} from './game'
 
 describe('Game', () => {
 
-  const initialState = {localGame: false, serverGame: false, joined: false, lobbyFull: false}
-  const gameInProgressJoinedState = { localGame: false, serverGame: true, joined: true, lobbyFull: false }
-  const localGameState = { localGame: true, serverGame: true, joined: true, lobbyFull: false }
-  const joinedState = { localGame: false, serverGame: false, joined: true, lobbyFull: false }
-  const lobbyFullState = { localGame: false, serverGame: false, joined: false, lobbyFull: true }
-  const gameInProgressState = { localGame: false, serverGame: true, joined: false, lobbyFull: false }
+  const initialState = {localGame: false, serverGame: false, joined: false, }
+  const gameInProgressJoinedState = { localGame: false, serverGame: true, joined: true }
+  const localGameState = { localGame: true, serverGame: true, joined: true }
+  const joinedState = { localGame: false, serverGame: false, joined: true }
+  const gameInProgressState = { localGame: false, serverGame: true, joined: false }
 
   describe('Game reducer', () => {
     it('should return the initial state', () => {
@@ -17,11 +16,6 @@ describe('Game', () => {
 
       it('should return true if a player has joined', () => {
         expect(gameReducer(initialState, {type: actionTypesForTesting.JOINED_GAME})).toEqual(joinedState)
-      })
-
-
-      it('should return true if a player has tried to join a full lobby', () => {
-        expect(gameReducer(initialState, {type: actionTypesForTesting.LOBBY_FULL})).toEqual(lobbyFullState)
       })
 
     it('should return false if a player has left the lobby', () => {

@@ -40,7 +40,7 @@ class SideBar extends Component {
   }
 
   render(){
-    if (this.props.location.pathname === "/tutorial"){
+    if(this.props.location.pathname === "/tutorial"){
       return (
         <div className="navContainer">
           {this.tutorial()}

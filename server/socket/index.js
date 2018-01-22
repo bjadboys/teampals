@@ -12,9 +12,10 @@ module.exports = (io, server) => {
   let bulletSpeed = 3.5
   let bulletSpeedUpgradePercentage = 1.2
   const playerHealth = 100
-
-  server.lastBlockIdBJAD = 0; //Keep track of last id assigned to block
-  let bulletArray = [];
+  //Keep track of last id assigned to block
+  server.lastBlockIdBJAD = 0; 
+  //Gamestate variables
+  let bulletArray = []
   let players = []
   server.gameInProgress = false
   server.joined = false
@@ -55,13 +56,15 @@ module.exports = (io, server) => {
 
     if (server.gameInProgress) {
       socket.emit('gameInProgress')
+    } else {
+      socket.emit('addPlayersToLobby', getAllPlayers())
     }
 
-    socket.on('newplayer', function (name) {
+    socket.on('newplayer', function (potentialPlayer) {
       const available = findAvailablePlayerIds(players)
-      if (available) {
-        socket.player = R.clone(available)
-        socket.player.name = name
+      if (available[potentialPlayer.spriteID]) {
+        socket.player = R.clone(defaultPlayers[potentialPlayer.spriteID-1])
+        socket.player.name = potentialPlayer.name
         socket.player.direction = 'down'
         socket.player.health = playerHealth
         socket.player.level = 0
@@ -69,8 +72,9 @@ module.exports = (io, server) => {
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
         io.emit('addPlayersToLobby', getAllPlayers())
+        socket.emit('joinedGame')
       } else {
-        socket.emit('lobbyFull')
+        socket.emit('faliedJoin')
       }
     })
 
@@ -184,6 +188,7 @@ module.exports = (io, server) => {
         players = removePlayer(socket.player.id)
         socket.player = null
       }
+      io.emit('addPlayersToLobby', getAllPlayers())
     });
 
     socket.on('playerLeavesLobby', function () {
@@ -272,17 +277,17 @@ module.exports = (io, server) => {
       4: true
     }
     playersArray.forEach(player => {playersObj[player.id] = false})
-    return getAvailablePlayer(playersObj);
+    return playersObj
   }
-
-  function getAvailablePlayer(playersObj) {
-    const availableId = Object.keys(playersObj).find(id => {
-      return playersObj[id]
-    })
-    return defaultPlayers.find(player => {
-      return player.id === Number(availableId)
-    })
-  }
+// No longer necessary
+  // function getAvailablePlayer(playersObj) {
+  //   const availableId = Object.keys(playersObj).find(id => {
+  //     return playersObj[id]
+  //   })
+  //   return defaultPlayers.find(player => {
+  //     return player.id === Number(availableId)
+  //   })
+  // }
 
 
   function resetGameFunc(socket){

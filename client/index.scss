@@ -14,6 +14,67 @@ body {
   }
 }
 
+.characterHolder {
+  display: flex;
+  flex-direction: column;
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border-color: #F37748;
+  border-style: outset;
+  width: 50vw;
+}
+
+.availableCharacters {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.playerHolder {
+  display: flex;
+  flex-direction: column;
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border-color: #F37748;
+  border-style: outset;
+  width: 50vw;
+}
+
+.playerLobby {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.joinedPlayer {
+  border-style: solid;
+  border-color: #F37748;
+}
+
+.inputField {
+    font-family: 'Slackey', cursive; 
+    font-size: 2em;
+    color: white;
+    text-shadow: 1px 1px rgb(0, 0, 0);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #F37748;
+    width: 275px;
+    outline: none;
+    padding: 0px 0px 0px 0px;
+}
+
+.lobbyActions {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  width: 30vw;
+}
+
 #buttonHolder {
   display: flex;
   flex-direction: row;
@@ -29,9 +90,6 @@ body {
   align-content: center;
 }
 
-// a {
-//   text-decoration-color: white;
-// }
 #central {
   display: flex;
   flex-direction: column
@@ -100,6 +158,12 @@ h1 {
 h2 {
   font-size: 3em;
 }
+h3 {
+  font-size: 1.5em;
+  margin: 0;
+  color: white;
+  text-shadow: 2px 2px rgb(0, 0, 0);
+}
 
 .containerRow {
   display: flex;
@@ -156,6 +220,17 @@ h2 {
   display: flex;
   flex-direction: column;
   align-items: center;
+}
+
+.lobbySubContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.githubLink {
+  margin-top: auto;
+  padding-bottom: 5vh;
 }
 
 .containerTut {
