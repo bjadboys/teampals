@@ -74,7 +74,7 @@ module.exports = (io, server) => {
         io.emit('addPlayersToLobby', getAllPlayers())
         socket.emit('joinedGame')
       } else {
-        socket.emit('faliedJoin')
+        socket.emit('failedJoin')
       }
     })
 

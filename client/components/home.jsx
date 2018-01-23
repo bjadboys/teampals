@@ -17,6 +17,10 @@ ClientLobby.socket = socket
 // General Lobby actions
 ClientLobby.socket.on('addPlayersToLobby', function(data){
   store.dispatch(addPlayersAction(data))
+  // const state = store.getState()
+  // if (!state.game.joined) {
+  //   store.dispatch(changeSpriteAction(0))
+  // }
 })
 
 ClientLobby.socket.on('joinedGame', function(){

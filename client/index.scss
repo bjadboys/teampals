@@ -23,6 +23,7 @@ body {
 .characterHolder {
   display: flex;
   flex-direction: column;
+  // align-items: center;
   padding-left: 2em;
   padding-right: 2em;
   padding-top: .25em;
@@ -67,6 +68,30 @@ body {
   border-radius: .5em;
 }
 
+.needSprite {
+  display: flex;
+  width: auto;
+  height: 1em;
+  align-self: center;
+  margin-top: 1em;
+  animation-name: spriteReminder;
+  animation-iteration-count: infinite;
+  animation-duration: 3s;
+  margin-top: .5em;
+}
+
+.needName {
+  display: flex;
+  width: auto;
+  height: 1em;
+  align-self: center;
+  margin-top: 1em;
+  animation-name: nameReminder;
+  animation-iteration-count: infinite;
+  animation-duration: 3s;
+  margin-top: .5em;
+}
+
 .inputField {
     font-family: 'Slackey', cursive; 
     font-size: 2em;
@@ -83,6 +108,7 @@ body {
 .lobbyActions {
   display: flex;
   align-self: center;
+  align-items: center;
   flex-direction: column;
   width: 30vw;
 }
@@ -245,8 +271,17 @@ h3 {
 }
 
 .startGameButton {
+  margin-top: 1em;
   width: 9em;
   height: 6em;
+  background-color: #A04EBF;
+  border-radius: .5em;
+  font-size: 1em;
+  font-family: 'Slackey', cursive;
+  color: white;
+  animation-name: bounce;
+  animation-iteration-count: infinite;
+  animation-duration: 3s;
 }
 
 .disabledButton {
@@ -289,6 +324,30 @@ h3 {
   }
 }
 
+@keyframes nameReminder {
+  0% {
+    font-size: 100%
+  }
+  50% {
+    font-size: 80%
+  }
+  100% {
+    font-size: 100%
+  }
+}
+
+@keyframes spriteReminder {
+  0% {
+    font-size: 80%
+  }
+  50% {
+    font-size: 100%
+  }
+  100% {
+    font-size: 80%
+  }
+}
+
 .leaveGameButton {
   background-color: #84BCDA;
   border-radius: .5em;
@@ -305,8 +364,12 @@ h3 {
   height: 5.6em;
   width: 5.6em;
   padding: 0;
-  // border-radius: 1em;
+}
 
+.lobbyImage {
+  height: 7em;
+  width: 7em;
+  padding: 0;
 }
 
 .tutorialLink:active {
@@ -338,9 +401,9 @@ h3 {
 .githubLink {
   display: flex;
   align-self: flex-end;
-  padding-right: 2.5vw;
+  padding-right: 1em;
   margin-top: auto;
-  padding-bottom: 5vh;
+  padding-bottom: .5em;
 }
 
 .containerTut {

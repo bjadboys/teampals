@@ -43,27 +43,24 @@ class Lobby extends React.Component {
                     }} >Join</button>
             </div>)
         } else {
-            return (<div>
+            return (
                 <button
                     className='leaveGameButton'
                     onClick={() => {
                         this.props.handleLeaveLobby()
                         ClientLobby.removePlayerLobbyBJAD()
                     }}> Leave</button>
-            </div>)
+            )
         }
     }
     startGameButton() {
         return (
-            <div>
-                <button
-                    className={'joinGameButton startGameButton'}
-                    onClick={() => {
-                        ClientLobby.startGame()
-                    }}
-                > Start Game </button>
-            </div>
-
+            <button
+                className='startGameButton'
+                onClick={() => {
+                    ClientLobby.startGame()
+                }}
+            > Start Game </button>
         )
     }
 
@@ -88,8 +85,8 @@ class Lobby extends React.Component {
     }
 
     joinedPlayerStyler(key, playerSprite, joined) {
-        if (key === playerSprite && joined) return { backgroundColor: '#067BC2', border: '.7em solid #067BC2'}
-        else return { border: '.7em solid #F37748'}
+        if (key === playerSprite && joined) return { backgroundColor: '#067BC2', border: '.7em solid #067BC2' }
+        else return { border: '.7em solid #F37748' }
     }
 
     render() {
@@ -112,7 +109,7 @@ class Lobby extends React.Component {
                                                 key={player.id}
                                                 style={this.joinedPlayerStyler(player.id, this.props.playerSprite, this.props.joined)}
                                             >
-                                                <img src={`../../assets/sprites/ButtonImg/${player.id}.png`} />
+                                                <img className="lobbyImage" src={`../../assets/sprites/ButtonImg/${player.id}.png`} />
                                                 {player.name}
                                             </div>
                                         ))}
@@ -137,17 +134,18 @@ class Lobby extends React.Component {
                                         <img className='spriteImage' src={`../../assets/sprites/ButtonImg/${id}.png`} />
                                     </button>))}
                                 </div>
-                                <br />
+                                {this.props.playerSprite === 0 ? <div className="needSprite">Who will you be?!</div> : <br/>}
                                 <div className='joinGameContainer'>
-                                <input className='inputField' type='text'
-                                    disabled={this.props.joined}
-                                    placeholder="Name"
-                                    maxLength="13"
-                                    value={this.props.playerName}
-                                    onChange={(event) => { this.props.handleNameChange(event.target.value) }}
-                                />
-                                {this.joinGameButton()}
+                                    <input className='inputField' type='text'
+                                        disabled={this.props.joined}
+                                        placeholder="Name"
+                                        maxLength="9"
+                                        value={this.props.playerName}
+                                        onChange={(event) => { this.props.handleNameChange(event.target.value) }}
+                                    />
+                                    {this.joinGameButton()}
                                 </div>
+                                {this.props.playerName.length === 0 ? <div className="needName">What do we call you?!</div> : <br/>}
                             </div>
                             : null}
                         <div className="lobbyActions">
