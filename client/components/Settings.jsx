@@ -7,7 +7,7 @@ export default function Settings() {
                 Resource Pals 
             </h1>
             <h2 className='headers'>
-                Settings!
+                Settings! They'll be here soon!
             </h2>
         </div>)
 }

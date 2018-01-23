@@ -119,7 +119,7 @@ class Lobby extends React.Component {
                         }
                         {freeSpriteIDsArr.length && !this.props.joined ?
                             <div className="characterHolder">
-                                <h3 className='lobbyHeader'>Join Game</h3>
+                                <h3 className='lobbyHeader'>Join Lobby</h3>
                                 {/* Turn buttons into sprite images or GIFs */}
                                 <div className="availableCharacters">
                                     {freeSpriteIDsArr.map(id => (<button
@@ -134,7 +134,7 @@ class Lobby extends React.Component {
                                         <img className='spriteImage' src={`../../assets/sprites/ButtonImg/${id}.png`} />
                                     </button>))}
                                 </div>
-                                {this.props.playerSprite === 0 ? <div className="needSprite">Who will you be?!</div> : <br/>}
+                                {this.props.playerSprite === 0 ? <div className="needSprite">Who will you be?!</div> : <div className="spaceDiv"></div>}
                                 <div className='joinGameContainer'>
                                     <input className='inputField' type='text'
                                         disabled={this.props.joined}
@@ -145,7 +145,7 @@ class Lobby extends React.Component {
                                     />
                                     {this.joinGameButton()}
                                 </div>
-                                {this.props.playerName.length === 0 ? <div className="needName">What do we call you?!</div> : <br/>}
+                                {this.props.playerName.length === 0 ? <div className="needName">What do we call you?!</div> : <div className="spaceDiv"></div>}
                             </div>
                             : null}
                         <div className="lobbyActions">

@@ -14,6 +14,10 @@ body {
   }
 }
 
+.spaceDiv{
+  height: 1.5em;
+}
+
 .lobbyHeader {
   display: flex;
   align-self: center;
@@ -28,7 +32,7 @@ body {
   padding-right: 2em;
   padding-top: .25em;
   padding-bottom: 1em;
-  border-color: #F37748;
+  border-color: #ef3a26;
   border-style: outset;
   width: 50vw;
 }
@@ -46,7 +50,7 @@ body {
   padding-right: 2em;
   padding-top: 1em;
   padding-bottom: 1em;
-  border-color: #F37748;
+  border-color: #ef3a26;
   border-style: outset;
   width: 50vw;
 }
@@ -242,8 +246,8 @@ h3 {
 
 .spriteButton {
   padding: 0;
-  height: 7em;
-  width: 7em;
+  height: 8em;
+  width: 8em;
   border-radius: 1em;
   border: .7em solid #F37748;
   background-color: #F37748
@@ -257,7 +261,7 @@ h3 {
 
 .joinGameButton {
   margin-left: 2em;
-  background-color: #A04EBF;
+  background-color: #ef3a26;
   border-radius: .5em;
   font-size: 1em;
   height: 2.5em;
@@ -299,28 +303,30 @@ h3 {
 
 @keyframes bounce {
   0% {
-    font-size: 105%
+    font-size: 100%
   }
   25% {
-    font-size: 125%
+    font-size: 105%
   }
   50% {
-    font-size: 140%
+    font-size: 150%
   }
-  55% {
-    font-size: 90%
+  60% {
+    font-size: 160%
   }
   65% {
-    font-size: 110%
+    font-size: 120%
   }
   75% {
     font-size: 95%
   }
-  95% {
-    font-size: 105%
+
+  85% {
+    font-size: 110%
   }
+
   100% {
-    font-size: 98%
+    font-size: 100%
   }
 }
 
@@ -361,8 +367,8 @@ h3 {
 }
 
 .spriteImage {
-  height: 5.6em;
-  width: 5.6em;
+  height: 6.6em;
+  width: 6.6em;
   padding: 0;
 }
 
