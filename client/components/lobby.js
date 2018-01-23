@@ -128,7 +128,8 @@ class Lobby extends React.Component {
   gameJoinComponent(){
     const ready = this.props.lobby.length !== 0
     return (<div id="inputdiv">
-      <input type='text'
+      <input
+type="text"
         disabled={this.props.joined}
         hintText="Hello."
         floatingLabelText="Name"

@@ -125,9 +125,6 @@ Client.socket.on('newGame', function () {
   if (state.game.joined) {
     game = new Game()
     game.startGame();
-    let timeoutId = setTimeout(function(){
-        Client.socket.emit('setUpGame')
-    }, 2000)
     store.dispatch(gameInProgressAction())
   }
 })

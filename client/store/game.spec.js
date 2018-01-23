@@ -3,7 +3,7 @@ import gameReducer, {actionTypesForTesting} from './game'
 
 describe('Game', () => {
 
-  const initialState = {localGame: false, serverGame: false, joined: false, }
+  const initialState = {localGame: false, serverGame: false, joined: false }
   const gameInProgressJoinedState = { localGame: false, serverGame: true, joined: true }
   const localGameState = { localGame: true, serverGame: true, joined: true }
   const joinedState = { localGame: false, serverGame: false, joined: true }

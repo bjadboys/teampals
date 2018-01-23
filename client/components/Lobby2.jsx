@@ -36,6 +36,7 @@ class Lobby extends React.Component {
         if (!this.props.joined) {
             return (<div>
                 <button
+                    className={!disabled ? 'joinGameButton' : 'disabledButton'}
                     disabled={disabled}
                     onClick={() => {
                         ClientLobby.askNewPlayer({ name: this.props.playerName, spriteID: this.props.playerSprite })
@@ -44,6 +45,7 @@ class Lobby extends React.Component {
         } else {
             return (<div>
                 <button
+                    className='leaveGameButton'
                     onClick={() => {
                         this.props.handleLeaveLobby()
                         ClientLobby.removePlayerLobbyBJAD()
@@ -55,6 +57,7 @@ class Lobby extends React.Component {
         return (
             <div>
                 <button
+                    className={'joinGameButton startGameButton'}
                     onClick={() => {
                         ClientLobby.startGame()
                     }}
@@ -80,12 +83,13 @@ class Lobby extends React.Component {
     }
 
     buttonStyler(key, playerSprite) {
-        if (key === playerSprite) return { backgroundColor: "blue" }
+        if (key === playerSprite) return { border: '.7em solid #067BC2' }
         // else return {backgroundColor: "white"}
     }
 
-    joinedPlayerStyler(key, playerSprite) {
-        if (key === playerSprite) return { border: "double" }
+    joinedPlayerStyler(key, playerSprite, joined) {
+        if (key === playerSprite && joined) return { backgroundColor: '#067BC2', border: '.7em solid #067BC2'}
+        else return { border: '.7em solid #F37748'}
     }
 
     render() {
@@ -95,24 +99,20 @@ class Lobby extends React.Component {
                 <h1 className='headers'>
                     Resource Pals
                 </h1>
-                <h2 className='headers'>
-                    Lobby!
-                </h2>
                 {!this.props.serverGame ?
                     <div className="lobbySubContainer">
                         {
                             this.props.lobby.length ?
                                 <div className="playerHolder">
-                                    <h3>Joined Players</h3>
+                                    <h3 className='lobbyHeader'>Lobby</h3>
                                     <div className="playerLobby">
                                         {this.props.lobby.map(player => (
                                             <div
                                                 className="joinedPlayer"
                                                 key={player.id}
-                                                style={this.joinedPlayerStyler(player.id, this.props.playerSprite)}
+                                                style={this.joinedPlayerStyler(player.id, this.props.playerSprite, this.props.joined)}
                                             >
-                                                Yo!<br />
-                                                {player.id}<br />
+                                                <img src={`../../assets/sprites/ButtonImg/${player.id}.png`} />
                                                 {player.name}
                                             </div>
                                         ))}
@@ -122,10 +122,11 @@ class Lobby extends React.Component {
                         }
                         {freeSpriteIDsArr.length && !this.props.joined ?
                             <div className="characterHolder">
-                                <h3>Available Characters</h3>
+                                <h3 className='lobbyHeader'>Join Game</h3>
                                 {/* Turn buttons into sprite images or GIFs */}
                                 <div className="availableCharacters">
                                     {freeSpriteIDsArr.map(id => (<button
+                                        className='spriteButton'
                                         style={this.buttonStyler(id, this.props.playerSprite)}
                                         disabled={this.props.joined}
                                         onClick={(event) => {
@@ -133,25 +134,27 @@ class Lobby extends React.Component {
                                         }}
                                         key={id}
                                     >
-                                        {id}
+                                        <img className='spriteImage' src={`../../assets/sprites/ButtonImg/${id}.png`} />
                                     </button>))}
+                                </div>
+                                <br />
+                                <div className='joinGameContainer'>
+                                <input className='inputField' type='text'
+                                    disabled={this.props.joined}
+                                    placeholder="Name"
+                                    maxLength="13"
+                                    value={this.props.playerName}
+                                    onChange={(event) => { this.props.handleNameChange(event.target.value) }}
+                                />
+                                {this.joinGameButton()}
                                 </div>
                             </div>
                             : null}
-                        {!this.props.joined ?
-                            <input className='inputField' type='text'
-                                disabled={this.props.joined}
-                                placeholder="Name"
-                                maxLength="13"
-                                value={this.props.playerName}
-                                onChange={(event) => { this.props.handleNameChange(event.target.value) }}
-                            />
-                            : null}
                         <div className="lobbyActions">
-                            {this.joinGameButton()}
-                            {this.props.lobby.length > 1 ?
+                            {this.props.lobby.length > 1 && this.props.joined ?
                                 this.startGameButton()
                                 : null}
+                            {this.props.joined && this.joinGameButton()}
                         </div>
                     </div>
                     : <div>Game in progress</div>}

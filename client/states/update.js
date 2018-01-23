@@ -1,5 +1,7 @@
 export default Client => function () {
-
+  if (!this.setupgame) {
+    this.setup()
+  }
   let playerSpeed = 200;
   //Adjust Speed when locked on
   if ((this.currentPlayer && this.currentPlayer.targetLocked) || (this.currentPlayer && this.currentPlayer.children.find(item => item.isBlock)) ) playerSpeed = 0.70 * playerSpeed

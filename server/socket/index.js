@@ -13,7 +13,7 @@ module.exports = (io, server) => {
   let bulletSpeedUpgradePercentage = 1.2
   const playerHealth = 100
   //Keep track of last id assigned to block
-  server.lastBlockIdBJAD = 0; 
+  server.lastBlockIdBJAD = 0;
   //Gamestate variables
   let bulletArray = []
   let players = []
@@ -63,7 +63,7 @@ module.exports = (io, server) => {
     socket.on('newplayer', function (potentialPlayer) {
       const available = findAvailablePlayerIds(players)
       if (available[potentialPlayer.spriteID]) {
-        socket.player = R.clone(defaultPlayers[potentialPlayer.spriteID-1])
+        socket.player = R.clone(defaultPlayers[potentialPlayer.spriteID - 1])
         socket.player.name = potentialPlayer.name
         socket.player.direction = 'down'
         socket.player.health = playerHealth
