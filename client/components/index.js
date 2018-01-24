@@ -4,5 +4,6 @@
  * having to figure out which file they belong to!
  */
 
-export {default as Lobby} from './lobby'
-export {default as GameScreen} from './game'
+// export {default as Lobby} from './lobby'
+// export {default as GameScreen} from './game'
+export {default as Home } from './home.jsx'

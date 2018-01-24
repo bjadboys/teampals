@@ -1,23 +1,120 @@
 body {
-  font-family: 'Slackey', cursive; 
-
-  a {
-    text-decoration: none;
-  }
-
+  font-family: 'Slackey', cursive;
+  margin: 0;
   label {
     display: block;
   }
-
   nav a {
     display: inline-block;
     margin: 1em;
   }
-
   form div {
     margin: 1em;
     display: inline-block;
   }
+}
+
+.spaceDiv{
+  height: 1.5em;
+}
+
+.lobbyHeader {
+  display: flex;
+  align-self: center;
+  margin-bottom: .5em;
+}
+
+.characterHolder {
+  display: flex;
+  flex-direction: column;
+  // align-items: center;
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-top: .25em;
+  padding-bottom: 1em;
+  border-color: #ef3a26;
+  border-style: outset;
+  width: 50vw;
+}
+
+.availableCharacters {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.playerHolder {
+  display: flex;
+  flex-direction: column;
+  padding-left: 2em;
+  padding-right: 2em;
+  padding-top: 1em;
+  padding-bottom: 1em;
+  border-color: #ef3a26;
+  border-style: outset;
+  width: 50vw;
+}
+
+.playerLobby {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+}
+
+.joinedPlayer {
+  background-color: #F37748;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  border-style: solid;
+  border-color: #F37748;
+  border-radius: .5em;
+}
+
+.needSprite {
+  display: flex;
+  width: auto;
+  height: 1em;
+  align-self: center;
+  margin-top: 1em;
+  animation-name: spriteReminder;
+  animation-iteration-count: infinite;
+  animation-duration: 3s;
+  margin-top: .5em;
+}
+
+.needName {
+  display: flex;
+  width: auto;
+  height: 1em;
+  align-self: center;
+  margin-top: 1em;
+  animation-name: nameReminder;
+  animation-iteration-count: infinite;
+  animation-duration: 3s;
+  margin-top: .5em;
+}
+
+.inputField {
+    font-family: 'Slackey', cursive; 
+    font-size: 2em;
+    color: white;
+    text-shadow: 1px 1px rgb(0, 0, 0);
+    background: transparent;
+    border: none;
+    border-bottom: 2px solid #F37748;
+    width: 275px;
+    outline: none;
+    padding: 0px 0px 0px 0px;
+}
+
+.lobbyActions {
+  display: flex;
+  align-self: center;
+  align-items: center;
+  flex-direction: column;
+  width: 30vw;
 }
 
 #buttonHolder {
@@ -29,13 +126,11 @@ body {
   font-family: 'Slackey', cursive;
 }
 
-#lobbydiv{
+#lobbydiv {
   display: flex;
   justify-content: center;
   align-content: center;
 }
-
-
 
 #central {
   display: flex;
@@ -52,8 +147,296 @@ body {
   width: auto;
 }
 
-
 #controls {
   font-family: 'Slackey', cursive;
-
 }
+
+.container {
+  margin: auto;
+  margin-top: 5em;
+}
+
+.navContainer {
+  height: 100vh;
+  width: 20vw;
+  display: flex;
+  flex-direction: column;
+}
+
+.navLobby {
+  height: 33.333vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #F37748; //FCB251
+}
+
+.navTutorial {
+  height: 33.333vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #067BC2;
+}
+
+.navSettings {
+  height: 33.333vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #651285;
+}
+
+.headers {
+  margin: 0;
+  color: white;
+  text-shadow: 1px 3px 3px black, 0 0 .5em black, 0 0 0.2em black;
+}
+
+h1 {
+  font-size: 5em;
+}
+
+h2 {
+  font-size: 3em;
+}
+h3 {
+  font-size: 1.5em;
+  margin: 0;
+  color: white;
+  text-shadow: 2px 2px rgb(0, 0, 0);
+}
+
+.containerRow {
+  display: flex;
+}
+
+.lobbyLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20vw;
+  color: white;
+  text-decoration: none;
+  font-size: 3em;
+  text-shadow: 2px 2px rgb(0, 0, 0); // transform: rotate(-0.25turn)
+}
+
+.tutorialLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20vw;
+  color: white;
+  text-decoration: none;
+  font-size: 3em;
+  text-shadow: 2px 2px rgb(0, 0, 0); // transform: rotate(-0.25turn)
+}
+
+.settingsLink {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 20vw;
+  color: white;
+  text-decoration: none;
+  font-size: 3em;
+  text-shadow: 2px 2px rgb(0, 0, 0); // transform: rotate(-0.25turn)
+}
+
+.spriteButton {
+  padding: 0;
+  height: 8em;
+  width: 8em;
+  border-radius: 1em;
+  border: .7em solid #F37748;
+  background-color: #F37748
+}
+
+.joinGameContainer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.joinGameButton {
+  margin-left: 2em;
+  background-color: #ef3a26;
+  border-radius: .5em;
+  font-size: 1em;
+  height: 2.5em;
+  width: 4.5em;
+  font-family: 'Slackey', cursive;
+  color: white;
+  animation-name: bounce;
+  animation-iteration-count: infinite;
+  animation-duration: 3s;
+  margin-top: .5em;
+}
+
+.startGameButton {
+  margin-top: 1em;
+  width: 9em;
+  height: 6em;
+  background-color: #A04EBF;
+  border-radius: .5em;
+  font-size: 1em;
+  font-family: 'Slackey', cursive;
+  color: white;
+  animation-name: bounce;
+  animation-iteration-count: infinite;
+  animation-duration: 3s;
+}
+
+.disabledButton {
+  margin-top: .5em;
+  margin-left: 2em;
+  background-color: grey;
+  border-radius: .5em;
+  font-size: 1em;
+  height: 2.5em;
+  width: 4.5em;
+  font-family: 'Slackey',
+  cursive;
+  color: rgb(0, 0, 0);
+}
+
+@keyframes bounce {
+  0% {
+    font-size: 100%
+  }
+  25% {
+    font-size: 105%
+  }
+  50% {
+    font-size: 150%
+  }
+  60% {
+    font-size: 160%
+  }
+  65% {
+    font-size: 120%
+  }
+  75% {
+    font-size: 95%
+  }
+
+  85% {
+    font-size: 110%
+  }
+
+  100% {
+    font-size: 100%
+  }
+}
+
+@keyframes nameReminder {
+  0% {
+    font-size: 100%
+  }
+  50% {
+    font-size: 80%
+  }
+  100% {
+    font-size: 100%
+  }
+}
+
+@keyframes spriteReminder {
+  0% {
+    font-size: 80%
+  }
+  50% {
+    font-size: 100%
+  }
+  100% {
+    font-size: 80%
+  }
+}
+
+.leaveGameButton {
+  background-color: #84BCDA;
+  border-radius: .5em;
+  height: 2.5em;
+  width: 4.5em;
+  font-family: 'Slackey',
+  cursive;
+  color: white;
+  font-size: 1em;
+  margin-top: 1em;
+}
+
+.spriteImage {
+  height: 6.6em;
+  width: 6.6em;
+  padding: 0;
+}
+
+.lobbyImage {
+  height: 7em;
+  width: 7em;
+  padding: 0;
+}
+
+.tutorialLink:active {
+  transform: rotate(-.15turn)
+}
+
+.lobbyLink:active {
+  transform: rotate(-.15turn)
+}
+
+.settingsLink:active {
+  transform: rotate(-.15turn)
+}
+
+.containerLob {
+  background-color: #FC9611;
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.lobbySubContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.githubLink {
+  display: flex;
+  align-self: flex-end;
+  padding-right: 1em;
+  margin-top: auto;
+  padding-bottom: .5em;
+}
+
+.containerTut {
+  background-color: #84BCDA;
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.containerSet {
+  background-color: #A04EBF;
+  width: 80vw;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@media only screen and (min-device-width: 375px) and (max-device-width: 667px) {
+  .lobbyLink {
+    transform: rotate(-0.25turn)
+  }
+  .settingsLink {
+    transform: rotate(-0.25turn)
+  }
+  .tutorialLink {
+    transform: rotate(-0.25turn)
+  }
+}
+

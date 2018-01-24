@@ -3,7 +3,7 @@ import {Router} from 'react-router'
 import {Route, Switch} from 'react-router-dom'
 import history from './history'
 
-import {Lobby} from './components/'
+import {Home} from './components/'
 
 /**
  * COMPONENT
@@ -15,7 +15,7 @@ export default class Routes extends Component {
     return (
       <Router history={history}>
           <Switch>
-            <Route path="/" component={Lobby} />
+            <Route path="/" component={Home} />
           </Switch>
       </Router>
     )

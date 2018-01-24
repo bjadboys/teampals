@@ -50,7 +50,7 @@ const playerAmmo = 0
 export default class MainGame extends Phaser.State {
   constructor() {
     super()
-    Phaser.Component.Core.skipTypeChecks = true
+    Phaser.Component.Core.skipTypeChecks = false
   }
 
   init() {
@@ -98,7 +98,6 @@ export default class MainGame extends Phaser.State {
     //set up the keyboard for movement
     this.cursors = this.game.input.keyboard.createCursorKeys()
     this.keyBindings = store.getState().keys
-    console.log(this.keyBindings)
     this.fireButton = this.game.input.keyboard.addKey(this.keyBindings.fire)
     this.smashButton = this.game.input.keyboard.addKey(this.keyBindings.smash)
     this.pickUpButton = this.game.input.keyboard.addKey(this.keyBindings.pickup)
@@ -115,12 +114,18 @@ export default class MainGame extends Phaser.State {
     this.levelText.fixedToCamera = true;
     this.death = this.map.layers[4].data
     this.deathTiles = this.death.map( array => array.filter((element) => element.index !== -1))
+    this.ready = !!this.game && !!this.blocksBJAD && this.playerMapBJAD
+    this.setupgame = false;
     // this.firstWeapon = this.weaponsBJAD.create(100, 100, 'weapon')
     // this.firstWeapon.id = 0
     // this.firstWeapon.isWeapon = true
     // this.secondWeapon = this.weaponsBJAD.create(200, 200, 'weapon2')
     // this.secondWeapon.isWeapon = true
     // this.secondWeapon.id = 1
+  }
+  setup() {
+    if (this.ready) Client.socket.emit('setUpGame')
+    this.setupgame = true
   }
 
   isInDeathBJAD(x, y){
