@@ -80,13 +80,13 @@ class Lobby extends React.Component {
     }
 
     buttonStyler(key, playerSprite) {
-        if (key === playerSprite) return { border: '.7em solid #067BC2' }
+        if (key === playerSprite) return { border: '.7em solid  #84BCDA' }
         // else return {backgroundColor: "white"}
     }
 
     joinedPlayerStyler(key, playerSprite, joined) {
-        if (key === playerSprite && joined) return { backgroundColor: '#067BC2', border: '.7em solid #067BC2' }
-        else return { border: '.7em solid #F37748' }
+        if (key === playerSprite && joined) return { backgroundColor: '#A04EBF', border: '.7em solid  #A04EBF' }
+        else return { border: '.7em solid #067BC2' }
     }
 
     render() {

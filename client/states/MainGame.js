@@ -78,6 +78,7 @@ export default class MainGame extends Phaser.State {
   //here we create everything we need for the game.
   create() {
     //Add the map to the game.
+    this.game.stage.disableVisibilityChange = true
     this.game.world.setBounds(0, 0, mapWidth * tilePx, mapHeight * tilePx)
     this.game.scale.scaleMode = Phaser.ScaleManager.SHOW_ALL
     this.playerMapBJAD = {}
@@ -240,7 +241,8 @@ export default class MainGame extends Phaser.State {
     this.newPlayer.animations.add('downLeft', [12, 13, 14, 15, 16, 17], animationFrequency, true)
     this.newPlayer.animations.add('up', [18, 19, 20, 21, 22, 23], animationFrequency, true)
     this.playerMapBJAD[id] = this.newPlayer
-    this.isNotLoading = Object.keys(this.playerMapBJAD).length > 1
+    const now = Date.now()
+    this.isNotLoading = now - serverSideTime > 10000 || Object.keys(this.playerMapBJAD).length > 1
   }
 
   addNewBase(base) {

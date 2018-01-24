@@ -88,7 +88,7 @@ class Lobby extends React.Component {
             label={this.props.lobby.length > 1 ? 'start game' : 'wait for players'}
             onClick={() => {
               ClientLobby.startGame()
-            }} //TODO: create socket connection. Add to lobby array.
+            }} 
             />
       </div>
 
@@ -166,7 +166,6 @@ type="text"
 
   handleSmashChange = (e) => {
     let lowerCase = e.target.value
-    console.log('change', lowerCase.toUpperCase())
     this.setState({
       inputSmash: lowerCase.toUpperCase()
     })
@@ -174,7 +173,6 @@ type="text"
 
   handleFireChange = (e) => {
     let lowerCase = e.target.value
-    console.log('change', e.target.value)
     this.setState({
       inputFire: lowerCase.toUpperCase()
     })
@@ -182,7 +180,6 @@ type="text"
 
   handlePickupChange = (e) => {
     let lowerCase = e.target.value
-    console.log('change', e.target.value)
     this.setState({
       inputPickup: lowerCase.toUpperCase()
     })
@@ -190,7 +187,7 @@ type="text"
 
   handleLockOnChange = (e) => {
     let lowerCase = e.target.value
-    console.log('change', e.target.value)
+    
     this.setState({
       inputLockOn: lowerCase.toUpperCase()
     })
