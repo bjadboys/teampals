@@ -13,7 +13,7 @@ export default function Tutorial() {
       <br/>
       For now:
       <br /><br />
-      WASD for movement!
+      Arrow keys for movement!
       <br /><br />
       Z to get health and ammo from crates!
       <br /><br />

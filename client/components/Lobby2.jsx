@@ -1,6 +1,6 @@
 import React from 'react'
 import { connect } from 'react-redux'
-import store, { leftGameAction, changeNameAction, changeSpriteAction } from '../store/'
+import store, { leftGameAction, changeNameAction, changeSpriteAction, resetLobbyAction } from '../store/'
 
 
 import socket from '../js/socket'
@@ -47,8 +47,9 @@ class Lobby extends React.Component {
                 <button
                     className='leaveGameButton'
                     onClick={() => {
-                        this.props.handleLeaveLobby()
+                        if(this.props.lobby.length === 1) this.props.handleLobbyReset()
                         ClientLobby.removePlayerLobbyBJAD()
+                        this.props.handleLeaveLobby()
                     }}> Leave</button>
             )
         }
@@ -96,7 +97,7 @@ class Lobby extends React.Component {
                 <h1 className='headers'>
                     Resource Pals
                 </h1>
-                {!this.props.serverGame ?
+                {!this.props.serverGame  ?
                     <div className="lobbySubContainer">
                         {
                             this.props.lobby.length ?
@@ -178,6 +179,9 @@ const mapDispatch = (dispatch) => ({
     },
     handleSpriteChange(spriteID) {
         dispatch(changeSpriteAction(Number(spriteID)))
+    },
+    handleLobbyReset(){
+        dispatch(resetLobbyAction())
     }
 })
 
