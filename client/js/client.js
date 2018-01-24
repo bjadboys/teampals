@@ -118,8 +118,6 @@ Client.socket.on('crate-destroyed', function (crateID) {
   }
 })
 
-//Client add on block at a time to the map.
-//TODO : duplicate blocks.
 Client.socket.on('newGame', function () {
   const state = store.getState()
   if (state.game.joined) {

@@ -12,6 +12,9 @@ body {
     margin: 1em;
     display: inline-block;
   }
+  button {
+    outline: none;
+  }
 }
 
 .spaceDiv{
@@ -25,14 +28,16 @@ body {
 }
 
 .characterHolder {
+  border-radius: 4.5em;
   display: flex;
   flex-direction: column;
+  background-color: #A04EBF;
   // align-items: center;
   padding-left: 2em;
   padding-right: 2em;
   padding-top: .25em;
   padding-bottom: 1em;
-  border-color: #ef3a26;
+  border-color: #A04EBF;
   border-style: outset;
   width: 50vw;
 }
@@ -50,7 +55,10 @@ body {
   padding-right: 2em;
   padding-top: 1em;
   padding-bottom: 1em;
-  border-color: #ef3a26;
+  background-color: #84BCDA;
+  border-color: #84BCDA;
+  border-radius: 4.5em;
+  margin-bottom: 1em;
   border-style: outset;
   width: 50vw;
 }
@@ -62,13 +70,13 @@ body {
 }
 
 .joinedPlayer {
-  background-color: #F37748;
+  background-color: #067BC2;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   border-style: solid;
-  border-color: #F37748;
+  border-color: #067BC2;
   border-radius: .5em;
 }
 
@@ -103,10 +111,14 @@ body {
     text-shadow: 1px 1px rgb(0, 0, 0);
     background: transparent;
     border: none;
-    border-bottom: 2px solid #F37748;
+    border-bottom: 2px solid #651285;
     width: 275px;
     outline: none;
     padding: 0px 0px 0px 0px;
+}
+
+::placeHolder {
+  color: rgb(211, 211, 211);
 }
 
 .lobbyActions {
@@ -249,8 +261,8 @@ h3 {
   height: 8em;
   width: 8em;
   border-radius: 1em;
-  border: .7em solid #F37748;
-  background-color: #F37748
+  border: .7em solid #651285;
+  background-color: #651285
 }
 
 .joinGameContainer {
@@ -267,7 +279,8 @@ h3 {
   height: 2.5em;
   width: 4.5em;
   font-family: 'Slackey', cursive;
-  color: white;
+  color:white;
+  border-color: #651285;
   animation-name: bounce;
   animation-iteration-count: infinite;
   animation-duration: 3s;
@@ -291,7 +304,8 @@ h3 {
 .disabledButton {
   margin-top: .5em;
   margin-left: 2em;
-  background-color: grey;
+  background-color: rgb(211, 211, 211);
+  border-color: #651285;
   border-radius: .5em;
   font-size: 1em;
   height: 2.5em;

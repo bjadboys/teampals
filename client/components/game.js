@@ -1,16 +1,8 @@
 import React from 'react'
 import Game from '../game/'
 
-class GameScreen extends React.Component {
-  constructor(props){
-    super(props)
-  }
-
-  render() {
+export default function GameScreen() {
     return (
       <div id="gameDiv" />
     )
-  }
 }
-
-export default GameScreen

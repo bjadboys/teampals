@@ -187,14 +187,19 @@ module.exports = (io, server) => {
         io.emit('remove', socket.player.id);
         players = removePlayer(socket.player.id)
         socket.player = null
+        if (players.length === 0) {
+          resetGameFunc(socket)
+        }
       }
       io.emit('addPlayersToLobby', getAllPlayers())
     });
 
     socket.on('playerLeavesLobby', function () {
-      io.emit('removePlayerFromLobby', socket.player.id)
-      players = removePlayer(socket.player.id)
-      socket.player = null;
+      if (socket.player){
+        io.emit('removePlayerFromLobby', socket.player.id)
+        players = removePlayer(socket.player.id)
+        socket.player = null;
+      }
     })
 
   });
@@ -293,6 +298,7 @@ module.exports = (io, server) => {
   function resetGameFunc(socket){
     server.gameInProgress = false;
     players = []
+    io.emit('gameHasEnded')
     if (socket.player) {
       io.emit('removePlayerFromLobby', socket.player.id)
       socket.player = null
