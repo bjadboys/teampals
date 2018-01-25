@@ -68,13 +68,17 @@ class Settings extends Component {
 
     warning(){
         if (validateKeys(Object.values(this.state))) {
-            return (<div>No repeat keys or empty inputs!</div>)
+            return (<div className='warningContainer'><h1 className='warningHeader'>No repeat keys or empty inputs!</h1></div>)
         }
     }
 
     render(){
         console.log(this.state)
         console.log(Object.values(this.state).includes(''), 'empty string')
+        const stateFire = String.fromCharCode(store.getState().keys.fire)
+        const stateSmash = String.fromCharCode(store.getState().keys.smash)
+        const statePickup = String.fromCharCode(store.getState().keys.pickup)
+        const stateLockOn = String.fromCharCode(store.getState().keys.lockOn)
     return (
             <div className='containerSet'>
                 <h1 className='headers'>
@@ -83,17 +87,32 @@ class Settings extends Component {
                 <h2 className='headers'>
                     Settings!
                 </h2>
-                {this.warning()}
+                <div className='displayControls'>
+                    <h2 className='lobbyHeader'>Current Controls</h2>
+                <div className='controlsRow'>
                 <div>
-                    <form>
-                    Change fire: <input onChange={this.handleFireChange} placeholder={this.state.fire === ' ' ? "SPACEBAR" : this.state.fire} />
+                <p className='controlsP'>Fire: {stateFire === " " ? "SPACEBAR" : stateFire}</p>
+                <p className='controlsP'>Smash Crate: {stateSmash === " " ? "SPACEBAR" : stateSmash}</p>
+                </div>
+                <div>
+                <p className='controlsP'>Pick Up Crate: {statePickup === " " ? "SPACEBAR" : statePickup}</p>
+                <p className='controlsP'>Target Lock: {stateLockOn === " " ? "SPACEBAR" : stateLockOn}</p>
+                </div>
+                </div>
+                </div>
+                <div>
+                {this.warning()}
+                    <form className='settingsContainer'>
+                    <div className='inputHolder'>
+                    Change fire: <input maxLength={1} value={this.state.fire === " " ? 'SPACEBAR' : this.state.fire} onChange={this.handleFireChange} placeholder={this.state.fire === " " ? "SPACEBAR" : this.state.fire} />
                         <br />
-                    Change smash: <input onChange={this.handleSmashChange} placeholder={this.state.smash === ' ' ? "SPACEBAR" : this.state.smash} />
+                        Change smash: <input maxLength={1} value={this.state.smash === " " ? 'SPACEBAR' : this.state.smash} onChange={this.handleSmashChange} placeholder={this.state.smash === " " ? "SPACEBAR" : this.state.smash} />
+                    </div>
+                    <div className='inputHolder'>
+                        Change pickup: <input maxLength={1} value={this.state.pickup === " " ? 'SPACEBAR' : this.state.pickup} onChange={this.handlePickupChange} placeholder={this.state.pickup === " " ? "SPACEBAR" : this.state.pickup} />
                         <br />
-                    Change pickup: <input onChange={this.handlePickupChange} placeholder={this.state.pickup === ' ' ? "SPACEBAR" : this.state.pickup} />
-                        <br />
-                    Change lockOn: <input onChange={this.handleLockOnChange} placeholder={this.state.lockOn === ' ' ? "SPACEBAR" : this.state.lockOn} />
-                        <br />
+                        Change lockOn: <input maxLength={1} value={this.state.lockOn === " " ? 'SPACEBAR' : this.state.lockOn} onChange={this.handleLockOnChange} placeholder={this.state.lockOn === " " ? "SPACEBAR" : this.state.lockOn} />
+                    </div>
                     </form>
                 </div>
                 <div>
