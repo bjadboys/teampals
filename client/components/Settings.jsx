@@ -8,6 +8,10 @@ const uniqueValues = (arr) => {
     return arr.length === uniqueVals.length
 }
 
+const validateKeys = (arr) => {
+    return !uniqueValues(arr) || arr.includes('')
+}
+
 const getKeyCodes = (name) => {
     const oddCodes = { SHIFT: 16, SPACE: 32, TAB: 9, SPACEBAR: 32, RETURN: 13 }
     if (oddCodes[name]) return oddCodes[name]
@@ -23,6 +27,7 @@ class Settings extends Component {
             pickup: String.fromCharCode(store.getState().keys.pickup),
             lockOn: String.fromCharCode(store.getState().keys.lockOn)
         }
+        this.resetBindings = this.resetBindings.bind(this)
     }
 
     handleSmashChange = (e) => {
@@ -62,15 +67,14 @@ class Settings extends Component {
     };
 
     warning(){
-        if (!uniqueValues(Object.values(this.state))) {
-            this.setState({disableSave: true})
-            return (<div> No repeat keys!</div>)
-        } else {
-            this.setState({disableSave: false})
+        if (validateKeys(Object.values(this.state))) {
+            return (<div>No repeat keys or empty inputs!</div>)
         }
     }
 
     render(){
+        console.log(this.state)
+        console.log(Object.values(this.state).includes(''), 'empty string')
     return (
             <div className='containerSet'>
                 <h1 className='headers'>
@@ -82,7 +86,7 @@ class Settings extends Component {
                 {this.warning()}
                 <div>
                     <form>
-                        Change fire: <input onChange={this.handleFireChange} placeholder={this.state.fire === ' ' ? "SPACEBAR" : this.state.fire} />
+                    Change fire: <input onChange={this.handleFireChange} placeholder={this.state.fire === ' ' ? "SPACEBAR" : this.state.fire} />
                         <br />
                     Change smash: <input onChange={this.handleSmashChange} placeholder={this.state.smash === ' ' ? "SPACEBAR" : this.state.smash} />
                         <br />
@@ -97,6 +101,7 @@ class Settings extends Component {
                     onClick={this.resetBindings}
                     >reset</button>
                     <button
+                    disabled={validateKeys(Object.values(this.state))}
                     onClick={()=> {
                         const keyBindings={fire: getKeyCodes(this.state.fire), smash: getKeyCodes(this.state.smash), pickup: getKeyCodes(this.state.pickup), lockOn: getKeyCodes(this.state.lockOn)}
                         this.props.handleSubmit(keyBindings)
