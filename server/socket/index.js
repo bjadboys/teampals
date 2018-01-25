@@ -122,7 +122,9 @@ module.exports = (io, server) => {
       if (socket.player) {
         socket.player.health = health
         if (socket.player.health <= 0) {
+          const corpseBlock = {level: socket.player.level, x: socket.player.x, y: socket.player.y}
           io.emit('player-killed', socket.player.id)
+          io.emit('playerBlock', corpseBlock)
         }
       }
     })
