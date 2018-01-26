@@ -5,6 +5,19 @@ import store, { leftGameAction, changeNameAction, changeSpriteAction, resetLobby
 
 import socket from '../js/socket'
 
+const higherOrderLobbyNotification = (bool) => (length) => {
+    if(bool) {
+        if(length < 2) {
+            return (<div className="needSprite">Lonely? Get a friend in here!</div>)
+        } else {
+            return (<div className="spaceDiv" />)
+        }
+    } else {
+        return (
+        <div className="needSprite">Don't they look lonely? Get in there!</div>
+        )
+    }
+}
 
 const ClientLobby = {}
 ClientLobby.socket = socket
@@ -115,13 +128,13 @@ class Lobby extends React.Component {
                                             </div>
                                         ))}
                                     </div>
+                                    {higherOrderLobbyNotification(this.props.joined)(this.props.lobby.length)}
                                 </div>
                                 : null
                         }
                         {freeSpriteIDsArr.length && !this.props.joined ?
                             <div className="characterHolder">
                                 <h3 className='lobbyHeader'>Join Lobby</h3>
-                                {/* Turn buttons into sprite images or GIFs */}
                                 <div className="availableCharacters">
                                     {freeSpriteIDsArr.map(id => (<button
                                         className='spriteButton'
