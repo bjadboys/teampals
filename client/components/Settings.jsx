@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from 'react-redux'
 import store, { getKeysAction } from '../store/'
-import {uniq} from 'Ramda'
+import {uniq} from 'ramda'
 
 const uniqueValues = (arr) => {
     const uniqueVals = uniq(arr)
