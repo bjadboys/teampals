@@ -355,8 +355,8 @@ export default class MainGame extends Phaser.State {
   addBlockBJAD(id, x, y, level = 0) {
     const duplicate = this.blocksBJAD.children.find(block => block.id === id)
     if (!duplicate) {
-      if (id < 0) this.blockBJAD = this.blocksBJAD.create(x, y, 'corpseBlock')
-      else this.blockBJAD = this.blocksBJAD.create(x, y, 'block')
+      if (id < 0) this.blockBJAD = this.blocksBJAD.create(x, y, 'corpseBlock');
+      else this.blockBJAD = this.blocksBJAD.create(x, y, 'block');
 
       this.blockBJAD.isBlock = true
       this.blockBJAD.id = id;
