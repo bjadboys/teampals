@@ -143,6 +143,7 @@ export default class MainGame extends Phaser.State {
     if (!hasBlock) {//added this second length check in case player is touching two blocks when they do a pick up.
       this.block = this.blocksBJAD.children.find(block => block.id === blockId)
       if (this.block) {
+        console.log(this.block)
         this.block.y = 3
         this.block.x = 3
         this.player.addChild(this.block)
