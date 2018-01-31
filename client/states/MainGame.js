@@ -251,8 +251,8 @@ export default class MainGame extends Phaser.State {
   }
 
   addNewBase(base, playerId) {
-    if(base.id === playerId){
-      this.newBase = this.game.add.sprite(base.x, base.y, 'base')
+    if (base.id === playerId){
+      this.newBase = this.game.add.sprite(base.x, base.y, 'homeBase')
     } else {
       this.newBase = this.game.add.sprite(base.x, base.y, 'base')
     }
