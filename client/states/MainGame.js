@@ -108,9 +108,9 @@ export default class MainGame extends Phaser.State {
     this.weaponsBJAD = this.add.group()
     this.weaponsBJAD.enableBody = true
     this.healthText = this.game.add.text(5, 5, 'HEALTH: ')
-    this.ammoText = this.game.add.text(250, 5, 'AMMO: ')
-    this.blockText = this.game.add.text(350, 5, 'BLOCKS: ')
-    this.levelText = this.game.add.text(480, 5, 'LEVEL: ')
+    this.ammoText = this.game.add.text(220, 5, 'AMMO: ')
+    this.blockText = this.game.add.text(390, 5, 'BLOCKS: ')
+    this.levelText = this.game.add.text(590, 5, 'LEVEL: ')
     this.healthText.fixedToCamera = true;
     this.blockText.fixedToCamera = true;
     this.ammoText.fixedToCamera = true;
@@ -215,7 +215,7 @@ export default class MainGame extends Phaser.State {
     this.healthText.setText(`HEALTH: ${this.currentPlayer.health}`)
     this.ammoText.setText(`AMMO: ${this.currentPlayer.ammo}`)
     this.levelText.setText(`LEVEL: ${this.currentPlayer.level}`)
-    this.blockText.setText(`BLOCK: ${this.currentPlayer.blockLimit}`)
+    this.blockText.setText(`BLOCKS: ${this.currentPlayer.blockLimit}`)
   }
 
   movementThrottle(){
