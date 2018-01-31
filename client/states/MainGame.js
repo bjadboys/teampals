@@ -143,6 +143,7 @@ export default class MainGame extends Phaser.State {
     if (!hasBlock) {//added this second length check in case player is touching two blocks when they do a pick up.
       this.block = this.blocksBJAD.children.find(block => block.id === blockId)
       if (this.block) {
+        console.log(this.block)
         this.block.y = 3
         this.block.x = 3
         this.player.addChild(this.block)
@@ -170,15 +171,17 @@ export default class MainGame extends Phaser.State {
     if (!hasBlock) {
       this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, func, null, this)
     }
-  }
+  } 
 
   dropBlockPhysicsBJAD(){
     this.base = this.playerBaseBJAD[this.currentPlayer.id]
     if (this.game.physics.arcade.overlap(this.currentPlayer, this.base)) {
       const playerId = this.currentPlayer.id
       const blockId = this.currentPlayer.children[0].id
+      const level = this.currentPlayer.children[0].level
+      console.log(this.currentPlayer.children[0])
       Client.blockUsedBJAD({playerId, blockId})
-      Client.playerChangeLevel()
+      Client.playerChangeLevel(blockId, level)
     } else {
       Client.playerDropsBlockBJAD(this.currentPlayer.id)
     }
@@ -350,12 +353,15 @@ export default class MainGame extends Phaser.State {
     smashedBlock.kill()
   }
 
-  addBlockBJAD(id, x, y) {
+  addBlockBJAD(id, x, y, level = 0) {
     const duplicate = this.blocksBJAD.children.find(block => block.id === id)
     if (!duplicate) {
-      this.blockBJAD = this.blocksBJAD.create(x, y, 'block')
+      if (id < 0) this.blockBJAD = this.blocksBJAD.create(x, y, 'corpseBlock');
+      else this.blockBJAD = this.blocksBJAD.create(x, y, 'block');
+
       this.blockBJAD.isBlock = true
       this.blockBJAD.id = id;
+      this.blockBJAD.level = level
       this.blockBJAD.body.collideWorldBounds = true
     }
   }

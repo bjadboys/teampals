@@ -72,10 +72,16 @@ Client.playerChangeHealth = function (playerHealth) {
   }
 }
 
-Client.playerChangeLevel = function () {
+Client.playerChangeLevel = function (id, level) {
+  const upgradeObj = {id, level}
+  console.log(upgradeObj)
   const state = store.getState()
   if (state.game.joined) {
-    Client.socket.emit('upgrade-level')
+    if (id < 0) {
+      Client.socket.emit('corpseLevel', upgradeObj)
+    } else {
+      Client.socket.emit('upgrade-level')
+    }
   }
 }
 
@@ -146,7 +152,7 @@ Client.socket.on('allBlocks', function (data) {
   const state = store.getState()
   if (state.game.joined) {
     data.forEach(block => {
-      game.state.states.MainGame.addBlockBJAD(block.id, block.x, block.y)
+      game.state.states.MainGame.addBlockBJAD(block.id, block.x, block.y, block.level)
     })
   }
 })

@@ -84,9 +84,6 @@ class Settings extends Component {
                 <h1 className='headers'>
                     Resource Pals 
                 </h1>
-                <h2 className='headers'>
-                    Settings!
-                </h2>
                 <div className='displayControls'>
                     <h2 className='lobbyHeader'>Current Controls</h2>
                 <div className='controlsRow'>
