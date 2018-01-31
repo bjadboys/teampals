@@ -24,7 +24,6 @@ ClientLobby.socket.on('addPlayersToLobby', function(data){
 })
 
 ClientLobby.socket.on('gameHasEnded', function(){
-  console.log('game has ended action')
   store.dispatch(gameHasEndedAction())
 })
 

@@ -86,7 +86,6 @@ Client.playerHealthUpgrade = function(newMaxHealth){
 
 Client.playerChangeLevel = function (id, level) {
   const upgradeObj = {id, level}
-  console.log(upgradeObj)
   const state = store.getState()
   if (state.game.joined) {
     if (id < 0) {
