@@ -59,14 +59,17 @@ Client.playerPicksUpBlockBJAD = function (player, block) {
 Client.playerSmashCrate = function (player, block) {
   const state = store.getState()
   if (state.game.joined) {
-    if (block.id >= 0){
-      Client.socket.emit('destroy-crate', block.id)
-      game.state.states.MainGame.changeAmmo(10)
-      game.state.states.MainGame.changeHealth(10, player.id)
-    } else if (block.id < 0){
-      Client.socket.emit('destroy-crate', block.id)
-      game.state.states.MainGame.upgradeAmmo(20)
-      game.state.states.MainGame.upgradeHealth(50)
+    if (player.blockLimit > 0) {
+      if (block.id >= 0){
+        Client.socket.emit('destroy-crate', block.id)
+        game.state.states.MainGame.changeAmmo(10)
+        game.state.states.MainGame.changeHealth(10, player.id)
+      } else if (block.id < 0){
+        Client.socket.emit('destroy-crate', block.id)
+        game.state.states.MainGame.upgradeAmmo(20)
+        game.state.states.MainGame.upgradeHealth(50)
+      }
+      player.blockLimit--;
     }
   }
 }

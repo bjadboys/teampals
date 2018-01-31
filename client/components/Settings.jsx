@@ -73,7 +73,6 @@ class Settings extends Component {
     }
 
     render(){
-
         const stateFire = String.fromCharCode(store.getState().keys.fire)
         const stateSmash = String.fromCharCode(store.getState().keys.smash)
         const statePickup = String.fromCharCode(store.getState().keys.pickup)
