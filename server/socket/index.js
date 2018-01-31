@@ -13,7 +13,7 @@ module.exports = (io, server) => {
   let bulletSpeedUpgradePercentage = 1.2
   const playerHealth = 100
   //Keep track of last id assigned to block
-  server.lastBlockIdBJAD = 0;
+  server.lastBlockIdBJAD = 5;
   //Gamestate variables
   let bulletArray = []
   let players = []
@@ -130,6 +130,12 @@ module.exports = (io, server) => {
           io.emit('player-killed', socket.player.id)
           io.emit('allBlocks', [corpseBlock])
         }
+      }
+    })
+
+    socket.on('upgrade-health', function (newMaxHealth) {
+      if (socket.player) {
+        socket.player.health = newMaxHealth
       }
     })
 
@@ -261,11 +267,13 @@ module.exports = (io, server) => {
   function makeBlocks(num) {
     const madeBlocks = []
     for (let i = 0; i < num; i++) {
+      const superBlockRNG = Math.ceil(Math.random() * 50) % 31 === 0
       const initializedBlock = {
         id: server.lastBlockIdBJAD++,
         x: randomInt(840, 1400),
         y: randomInt(840, 1400)
       }
+      if (superBlockRNG) initializedBlock.id *= -1;
       madeBlocks.push(initializedBlock)
     }
     return madeBlocks
