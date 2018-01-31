@@ -133,6 +133,12 @@ module.exports = (io, server) => {
       }
     })
 
+    socket.on('upgrade-health', function (newMaxHealth) {
+      if (socket.player) {
+        socket.player.health = newMaxHealth
+      }
+    })
+
     socket.on('upgrade-level', function () {
       if (socket.player) {
         socket.player.blockCounter++

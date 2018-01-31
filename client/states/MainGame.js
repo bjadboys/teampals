@@ -258,7 +258,9 @@ export default class MainGame extends Phaser.State {
 
   setCurrentPlayer(id) {
     this.currentPlayer = this.playerMapBJAD[id]
+    this.currentPlayer.maxHealth = 100
     this.currentPlayer.health = playerHealth
+    this.currentPlayer.maxAmmo = 30
     this.currentPlayer.ammo = playerAmmo
     this.currentPlayer.level = 0
     this.currentPlayer.id = id
@@ -283,7 +285,7 @@ export default class MainGame extends Phaser.State {
   changeHealth(healthNum, id) {
     if (this.currentPlayer.id === id) {
       this.currentPlayer.health += healthNum
-      if (this.currentPlayer.health > 100) this.currentPlayer.health = 100;
+      if (this.currentPlayer.health > this.currentPlayer.maxHealth) this.currentPlayer.health = this.currentPlayer.maxHealth;
       if (this.currentPlayer.health < 0) this.currentPlayer.health = 0;
       if (healthNum < 0) {
         this.game.camera.flash([0xde5242], [250])
@@ -296,10 +298,21 @@ export default class MainGame extends Phaser.State {
     }
   }
 
+  upgradeHealth(healthUpgradeNum){
+    this.currentPlayer.maxHealth += healthUpgradeNum
+    Client.playerHealthUpgrade(this.currentPlayer.maxHealth)
+    this.changeHealth(healthUpgradeNum, this.currentPlayer.id)
+  }
+
   changeAmmo(ammoNum){
     this.currentPlayer.ammo += ammoNum
-    if (this.currentPlayer.ammo > 30) this.currentPlayer.ammo = 30;
+    if (this.currentPlayer.ammo > this.currentPlayer.maxAmmo) this.currentPlayer.ammo = this.currentPlayer.maxAmmo;
     if (this.currentPlayer.ammo < 0) this.currentPlayer.ammo = 0;
+  }
+
+  upgradeAmmo(ammoUpgradeNum)  {
+    this.currentPlayer.maxAmmo += ammoUpgradeNum
+    this.currentPlayer.ammo = this.currentPlayer.maxAmmo
   }
 
   changeLevel(level) {
