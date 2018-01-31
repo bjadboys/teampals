@@ -250,8 +250,12 @@ export default class MainGame extends Phaser.State {
     this.isNotLoading = now - serverSideTime > 10000 || Object.keys(this.playerMapBJAD).length > 1
   }
 
-  addNewBase(base) {
-    this.newBase = this.game.add.sprite(base.x, base.y, 'base')
+  addNewBase(base, playerId) {
+    if(base.id === playerId){
+      this.newBase = this.game.add.sprite(base.x, base.y, 'base')
+    } else {
+      this.newBase = this.game.add.sprite(base.x, base.y, 'base')
+    }
     this.game.physics.arcade.enable(this.newBase)
     this.newBase.body.immovable = true
     this.newBase.health = baseHealth
