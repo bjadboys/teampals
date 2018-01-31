@@ -109,8 +109,10 @@ export default class MainGame extends Phaser.State {
     this.weaponsBJAD.enableBody = true
     this.healthText = this.game.add.text(5, 5, 'HEALTH: ')
     this.ammoText = this.game.add.text(250, 5, 'AMMO: ')
+    this.blockText = this.game.add.text(350, 5, 'BLOCKS: ')
     this.levelText = this.game.add.text(480, 5, 'LEVEL: ')
     this.healthText.fixedToCamera = true;
+    this.blockText.fixedToCamera = true;
     this.ammoText.fixedToCamera = true;
     this.levelText.fixedToCamera = true;
     this.death = this.map.layers[4].data
@@ -143,7 +145,7 @@ export default class MainGame extends Phaser.State {
     if (!hasBlock) {//added this second length check in case player is touching two blocks when they do a pick up.
       this.block = this.blocksBJAD.children.find(block => block.id === blockId)
       if (this.block) {
-        console.log(this.block)
+
         this.block.y = 3
         this.block.x = 3
         this.player.addChild(this.block)
@@ -179,9 +181,9 @@ export default class MainGame extends Phaser.State {
       const playerId = this.currentPlayer.id
       const blockId = this.currentPlayer.children[0].id
       const level = this.currentPlayer.children[0].level
-      console.log(this.currentPlayer.children[0])
       Client.blockUsedBJAD({playerId, blockId})
       Client.playerChangeLevel(blockId, level)
+      this.currentPlayer.blockLimit = 20;
     } else {
       Client.playerDropsBlockBJAD(this.currentPlayer.id)
     }
@@ -214,6 +216,7 @@ export default class MainGame extends Phaser.State {
     this.healthText.setText(`HEALTH: ${this.currentPlayer.health}`)
     this.ammoText.setText(`AMMO: ${this.currentPlayer.ammo}`)
     this.levelText.setText(`LEVEL: ${this.currentPlayer.level}`)
+    this.blockText.setText(`BLOCK: ${this.currentPlayer.blockLimit}`)
   }
 
   movementThrottle(){
@@ -258,6 +261,7 @@ export default class MainGame extends Phaser.State {
 
   setCurrentPlayer(id) {
     this.currentPlayer = this.playerMapBJAD[id]
+    this.currentPlayer.blockLimit = 20;
     this.currentPlayer.maxHealth = 100
     this.currentPlayer.health = playerHealth
     this.currentPlayer.maxAmmo = 30
@@ -362,8 +366,8 @@ export default class MainGame extends Phaser.State {
   }
 
   smashBlock(blockID){
-    const smashedBlock = this.blocksBJAD.children.find(block => block.id === blockID)
-    smashedBlock.kill()
+      const smashedBlock = this.blocksBJAD.children.find(block => block.id === blockID)
+      smashedBlock.kill()
   }
 
   addBlockBJAD(id, x, y, level = 0) {
