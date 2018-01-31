@@ -7,7 +7,7 @@ import GameScreen from './game'
 
 import socket from '../js/socket'
 
-import Lobby from './Lobby2.jsx'
+import Lobby from './Lobby.jsx'
 import Tutorial from './Tutorial.jsx'
 import Settings from './Settings.jsx'
 
