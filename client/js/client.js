@@ -214,7 +214,7 @@ Client.socket.on('allplayers', function (data) {
     const locations = [{id: 1, x: 550, y: 550}, {id: 2, x: 1650, y: 550}, {id: 3, x: 1650, y: 1650}, {id: 4, x: 550, y: 1650}]
     for (var i = 0; i < data.length; i++){
       const base = locations.find(location => location.id === data[i].id)
-      game.state.states.MainGame.addNewBase(base)
+      game.state.states.MainGame.addNewBase(base, state.player.sprite)
       game.state.states.MainGame.addNewPlayer(data[i].id, data[i].x, data[i].y, data[i].serverSideTime)
     }
   }
