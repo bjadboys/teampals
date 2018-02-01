@@ -22,6 +22,13 @@ const charObj = {
   4: 'oldMan'
 }
 
+
+
+const textStyle = {
+  font: 'Slackey',
+  fontSize: '15pt'
+}
+
 //Throttle Speed Variables
 const hudWait = 125
 const wait = 30
@@ -107,10 +114,10 @@ export default class MainGame extends Phaser.State {
     this.blocksBJAD.enableBody = true
     this.weaponsBJAD = this.add.group()
     this.weaponsBJAD.enableBody = true
-    this.healthText = this.game.add.text(5, 5, 'HEALTH: ')
-    this.ammoText = this.game.add.text(220, 5, 'AMMO: ')
-    this.blockText = this.game.add.text(390, 5, 'BLOCKS: ')
-    this.levelText = this.game.add.text(590, 5, 'LEVEL: ')
+    this.healthText = this.game.add.text(5, 5, 'HEALTH: ', textStyle)
+    this.ammoText = this.game.add.text(220, 5, 'AMMO: ', textStyle)
+    this.blockText = this.game.add.text(390, 5, 'BLOCKS: ', textStyle)
+    this.levelText = this.game.add.text(590, 5, 'LEVEL: ', textStyle)
     this.healthText.fixedToCamera = true;
     this.blockText.fixedToCamera = true;
     this.ammoText.fixedToCamera = true;
