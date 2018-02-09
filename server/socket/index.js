@@ -127,13 +127,7 @@ module.exports = (io, server) => {
         socket.player.health = health
         if (socket.player.health <= 0) {
           socket.player.lives--
-          const corpseBlock = {
-            id: socket.player.id * -1,
-            level: socket.player.level,
-            x: socket.player.x,
-            y: socket.player.y
-          }
-          io.emit('allBlocks', [corpseBlock])
+          superBlockOnDeath(io, socket.player)
           if (socket.player.lives <= 0) {
             io.emit('player-killed', socket.player.id)
           } else {
@@ -144,7 +138,6 @@ module.exports = (io, server) => {
     })
 
     socket.on('notInvincible', function () {
-      console.log("hey!")
       if (socket.player) {
         socket.player.notInvincible = true
       }
@@ -266,7 +259,8 @@ module.exports = (io, server) => {
               playerArr[j].health += -10
               io.emit('player-hit', { id: playerArr[j].id });
               if (playerArr[j].health <= 0) {
-                playerArr[j].lives--
+                superBlockOnDeath(io, playerArr[j])
+                playerArr[j].lives--;
                 if (playerArr[j].lives <= 0) {
                   io.emit('player-killed', playerArr[j].id)
                 } else {
@@ -378,4 +372,14 @@ function damagePlayer(io, player, defaultPlayers){
     player.notInvincible = true;
   }, 5000);
   io.emit('life-lost', player)
+}
+
+function superBlockOnDeath(io, player){
+  const corpseBlock = {
+    id: player.id * -1,
+    level: player.level,
+    x: player.x,
+    y: player.y
+  }
+  io.emit('allBlocks', [corpseBlock])
 }
