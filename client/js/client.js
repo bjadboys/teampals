@@ -120,7 +120,6 @@ Client.playerPicksUpWeaponBJAD = function (player, weapon) {
 Client.socket.on('life-lost', function (playerData) {
   const state = store.getState()
   if (state.game.joined) {
-    console.log(playerData)
     game.state.states.MainGame.movePlayer(playerData.id, playerData.x, playerData.y, playerData.serverSideTime, playerData.direction)
     game.state.states.MainGame.stopAnimation(playerData.id)
     if (playerData.id === state.player.sprite){
@@ -178,7 +177,6 @@ Client.socket.on('player-picked-up-block', function (data) {
 })
 
 Client.socket.on('allBlocks', function (data) {
-  console.log("blocks")
   const state = store.getState()
   if (state.game.joined) {
     data.forEach(block => {
