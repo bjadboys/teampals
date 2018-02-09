@@ -315,6 +315,15 @@ export default class MainGame extends Phaser.State {
     }
   }
 
+  changeBulletHealth(id) {
+    if (this.currentPlayer.id === id) {
+      this.currentPlayer.health += -10
+      if (this.currentPlayer.health < 0) this.currentPlayer.health = 0;
+      this.game.camera.flash([0xde5242], [250])
+      this.game.camera.shake([0.01], [100])
+    }
+  }
+
   upgradeHealth(healthUpgradeNum){
     this.currentPlayer.maxHealth += healthUpgradeNum
     Client.playerHealthUpgrade(this.currentPlayer.maxHealth)

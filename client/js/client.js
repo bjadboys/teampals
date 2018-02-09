@@ -246,7 +246,7 @@ Client.socket.on('remove', function (id) {
 Client.socket.on('player-hit', function (data) {
   const state = store.getState()
   if (state.game.joined) {
-    game.state.states.MainGame.changeHealth(data.healthNum, data.id);
+    game.state.states.MainGame.changeBulletHealth(data.id);
   }
 });
 

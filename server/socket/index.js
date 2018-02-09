@@ -264,7 +264,7 @@ module.exports = (io, server) => {
           if (playerArr[j].x - 12 < bulletArray[i].x && playerArr[j].x + 12 > bulletArray[i].x) {
             if (playerArr[j].notInvincible && playerArr[j].y - 7 < bulletArray[i].y && playerArr[j].y + 16 > bulletArray[i].y) {
               playerArr[j].health += -10
-              io.emit('player-hit', { id: playerArr[j].id, healthNum: -10 });
+              io.emit('player-hit', { id: playerArr[j].id });
               if (playerArr[j].health <= 0) {
                 playerArr[j].lives--
                 if (playerArr[j].lives <= 0) {
