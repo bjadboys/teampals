@@ -375,8 +375,9 @@ function damagePlayer(io, player, defaultPlayers){
 }
 
 function superBlockOnDeath(io, player){
+  console.log('make those super blocks!!!')
   const corpseBlock = {
-    id: player.id * -1,
+    id: player.id * -1 - (player.lives * 100),
     level: player.level,
     x: player.x,
     y: player.y
