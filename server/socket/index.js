@@ -133,23 +133,11 @@ module.exports = (io, server) => {
             x: socket.player.x,
             y: socket.player.y
           }
-          console.log("corpse block!")
           io.emit('allBlocks', [corpseBlock])
           if (socket.player.lives <= 0) {
             io.emit('player-killed', socket.player.id)
           } else {
-            // needs a single event for this
-            socket.player.health = socket.player.maxHealth
-            socket.player.x = defaultPlayers[socket.player.id - 1].x
-            socket.player.y = defaultPlayers[socket.player.id - 1].y
-            socket.player.blockCounter = 0;
-            socket.player.level++
-            socket.player.notInvincible = false;
-            setTimeout(() => {
-              console.log('HEYYYYY')
-              socket.player.notInvincible = true;
-            }, 50000);
-            socket.emit('life-lost', socket.player)
+            damagePlayer(io, socket.player, defaultPlayers)
           }
         }
       }
@@ -274,14 +262,17 @@ module.exports = (io, server) => {
       for (let j = 0; j < playerArr.length; j++) {
         if (playerArr[j].health > 0 && bulletArray[i] && bulletArray[i].id !== playerArr[j].id) {
           if (playerArr[j].x - 12 < bulletArray[i].x && playerArr[j].x + 12 > bulletArray[i].x) {
-            if (playerArr[j].y - 7 < bulletArray[i].y && playerArr[j].y + 16 > bulletArray[i].y) {
+            if (playerArr[j].notInvincible && playerArr[j].y - 7 < bulletArray[i].y && playerArr[j].y + 16 > bulletArray[i].y) {
               playerArr[j].health += -10
+              io.emit('player-hit', { id: playerArr[j].id, healthNum: -10 });
               if (playerArr[j].health <= 0) {
-                if (playerArr[j].notInvincible && playerArr[j].lives <= 0) {
+                playerArr[j].lives--
+                if (playerArr[j].lives <= 0) {
                   io.emit('player-killed', playerArr[j].id)
+                } else {
+                  damagePlayer(io, playerArr[j], defaultPlayers)
                 }
               }
-              io.emit('player-hit', { id: playerArr[j].id, healthNum: -10 });
               bulletArray.splice(i, 1);
               i--;
             }
@@ -373,4 +364,18 @@ module.exports = (io, server) => {
       }
     })
   }
+}
+
+function damagePlayer(io, player, defaultPlayers){
+  player.health = player.maxHealth
+  player.x = defaultPlayers[player.id - 1].x
+  player.y = defaultPlayers[player.id - 1].y
+  player.blockCounter = 0;
+  player.level++
+  player.notInvincible = false;
+  setTimeout(() => {
+    console.log('HEYYYYY')
+    player.notInvincible = true;
+  }, 5000);
+  io.emit('life-lost', player)
 }

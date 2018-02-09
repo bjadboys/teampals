@@ -123,11 +123,13 @@ Client.socket.on('life-lost', function (playerData) {
     console.log(playerData)
     game.state.states.MainGame.movePlayer(playerData.id, playerData.x, playerData.y, playerData.serverSideTime, playerData.direction)
     game.state.states.MainGame.stopAnimation(playerData.id)
-    game.state.states.MainGame.changeLives()
-    game.state.states.MainGame.changeHealth(playerData.maxHealth, playerData.id)
-    game.state.states.MainGame.changeAmmo(0)
-    game.state.states.MainGame.changeLevel(playerData.level)
-    Client.socket.emit('notInvincible')
+    if (playerData.id === state.player.sprite){
+      game.state.states.MainGame.changeLives()
+      game.state.states.MainGame.changeHealth(playerData.maxHealth, playerData.id)
+      game.state.states.MainGame.changeAmmo(0)
+      game.state.states.MainGame.changeLevel(playerData.level)
+      Client.socket.emit('notInvincible')
+    }
   }
 })
 
