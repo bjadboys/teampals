@@ -23,7 +23,6 @@ const charObj = {
 }
 
 
-
 const textStyle = {
   font: 'Slackey',
   fontSize: '15pt'
@@ -179,7 +178,7 @@ export default class MainGame extends Phaser.State {
     if (!hasBlock) {
       this.game.physics.arcade.overlap(this.currentPlayer, this.blocksBJAD, func, null, this)
     }
-  } 
+  }
 
   dropBlockPhysicsBJAD(){
     this.base = this.playerBaseBJAD[this.currentPlayer.id]

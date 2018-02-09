@@ -125,7 +125,7 @@ module.exports = (io, server) => {
           const corpseBlock = {
             id: socket.player.id * -1,
             level: socket.player.level,
-            x: socket.player.x, 
+            x: socket.player.x,
             y: socket.player.y}
           io.emit('player-killed', socket.player.id)
           io.emit('allBlocks', [corpseBlock])
