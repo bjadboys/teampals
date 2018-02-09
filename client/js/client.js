@@ -120,12 +120,14 @@ Client.playerPicksUpWeaponBJAD = function (player, weapon) {
 Client.socket.on('life-lost', function (playerData) {
   const state = store.getState()
   if (state.game.joined) {
+    console.log(playerData)
     game.state.states.MainGame.movePlayer(playerData.id, playerData.x, playerData.y, playerData.serverSideTime, playerData.direction)
+    game.state.states.MainGame.stopAnimation(playerData.id)
     game.state.states.MainGame.changeLives()
-    game.state.states.MainGame.changeHealth(playerData.health, playerData.id)
+    game.state.states.MainGame.changeHealth(playerData.maxHealth, playerData.id)
     game.state.states.MainGame.changeAmmo(0)
     game.state.states.MainGame.changeLevel(playerData.level)
-    socket.emit('notInvincible')
+    Client.socket.emit('notInvincible')
   }
 })
 

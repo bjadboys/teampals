@@ -145,13 +145,18 @@ module.exports = (io, server) => {
             socket.player.blockCounter = 0;
             socket.player.level++
             socket.player.notInvincible = false;
-            io.emit('lost-life', socket.player)
+            setTimeout(() => {
+              console.log('HEYYYYY')
+              socket.player.notInvincible = true;
+            }, 50000);
+            socket.emit('life-lost', socket.player)
           }
         }
       }
     })
 
     socket.on('notInvincible', function () {
+      console.log("hey!")
       if (socket.player) {
         socket.player.notInvincible = true
       }
