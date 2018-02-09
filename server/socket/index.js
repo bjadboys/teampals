@@ -74,6 +74,7 @@ module.exports = (io, server) => {
         socket.player.blockCounter = 0
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
+        socket.player.notInvincible = true;
         io.emit('addPlayersToLobby', getAllPlayers())
         socket.emit('joinedGame')
       } else {
@@ -143,9 +144,16 @@ module.exports = (io, server) => {
             socket.player.y = defaultPlayers[socket.player.id - 1].y
             socket.player.blockCounter = 0;
             socket.player.level++
+            socket.player.notInvincible = false;
             io.emit('lost-life', socket.player)
           }
         }
+      }
+    })
+
+    socket.on('notInvincible', function () {
+      if (socket.player) {
+        socket.player.notInvincible = true
       }
     })
 
@@ -264,7 +272,7 @@ module.exports = (io, server) => {
             if (playerArr[j].y - 7 < bulletArray[i].y && playerArr[j].y + 16 > bulletArray[i].y) {
               playerArr[j].health += -10
               if (playerArr[j].health <= 0) {
-                if (playerArr[j].lives <= 0) {
+                if (playerArr[j].notInvincible && playerArr[j].lives <= 0) {
                   io.emit('player-killed', playerArr[j].id)
                 }
               }

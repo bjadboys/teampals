@@ -125,6 +125,7 @@ Client.socket.on('life-lost', function (playerData) {
     game.state.states.MainGame.changeHealth(playerData.health, playerData.id)
     game.state.states.MainGame.changeAmmo(0)
     game.state.states.MainGame.changeLevel(playerData.level)
+    socket.emit('notInvincible')
   }
 })
 
