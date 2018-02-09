@@ -117,6 +117,17 @@ Client.playerPicksUpWeaponBJAD = function (player, weapon) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+Client.socket.on('life-lost', function (playerData) {
+  const state = store.getState()
+  if (state.game.joined) {
+    game.state.states.MainGame.movePlayer(playerData.id, playerData.x, playerData.y, playerData.serverSideTime, playerData.direction)
+    game.state.states.MainGame.changeLives()
+    game.state.states.MainGame.changeHealth(playerData.health, playerData.id)
+    game.state.states.MainGame.changeAmmo(0)
+    game.state.states.MainGame.changeLevel(playerData.level)
+  }
+})
+
 Client.socket.on('level-change', function (level) {
   const state = store.getState()
   if (state.game.joined) {
@@ -146,16 +157,6 @@ Client.socket.on('newGame', function () {
     store.dispatch(gameInProgressAction())
   }
 })
-
-Client.socket.on('resetHealthAndAmmo', function(data){
-  const state = store.getState()
-  if (state.game.joined) {
-    game.state.states.MainGame.changeLives()
-    game.state.states.MainGame.changeHealth(data.health, data.id)
-    game.state.states.MainGame.changeAmmo(0)
-  }
-})
-
 
 Client.socket.on('addBlock', function (data) {
   const state = store.getState()
