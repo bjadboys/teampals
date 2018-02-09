@@ -99,14 +99,14 @@ class Settings extends Component {
                 {this.warning()}
                     <form className='settingsContainer'>
                     <div className='inputHolder'>
-                    Change fire: <input maxLength={1} value={this.state.fire === " " ? 'SPACEBAR' : this.state.fire} onChange={this.handleFireChange} placeholder={this.state.fire === " " ? "SPACEBAR" : this.state.fire} />
+                    Change fire: <input className='settingsInput' maxLength={1} value={this.state.fire === " " ? 'SPACEBAR' : this.state.fire} onChange={this.handleFireChange} placeholder={this.state.fire === " " ? "SPACEBAR" : this.state.fire} />
                         <br />
-                        Change smash: <input maxLength={1} value={this.state.smash === " " ? 'SPACEBAR' : this.state.smash} onChange={this.handleSmashChange} placeholder={this.state.smash === " " ? "SPACEBAR" : this.state.smash} />
+                        Change smash: <input className='settingsInput' maxLength={1} value={this.state.smash === " " ? 'SPACEBAR' : this.state.smash} onChange={this.handleSmashChange} placeholder={this.state.smash === " " ? "SPACEBAR" : this.state.smash} />
                     </div>
                     <div className='inputHolder'>
-                        Change pickup: <input maxLength={1} value={this.state.pickup === " " ? 'SPACEBAR' : this.state.pickup} onChange={this.handlePickupChange} placeholder={this.state.pickup === " " ? "SPACEBAR" : this.state.pickup} />
+                        Change pickup: <input className='settingsInput' maxLength={1} value={this.state.pickup === " " ? 'SPACEBAR' : this.state.pickup} onChange={this.handlePickupChange} placeholder={this.state.pickup === " " ? "SPACEBAR" : this.state.pickup} />
                         <br />
-                        Change lockOn: <input maxLength={1} value={this.state.lockOn === " " ? 'SPACEBAR' : this.state.lockOn} onChange={this.handleLockOnChange} placeholder={this.state.lockOn === " " ? "SPACEBAR" : this.state.lockOn} />
+                        Change lockOn: <input className='settingsInput' maxLength={1} value={this.state.lockOn === " " ? 'SPACEBAR' : this.state.lockOn} onChange={this.handleLockOnChange} placeholder={this.state.lockOn === " " ? "SPACEBAR" : this.state.lockOn} />
                     </div>
                     </form>
                 </div>

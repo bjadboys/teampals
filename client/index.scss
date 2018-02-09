@@ -24,7 +24,14 @@ body {
 .lobbyHeader {
   display: flex;
   align-self: center;
-  margin-bottom: .5em;
+  margin: 0em;
+}
+
+.settingsInput {
+  font-family: 'Slackey',
+  cursive;
+  border-radius: .5em;
+
 }
 
 .characterHolder {
