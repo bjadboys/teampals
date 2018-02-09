@@ -86,12 +86,20 @@ class Settings extends Component {
                     <h2 className='lobbyHeader'>Current Controls</h2>
                 <div className='controlsRow'>
                 <div>
-                <p className='controlsP'>Fire: {stateFire === " " ? "SPACEBAR" : stateFire}</p>
-                <p className='controlsP'>Smash Crate: {stateSmash === " " ? "SPACEBAR" : stateSmash}</p>
+                <div className='containerRow inputCenter'>
+                <p className='controlsLabel'>Fire: </p><p className='inputText'>{stateFire === " " ? "SPACEBAR" : stateFire}</p>
+                </div>
+                <div className='containerRow inputCenter'>
+                <p className='controlsLabel'>Smash Crate: </p><p className='inputText'>{stateSmash === " " ? "SPACEBAR" : stateSmash}</p>
+                </div>
                 </div>
                 <div>
-                <p className='controlsP'>Pick Up Crate: {statePickup === " " ? "SPACEBAR" : statePickup}</p>
-                <p className='controlsP'>Target Lock: {stateLockOn === " " ? "SPACEBAR" : stateLockOn}</p>
+                <div className='containerRow inputCenter'>
+                <p className='controlsLabel'>Pick Up Crate: </p><p className='inputText'>{statePickup === " " ? "SPACEBAR" : statePickup}</p>
+                </div>
+                <div className='containerRow inputCenter'>
+                <p className='controlsLabel'>Target Lock: </p><p className='inputText'>{stateLockOn === " " ? "SPACEBAR" : stateLockOn}</p>
+                </div>
                 </div>
                 </div>
                 </div>
