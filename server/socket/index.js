@@ -12,6 +12,7 @@ module.exports = (io, server) => {
   let bulletSpeed = 3.5
   let bulletSpeedUpgradePercentage = 1.2
   const playerHealth = 100
+  const playerLives = 3
   //Keep track of last id assigned to block
   server.lastBlockIdBJAD = 5;
   //Gamestate variables
@@ -67,7 +68,9 @@ module.exports = (io, server) => {
         socket.player.name = potentialPlayer.name
         socket.player.direction = 'down'
         socket.player.health = playerHealth
+        socket.player.lives = playerLives
         socket.player.level = 0
+        socket.player.maxHealth = playerHealth
         socket.player.blockCounter = 0
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
@@ -122,19 +125,33 @@ module.exports = (io, server) => {
       if (socket.player) {
         socket.player.health = health
         if (socket.player.health <= 0) {
+          socket.player.lives--
           const corpseBlock = {
             id: socket.player.id * -1,
             level: socket.player.level,
             x: socket.player.x,
-            y: socket.player.y}
-          io.emit('player-killed', socket.player.id)
+            y: socket.player.y
+          }
           io.emit('allBlocks', [corpseBlock])
+          if (socket.player.lives <= 0) {
+            io.emit('player-killed', socket.player.id)
+          } else {
+            socket.player.health = socket.player.maxHealth
+            socket.player.x = defaultPlayers[socket.player.id - 1].x
+            socket.player.y = defaultPlayers[socket.player.id - 1].y
+            socket.player.blockCounter = 0;
+            socket.player.level++
+            socket.emit('level-change', socket.player.level)
+            io.emit('move', socket.player)
+            socket.emit('resetHealthAndAmmo', socket.player)
+          }
         }
       }
     })
 
     socket.on('upgrade-health', function (newMaxHealth) {
       if (socket.player) {
+        socket.player.maxHealth = newMaxHealth
         socket.player.health = newMaxHealth
       }
     })
@@ -247,7 +264,9 @@ module.exports = (io, server) => {
             if (playerArr[j].y - 7 < bulletArray[i].y && playerArr[j].y + 16 > bulletArray[i].y) {
               playerArr[j].health += -10
               if (playerArr[j].health <= 0) {
-                io.emit('player-killed', playerArr[j].id)
+                if (playerArr[j].lives <= 0) {
+                  io.emit('player-killed', playerArr[j].id)
+                }
               }
               io.emit('player-hit', { id: playerArr[j].id, healthNum: -10 });
               bulletArray.splice(i, 1);

@@ -113,10 +113,12 @@ export default class MainGame extends Phaser.State {
     this.blocksBJAD.enableBody = true
     this.weaponsBJAD = this.add.group()
     this.weaponsBJAD.enableBody = true
+    this.livesText = this.game.add.text(5, 30, 'LIVES: ', textStyle)
     this.healthText = this.game.add.text(5, 5, 'HEALTH: ', textStyle)
     this.ammoText = this.game.add.text(220, 5, 'AMMO: ', textStyle)
     this.blockText = this.game.add.text(390, 5, 'BLOCKS: ', textStyle)
     this.levelText = this.game.add.text(590, 5, 'LEVEL: ', textStyle)
+    this.livesText.fixedToCamera = true;
     this.healthText.fixedToCamera = true;
     this.blockText.fixedToCamera = true;
     this.ammoText.fixedToCamera = true;
@@ -219,6 +221,7 @@ export default class MainGame extends Phaser.State {
 
   hudThrottle(){
     this.healthText.setText(`HEALTH: ${this.currentPlayer.health}`)
+    this.livesText.setText(`LIVES: ${this.currentPlayer.lives}`)
     this.ammoText.setText(`AMMO: ${this.currentPlayer.ammo}`)
     this.levelText.setText(`LEVEL: ${this.currentPlayer.level}`)
     this.blockText.setText(`BLOCKS: ${this.currentPlayer.blockLimit}`)
@@ -275,6 +278,7 @@ export default class MainGame extends Phaser.State {
     this.currentPlayer.health = playerHealth
     this.currentPlayer.maxAmmo = 30
     this.currentPlayer.ammo = playerAmmo
+    this.currentPlayer.lives = 3
     this.currentPlayer.level = 0
     this.currentPlayer.id = id
     this.currentPlayer.pointer = null
@@ -326,6 +330,10 @@ export default class MainGame extends Phaser.State {
   upgradeAmmo(ammoUpgradeNum)  {
     this.currentPlayer.maxAmmo += ammoUpgradeNum
     this.currentPlayer.ammo = this.currentPlayer.maxAmmo
+  }
+
+  changeLives() {
+    this.currentPlayer.lives--
   }
 
   changeLevel(level) {

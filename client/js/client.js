@@ -147,6 +147,15 @@ Client.socket.on('newGame', function () {
   }
 })
 
+Client.socket.on('resetHealthAndAmmo', function(data){
+  const state = store.getState()
+  if (state.game.joined) {
+    game.state.states.MainGame.changeLives()
+    game.state.states.MainGame.changeHealth(data.health, data.id)
+    game.state.states.MainGame.changeAmmo(0)
+  }
+})
+
 
 Client.socket.on('addBlock', function (data) {
   const state = store.getState()
