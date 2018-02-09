@@ -132,18 +132,18 @@ module.exports = (io, server) => {
             x: socket.player.x,
             y: socket.player.y
           }
+          console.log("corpse block!")
           io.emit('allBlocks', [corpseBlock])
           if (socket.player.lives <= 0) {
             io.emit('player-killed', socket.player.id)
           } else {
+            // needs a single event for this
             socket.player.health = socket.player.maxHealth
             socket.player.x = defaultPlayers[socket.player.id - 1].x
             socket.player.y = defaultPlayers[socket.player.id - 1].y
             socket.player.blockCounter = 0;
             socket.player.level++
-            socket.emit('level-change', socket.player.level)
-            io.emit('move', socket.player)
-            socket.emit('resetHealthAndAmmo', socket.player)
+            io.emit('lost-life', socket.player)
           }
         }
       }

@@ -172,6 +172,7 @@ Client.socket.on('player-picked-up-block', function (data) {
 })
 
 Client.socket.on('allBlocks', function (data) {
+  console.log("blocks")
   const state = store.getState()
   if (state.game.joined) {
     data.forEach(block => {
