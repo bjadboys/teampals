@@ -112,9 +112,11 @@ class Settings extends Component {
                 </div>
                 <div>
                     <button
+                    className='settingsButton'
                     onClick={this.resetBindings}
                     >reset</button>
                     <button
+                    className='settingsButton'
                     disabled={validateKeys(Object.values(this.state))}
                     onClick={()=> {
                         const keyBindings={fire: getKeyCodes(this.state.fire), smash: getKeyCodes(this.state.smash), pickup: getKeyCodes(this.state.pickup), lockOn: getKeyCodes(this.state.lockOn)}
