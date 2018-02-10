@@ -368,14 +368,12 @@ function damagePlayer(io, player, defaultPlayers){
   player.level++
   player.notInvincible = false;
   setTimeout(() => {
-    console.log('HEYYYYY')
     player.notInvincible = true;
   }, 5000);
   io.emit('life-lost', player)
 }
 
 function superBlockOnDeath(io, player){
-  console.log('make those super blocks!!!')
   const corpseBlock = {
     id: player.id * -1 - (player.lives * 100),
     level: player.level,
