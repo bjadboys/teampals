@@ -12,6 +12,7 @@ module.exports = (io, server) => {
   let bulletSpeed = 3.5
   let bulletSpeedUpgradePercentage = 1.2
   const playerHealth = 100
+  const playerLives = 3
   //Keep track of last id assigned to block
   server.lastBlockIdBJAD = 5;
   //Gamestate variables
@@ -67,10 +68,13 @@ module.exports = (io, server) => {
         socket.player.name = potentialPlayer.name
         socket.player.direction = 'down'
         socket.player.health = playerHealth
+        socket.player.lives = playerLives
         socket.player.level = 0
+        socket.player.maxHealth = playerHealth
         socket.player.blockCounter = 0
         socket.player.playerSideTime = null
         socket.player.serverSideTime = Date.now()
+        socket.player.notInvincible = true;
         io.emit('addPlayersToLobby', getAllPlayers())
         socket.emit('joinedGame')
       } else {
@@ -122,19 +126,26 @@ module.exports = (io, server) => {
       if (socket.player) {
         socket.player.health = health
         if (socket.player.health <= 0) {
-          const corpseBlock = {
-            id: socket.player.id * -1,
-            level: socket.player.level,
-            x: socket.player.x, 
-            y: socket.player.y}
-          io.emit('player-killed', socket.player.id)
-          io.emit('allBlocks', [corpseBlock])
+          socket.player.lives--
+          superBlockOnDeath(io, socket.player)
+          if (socket.player.lives <= 0) {
+            io.emit('player-killed', socket.player.id)
+          } else {
+            damagePlayer(io, socket.player, defaultPlayers)
+          }
         }
+      }
+    })
+
+    socket.on('notInvincible', function () {
+      if (socket.player) {
+        socket.player.notInvincible = true
       }
     })
 
     socket.on('upgrade-health', function (newMaxHealth) {
       if (socket.player) {
+        socket.player.maxHealth = newMaxHealth
         socket.player.health = newMaxHealth
       }
     })
@@ -244,12 +255,18 @@ module.exports = (io, server) => {
       for (let j = 0; j < playerArr.length; j++) {
         if (playerArr[j].health > 0 && bulletArray[i] && bulletArray[i].id !== playerArr[j].id) {
           if (playerArr[j].x - 12 < bulletArray[i].x && playerArr[j].x + 12 > bulletArray[i].x) {
-            if (playerArr[j].y - 7 < bulletArray[i].y && playerArr[j].y + 16 > bulletArray[i].y) {
+            if (playerArr[j].notInvincible && playerArr[j].y - 7 < bulletArray[i].y && playerArr[j].y + 16 > bulletArray[i].y) {
               playerArr[j].health += -10
+              io.emit('player-hit', { id: playerArr[j].id });
               if (playerArr[j].health <= 0) {
-                io.emit('player-killed', playerArr[j].id)
+                superBlockOnDeath(io, playerArr[j])
+                playerArr[j].lives--;
+                if (playerArr[j].lives <= 0) {
+                  io.emit('player-killed', playerArr[j].id)
+                } else {
+                  damagePlayer(io, playerArr[j], defaultPlayers)
+                }
               }
-              io.emit('player-hit', { id: playerArr[j].id, healthNum: -10 });
               bulletArray.splice(i, 1);
               i--;
             }
@@ -341,4 +358,27 @@ module.exports = (io, server) => {
       }
     })
   }
+}
+
+function damagePlayer(io, player, defaultPlayers){
+  player.health = player.maxHealth
+  player.x = defaultPlayers[player.id - 1].x
+  player.y = defaultPlayers[player.id - 1].y
+  player.blockCounter = 0;
+  player.level++
+  player.notInvincible = false;
+  setTimeout(() => {
+    player.notInvincible = true;
+  }, 5000);
+  io.emit('life-lost', player)
+}
+
+function superBlockOnDeath(io, player){
+  const corpseBlock = {
+    id: player.id * -1 - (player.lives * 100),
+    level: player.level,
+    x: player.x,
+    y: player.y
+  }
+  io.emit('allBlocks', [corpseBlock])
 }

@@ -24,7 +24,15 @@ body {
 .lobbyHeader {
   display: flex;
   align-self: center;
-  margin-bottom: .5em;
+  margin: 0em;
+}
+
+.settingsInput {
+  font-family: 'Slackey',
+  cursive;
+  border-radius: .5em;
+  background-color: #84BCDA;
+
 }
 
 .characterHolder {
@@ -194,6 +202,21 @@ body {
 
 }
 
+.settingsButton {
+  margin-left: 2em;
+  background-color: #ef3a26;
+  border-radius: .5em;
+  font-size: 1em;
+  height: 2.5em;
+  width: 4.5em;
+  font-family: 'Slackey',
+  cursive;
+  color:white;
+  border-color: #651285;
+  margin-top: .5em;
+
+}
+
 .warningContainer {
   align-self: center;
   display: flex;
@@ -296,6 +319,24 @@ h3 {
   text-decoration: none;
   font-size: 3em;
   text-shadow: 2px 2px rgb(0, 0, 0); // transform: rotate(-0.25turn)
+}
+
+.inputCenter {
+  align-items: center;
+}
+
+.controlsLabel{
+  margin: 0em;
+  margin-right: .5em;
+  -webkit-text-stroke: .5px black;
+  font-size: 1.5em;
+  color: white;
+  text-shadow: 1px 1px rgb(0, 0, 0);
+}
+
+.inputText {
+  margin: 0em;
+  font-size: 1em;
 }
 
 .tutorialLink {

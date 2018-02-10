@@ -86,12 +86,20 @@ class Settings extends Component {
                     <h2 className='lobbyHeader'>Current Controls</h2>
                 <div className='controlsRow'>
                 <div>
-                <p className='controlsP'>Fire: {stateFire === " " ? "SPACEBAR" : stateFire}</p>
-                <p className='controlsP'>Smash Crate: {stateSmash === " " ? "SPACEBAR" : stateSmash}</p>
+                <div className='containerRow inputCenter'>
+                <p className='controlsLabel'>Fire: </p><p className='inputText'>{stateFire === " " ? "SPACEBAR" : stateFire}</p>
+                </div>
+                <div className='containerRow inputCenter'>
+                <p className='controlsLabel'>Smash Crate: </p><p className='inputText'>{stateSmash === " " ? "SPACEBAR" : stateSmash}</p>
+                </div>
                 </div>
                 <div>
-                <p className='controlsP'>Pick Up Crate: {statePickup === " " ? "SPACEBAR" : statePickup}</p>
-                <p className='controlsP'>Target Lock: {stateLockOn === " " ? "SPACEBAR" : stateLockOn}</p>
+                <div className='containerRow inputCenter'>
+                <p className='controlsLabel'>Pick Up Crate: </p><p className='inputText'>{statePickup === " " ? "SPACEBAR" : statePickup}</p>
+                </div>
+                <div className='containerRow inputCenter'>
+                <p className='controlsLabel'>Target Lock: </p><p className='inputText'>{stateLockOn === " " ? "SPACEBAR" : stateLockOn}</p>
+                </div>
                 </div>
                 </div>
                 </div>
@@ -99,22 +107,24 @@ class Settings extends Component {
                 {this.warning()}
                     <form className='settingsContainer'>
                     <div className='inputHolder'>
-                    Change fire: <input maxLength={1} value={this.state.fire === " " ? 'SPACEBAR' : this.state.fire} onChange={this.handleFireChange} placeholder={this.state.fire === " " ? "SPACEBAR" : this.state.fire} />
+                    Change fire: <input className='settingsInput' maxLength={1} value={this.state.fire === " " ? 'SPACEBAR' : this.state.fire} onChange={this.handleFireChange} placeholder={this.state.fire === " " ? "SPACEBAR" : this.state.fire} />
                         <br />
-                        Change smash: <input maxLength={1} value={this.state.smash === " " ? 'SPACEBAR' : this.state.smash} onChange={this.handleSmashChange} placeholder={this.state.smash === " " ? "SPACEBAR" : this.state.smash} />
+                        Change smash: <input className='settingsInput' maxLength={1} value={this.state.smash === " " ? 'SPACEBAR' : this.state.smash} onChange={this.handleSmashChange} placeholder={this.state.smash === " " ? "SPACEBAR" : this.state.smash} />
                     </div>
                     <div className='inputHolder'>
-                        Change pickup: <input maxLength={1} value={this.state.pickup === " " ? 'SPACEBAR' : this.state.pickup} onChange={this.handlePickupChange} placeholder={this.state.pickup === " " ? "SPACEBAR" : this.state.pickup} />
+                        Change pickup: <input className='settingsInput' maxLength={1} value={this.state.pickup === " " ? 'SPACEBAR' : this.state.pickup} onChange={this.handlePickupChange} placeholder={this.state.pickup === " " ? "SPACEBAR" : this.state.pickup} />
                         <br />
-                        Change lockOn: <input maxLength={1} value={this.state.lockOn === " " ? 'SPACEBAR' : this.state.lockOn} onChange={this.handleLockOnChange} placeholder={this.state.lockOn === " " ? "SPACEBAR" : this.state.lockOn} />
+                        Change lockOn: <input className='settingsInput' maxLength={1} value={this.state.lockOn === " " ? 'SPACEBAR' : this.state.lockOn} onChange={this.handleLockOnChange} placeholder={this.state.lockOn === " " ? "SPACEBAR" : this.state.lockOn} />
                     </div>
                     </form>
                 </div>
                 <div>
                     <button
+                    className='settingsButton'
                     onClick={this.resetBindings}
                     >reset</button>
                     <button
+                    className='settingsButton'
                     disabled={validateKeys(Object.values(this.state))}
                     onClick={()=> {
                         const keyBindings={fire: getKeyCodes(this.state.fire), smash: getKeyCodes(this.state.smash), pickup: getKeyCodes(this.state.pickup), lockOn: getKeyCodes(this.state.lockOn)}
