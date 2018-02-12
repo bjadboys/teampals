@@ -264,7 +264,7 @@ module.exports = (io, server) => {
                 if (playerArr[j].lives <= 0) {
                   io.emit('player-killed', playerArr[j].id)
                 } else {
-                  damagePlayer(io, playerArr[j], defaultPlayers)
+                  damagePlayer(io, playerArr[j], defaultPlayers, bulletArray[i].id)
                 }
               }
               bulletArray.splice(i, 1);
@@ -323,16 +323,6 @@ module.exports = (io, server) => {
     playersArray.forEach(player => {playersObj[player.id] = false})
     return playersObj
   }
-// No longer necessary
-  // function getAvailablePlayer(playersObj) {
-  //   const availableId = Object.keys(playersObj).find(id => {
-  //     return playersObj[id]
-  //   })
-  //   return defaultPlayers.find(player => {
-  //     return player.id === Number(availableId)
-  //   })
-  // }
-
 
   function resetGameFunc(socket){
     server.gameInProgress = false;
@@ -360,10 +350,15 @@ module.exports = (io, server) => {
   }
 }
 
-function damagePlayer(io, player, defaultPlayers){
+function damagePlayer(io, player, defaultPlayers, killerID = false){
   player.health = player.maxHealth
-  player.x = defaultPlayers[player.id - 1].x
-  player.y = defaultPlayers[player.id - 1].y
+  if (typeof (killer) === 'number'){
+    player.x = defaultPlayers[killerID - 1].x
+    player.y = defaultPlayers[killerID - 1].y
+  } else {
+    player.x = defaultPlayers[player.id - 1].x
+    player.y = defaultPlayers[player.id - 1].y
+  }
   player.blockCounter = 0;
   player.level++
   player.notInvincible = false;
