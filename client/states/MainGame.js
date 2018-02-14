@@ -25,7 +25,8 @@ const charObj = {
 
 const textStyle = {
   font: 'Slackey',
-  fontSize: '15pt'
+  fontSize: '15pt',
+  fill: 'white'
 }
 
 //Throttle Speed Variables
@@ -118,6 +119,11 @@ export default class MainGame extends Phaser.State {
     this.ammoText = this.game.add.text(220, 5, 'AMMO: ', textStyle)
     this.blockText = this.game.add.text(390, 5, 'BLOCKS: ', textStyle)
     this.levelText = this.game.add.text(590, 5, 'LEVEL: ', textStyle)
+    this.livesText.setShadow(2, 2, 'rgb(0, 0, 0)')
+    this.healthText.setShadow(2, 2, 'rgb(0, 0, 0)')
+    this.blockText.setShadow(2, 2, 'rgb(0, 0, 0)')
+    this.ammoText.setShadow(2, 2, 'rgb(0, 0, 0)')
+    this.levelText.setShadow(2, 2, 'rgb(0, 0, 0)')
     this.livesText.fixedToCamera = true;
     this.healthText.fixedToCamera = true;
     this.blockText.fixedToCamera = true;
