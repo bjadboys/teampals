@@ -352,7 +352,7 @@ module.exports = (io, server) => {
 
 function damagePlayer(io, player, defaultPlayers, killerID = false){
   player.health = player.maxHealth
-  if (typeof (killer) === 'number'){
+  if (typeof (killerID) === 'number'){
     player.x = defaultPlayers[killerID - 1].x
     player.y = defaultPlayers[killerID - 1].y
   } else {
